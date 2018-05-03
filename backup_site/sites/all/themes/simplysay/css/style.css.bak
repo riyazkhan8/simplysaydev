@@ -1,0 +1,593 @@
+/**
+ * Place your custom styles here.
+ */
+
+
+/*
+HOME PAGE
+*/
+.page-admin-commerce-products-create-canvas .page-header,
+.page-admin-commerce-products-create-canvas-landscape .page-header {
+    display: none;
+}
+.page-admin-commerce-products-create-canvas-landscape .region.region-content,
+.page-admin-commerce-products-create-canvas .region.region-content {
+    margin-top: 15px;
+}
+
+.sencondary-menu .navbar-nav > li > a {
+    padding: 0;
+}
+.sencondary-menu ul li {
+    padding: 0;
+}
+.node-type-display-card .nav.nav-tabs {
+    margin-bottom: 0;
+}
+.node-type-display-card h1.page-header {
+    display: none;
+}
+.navbar-default .navbar-nav > .active > a,  
+.navbar-default .navbar-nav > .active > a:focus {
+	 background-color: transparent !important;
+    color: #1d1d1d !important;
+}
+
+.node-type-display-card div#toolbox {
+    margin: 20px auto auto;
+    max-width: 1300px;
+}
+.page-user #user-login .form-item,
+.page-user-password #user-pass .form-item,
+.page-user-register #user-register-form .form-item {
+    max-width: 500px;
+}
+
+/*  search button css*/
+.main-search .input-group-btn > .btn-primary {
+  background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+  border: 0 none;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  width: 0;
+}
+.main-search span.icon {
+    color: #fff;
+    cursor: pointer;
+    font-size: 20px;
+    margin: auto;
+    padding: 10px;
+    position: absolute;
+    right: -21px;
+    top: -19px;
+}
+.expand li.main-search .search-box {
+    margin-right: 40px;
+}
+
+.nav .main-search {
+
+    bottom:15px;
+}
+
+#social_image_picker #social_images li img {
+    margin: 10px 5px;
+    max-width: 200px;
+}
+
+
+#social_image_picker ul li {
+  display: inline-block;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  width: 31%;
+}
+#social_image_picker #social_images li img {
+  max-width: 100%;
+  border: 3px solid transparent;
+}
+#social_image_picker ul li:nth-child(3n) {
+  margin-right: 0;
+}
+#social_image_picker #social_images li img.selected{
+    border-color:#00aff3;
+}
+.social-media-modal #social_image_picker button {
+  background-color: #b4e97a;
+  border: 0 none;
+  border-radius: 20px;
+  color: #2e4c0d;
+  display: inline-block;
+  font-family: "PantonW01-Bold";
+  margin: 0 5px;
+  padding: 10px 20px;
+}
+.social-media-modal .fb-border {
+  border: 1px solid #b4e97a;
+  padding: 20px;
+}
+.sample-cards .slick-slide img {
+    max-height: 100px;
+    max-width: 80px;
+    width: 100%;
+}
+.previewIMG #loading > img {
+    max-width: 250px;
+}
+
+/****ajax loing popup css*****/
+#login-pop{
+    padding: 53px 32px 63px;
+}
+.ajax-register-links > li {
+    display: none;
+    visibility: hidden;
+}
+#register-appear {
+    display: none;
+}
+.modal-dialog {
+  margin: 10% auto;
+}
+.register-modal .modal-sm {
+  width: 450px;
+}
+.blankcard-select .form-control {
+  background-color: #f5f5f5;
+  border: 1px solid #e9e9e9;
+  border-radius: 5px;
+  color: rgba(0, 0, 0, 0.6);
+  font-family: "PantonW01-Bold";
+  font-size: 16px;
+  height: 52px;
+  text-align: center;
+}
+.btn-primary.form-submit,.form-actions .btn.btn-success.form-submit {
+  background: #f8eb00 none repeat scroll 0 0;
+  border: 0 none;
+  color: #1d1d1d;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  padding: 15px 20px;
+  text-transform: uppercase;
+}
+.control-label[for="edit-remember-me"] {
+  font-size: 16px;
+  float: left;
+}
+.login_cnt {
+  font-size: 16px;
+}
+.login_cnt a {
+  color: #000;
+  font-family: "PantonW01-Bold";
+}
+.alert ul li {
+  float: none;
+  margin: 0;
+}
+.alert ul li a,.help-block.password-help,.register-modal .control-label {
+  display: none !important;
+}
+.form-item.form-item-pass-pass1.form-type-password.form-group.col-sm-6.col-md-4.has-feedback,.form-item.form-item-pass-pass1.form-type-password.form-group.col-sm-6.col-md-4.has-feedback.has-error, .form-item.form-item-pass-pass2.form-type-password.form-group.col-sm-6.col-md-4.has-feedback {
+  width: 100%;
+}
+.has-feedback label ~ .form-control-feedback {
+  top: 10px;
+}
+.nav-tabs > li > a {
+  background: transparent;
+  color: #000;
+  font-size: 16px;
+}
+.nav-tabs > li > a:hover{
+    color: #00AFF3;
+    background: transparent;
+    }
+.nav-tabs > li.active > a {
+    color: #00AFF3;
+    }
+.modal-content .alert .close {
+  background: transparent none repeat scroll 0 0;
+  height: auto;
+  position: initial;
+  transform: none;
+  width: auto;
+}
+.form-control {
+  height: 40px;
+}
+.page-header {
+  padding-top: 25px;
+}
+.glyphicon.form-control-feedback.glyphicon-remove {
+  top: 25px;
+}
+
+
+/** admin page create tool product css***/
+.sample-cards .slick-slide img {
+    margin: 0 4px !important;
+    padding: 0 4px;
+}
+
+.adminpreviewIMG > img {
+    height: auto;
+    max-width: 30%;
+}
+.adminpreviewIMG {
+    height: auto;
+    margin: 25px;
+}
+
+.admin_portrait_tool .nav-tabs {
+    margin-bottom: 0;
+}
+
+/******17 june css update all cards page***/
+
+/***Front Page Featured Card Css**/
+
+
+.view-id-featured_card_categories .pager-load-more a {
+    background: #f8eb00 none repeat scroll 0 0;
+    border: medium none;
+    border-radius: 30px;
+    color: #2e4c0d;
+    display: inline-block;
+    font-family: "PantonW01-Bold";
+    font-size: 14px;
+    margin-top: 10px;
+    text-transform: uppercase;
+    transition: all 0.2s ease-in-out 0s;
+}
+.view-id-featured_card_categories .pager-load-more a:hover {
+    background: rgba(3, 89, 122, 0.9) none repeat scroll 0 0;
+    color: #fff;
+    transition: all 0.4s ease-in-out 0s;
+}
+
+
+
+.view-id-commerce_cart_form #edit-paypal-ec,
+.view-id-commerce_cart_form_custom #edit-paypal-ec {
+    display: none;
+}
+
+/***23 June css changes***/
+
+#commerce-addressbook-billing-default,
+#commerce-addressbook-shipping-default {
+  display: inline-block;
+}
+
+ #commerce-addressbook-billing-list,
+ #commerce-addressbook-shipping-list {
+  display: table;
+}
+
+/***5th july css**/
+.footer-logo img {
+    max-width: 305px;
+}
+
+.view-commerce-user-orders #edit-submit {
+    display: none;
+}
+
+.mycart .have_point_btn a {
+    color: white !important;
+    font-size: 11px !important;
+    font-weight: normal !important;
+    margin: 0 15px 0 0 !important;
+}
+
+.mycart .have_point_btn.blue a {
+    color: white !important;
+}
+.mycart .have_point_btn.gold a {
+    color: black !important;
+}
+
+
+/*** user profile page ***/
+
+.profile_upload input {
+    height: 0;
+    overflow: hidden;
+    width: 0;
+}
+#user-profile-form #edit-picture,
+#user-profile-form #edit-timezone {
+    display: none;
+    height: 0;
+    overflow: hidden;
+    width: 0;
+}
+
+#user-profile-form #edit-account .form-item {
+    max-width: 70%;
+}
+
+#header .header-cart {
+    background: #fff;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+    display: none;
+    float: right;
+    height: auto;
+    position: absolute;
+    top: 50px;
+    width: 260px;
+    z-index: 999;
+}
+.delivery_head > h3 {
+    color: #777;
+}
+
+
+/***tool css ***/
+
+.adjust_tool_standard {
+  margin: 0 200px;
+}
+.adjust_tool_standard_portrait {
+  margin: 0 285px;
+}
+.ftr_post_slider .slick_item img {
+  margin: 0 auto;
+}
+.blue-round-btns #loading > img {
+    width: 3%;
+    margin-right:5px;
+}
+
+.round-btns-disabled {
+        pointer-events: none;
+        cursor: default;
+        opacity: 0.6;
+    }
+#toolbox .outlay_can_board #loading {
+    left: 280px;
+    position: absolute;
+    top: 370px;
+}
+#toolbox .landscape .outlay_can_board #loading {
+    left: 360px;
+    position: absolute;
+    top: 290px;
+}
+
+#toolbox .outlay_can_board #loading > img,
+#toolbox .landscape .outlay_can_board #loading > img,
+#toolbox .preview_page .column #loading > img,
+#toolbox .landscape .preview_page .column #loading > img{
+  margin-right:5px;
+}
+/******preview section*****/
+#loading{
+  color: #cccccc;
+}
+#toolbox .preview_page .column:nth-child(1) #loading {
+    left: 190px;
+    position: absolute;
+    top: 290px;
+}
+#toolbox .preview_page .column:nth-child(2) #loading {
+    left: 600px;
+    position: absolute;
+    top: 290px;
+}
+#toolbox .preview_page .column:nth-child(3) #loading {
+    position: absolute;
+    right: 165px;
+    top: 290px;
+}
+#toolbox .landscape .preview_page .column:nth-child(1) #loading {
+    left: 610px;
+    position: absolute;
+    top: 260px;
+}
+#toolbox .landscape .preview_page .column:nth-child(2) #loading {
+    left: 610px;
+    position: absolute;
+    top: 805px;
+}
+#toolbox .landscape .preview_page .column:nth-child(3) #loading {
+     position: absolute;
+    right: 590px;
+    top: 1370px;
+}
+
+
+.adminpreview_sampleimg {
+    margin: 25px;
+}
+
+.adminpreview_sampleimg > img {
+    height: auto;
+    max-width: 30%;
+}
+
+/*#toolbox .preview_page .column .canvas-board #loading {
+    left: 210px;
+    position: absolute;
+    top: 135px;
+}*/
+
+/* FACET CSS - Added to create bespoke AJAX Facets*/
+
+.facetapi-facet-field-product-referfield-card-gender{
+display:inline-block; width:100%; font-size:0px !important;
+}
+.facetapi-facet-field-product-referfield-card-gender input
+{opacity:0; position:obsolute;}
+.facetapi-facet-field-product-referfield-card-gender li{
+float:left; 
+max-width:25%; 
+}
+.facetapi-facet-field-product-referfield-card-gender label{
+padding-left: 19px;
+    font-size: 0 !important;
+    text-indent: 30000px;
+    max-height: 60px;
+  max-width: 60px;
+  position: relative;
+  display: inline-block;
+}
+
+
+
+
+
+label[for=facetapi-ajax-checkboxes-field-product-refer-field-card-gender-44]:after, label[for=facetapi-ajax-checkboxes-field-product-refer-field-card-gender-44]:hover:after{
+content:"";
+display:block;
+width:35px;
+height:46px;
+background:url(https://dev.simplysay.sg/sites/all/themes/simplysay/images/boy-large-img.png);
+background-size: contain;
+margin-top: 8px;
+background-repeat: no-repeat;
+background-position: bottom center;
+
+}
+
+label[for=facetapi-ajax-checkboxes-field-product-refer-field-card-gender-44]:hover:after{
+background-image:url(https://dev.simplysay.sg/sites/all/themes/simplysay/images/boy-large-img1.png);
+
+}
+
+
+
+
+label[for=facetapi-ajax-checkboxes-field-product-refer-field-card-gender-45]:after, label[for=facetapi-ajax-checkboxes-field-product-refer-field-card-gender-45]:hover:after{
+content:"";
+display:block;
+width:35px;
+height:46px;
+background:url(https://dev.simplysay.sg/sites/all/themes/simplysay/images/girl-large-img.png);
+background-size: contain;
+margin-top: 8px;
+background-repeat: no-repeat;
+background-position: bottom center;
+
+}
+
+label[for=facetapi-ajax-checkboxes-field-product-refer-field-card-gender-45]:hover:after{
+background-image:url(https://dev.simplysay.sg/sites/all/themes/simplysay/images/girl-large-img1.png);
+}
+
+
+label[for=facetapi-ajax-checkboxes-field-product-refer-field-card-gender-47]:after, label[for=facetapi-ajax-checkboxes-field-product-refer-field-card-gender-47]:hover:after{
+content:"";
+display:block;
+width:30px;
+height:55px;
+background:url(https://dev.simplysay.sg/sites/all/themes/simplysay/images/her-large-img.png);
+background-size: contain;
+background-repeat: no-repeat;
+background-position: bottom center;
+
+}
+
+label[for=facetapi-ajax-checkboxes-field-product-refer-field-card-gender-47]:hover:after{
+background-image:url(https://dev.simplysay.sg/sites/all/themes/simplysay/images/her-large-img1.png);
+}
+
+label[for=facetapi-ajax-checkboxes-field-product-refer-field-card-gender-46]:after, label[for=facetapi-ajax-checkboxes-field-product-refer-field-card-gender-46]:hover:after{
+content:"";
+display:block;
+width:30px;
+height:55px;
+background:url(https://dev.simplysay.sg/sites/all/themes/simplysay/images/him-large-img.png);
+background-size: contain;
+background-repeat: no-repeat;
+background-position: bottom center;
+}
+
+label[for=facetapi-ajax-checkboxes-field-product-refer-field-card-gender-46]:hover:after{
+background-image:url(https://dev.simplysay.sg/sites/all/themes/simplysay/images/him-large-img1.png);
+}
+.region-sidebar-first a {
+color:#000;
+}
+
+.region-sidebar-first ul{
+    margin-bottom: 21px;
+  overflow: hidden;
+   
+}
+.facetapi-facet-field-product-referfield-card-gender {
+margin-left: -28px !important;
+}
+h2.block-title {
+    font-size: 17px;
+    margin-bottom: 10px;
+    
+}
+
+.region-sidebar-first ul li {
+    padding-left: 0px;
+    margin-bottom: 6px;
+    
+}
+a.facetapi-active.processed {
+    color: #fff;
+    padding: 1px 0 0 4px;
+    margin: 0 8px 0 -1px;
+  background:url(https://dev.simplysay.sg/sites/all/themes/simplysay/images/cross-icon.png);
+  width:20px;
+  height:20px;
+  font-size:0;
+  float:left;
+  display:inline-block;
+  background-size: contain;
+background-repeat: no-repeat;
+}
+
+.well {
+    min-height: 20px;
+    padding: 19px;
+  background:none !important;
+    margin-bottom: 20px;
+  border:none;
+    border-right: 1px solid #eee;
+    border-radius:0 !important;
+    -webkit-box-shadow: none !important;
+    box-shadow:none !important;
+}
+
+
+.region-sidebar-first a:hover {
+    color: #d2232a;
+}
+.region-sidebar-first ul li a {
+    margin-left: 7px;
+}
+@media(max-width:479px){
+.main_navigation .logo .navbar-brand > img {
+    max-width: 190px;
+    margin-top: -13px;
+}
+}
+@media(max-width:320px){
+.main_navigation .logo .navbar-brand > img {
+    max-width: 139px !important;
+    margin-top: -12px;
+}
+}
+
+@media(max-width:1024px){
+.facetapi-facet-field-product-referfield-card-gender label {
+    padding-left: 4px !important;
+
+}
+}
+.facetapi-facet-field-product-referfield-card-gender:nth-last-child(2) {
+    /* position: absolute; */
+    /* width: calc(100% - 69px); */
+    float: left;
+    position: inherit;
+    margin-bottom: -100%;
+}

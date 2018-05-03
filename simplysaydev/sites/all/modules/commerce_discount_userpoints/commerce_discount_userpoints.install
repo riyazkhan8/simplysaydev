@@ -1,0 +1,70 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the commerce_discount_userpoints module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function commerce_discount_userpoints_install() {
+  if (!field_info_instance('commerce_discount_offer', 'commerce_percentage', 'userpoints')) {
+    $instance = array(
+      'field_name' => 'commerce_percentage',
+      'entity_type' => 'commerce_discount_offer',
+      'bundle' => 'userpoints',
+      'label' => t('Maximum order discount'),
+      'settings' => array(
+        'suffix' => '%',
+      ),
+      'required' => TRUE,
+    );
+    field_create_instance($instance);
+  }
+
+  _commerce_discount_userpoints_create_discount();
+}
+
+function _commerce_discount_userpoints_create_discount() {
+  $userpoints_default_discount = '{
+  "name" : "default_userpoints_discount",
+  "label" : "Userpoints discount",
+  "type" : "order_discount",
+  "status" : "0",
+  "component_title" : "Userpoints discount",
+  "sort_order" : "10",
+  "discount_usage_per_person" : [],
+  "discount_usage_limit" : [],
+  "commerce_discount_offer" : {
+    "type" : "userpoints",
+    "commerce_percentage" : { "und" : [ { "value" : "10.00" } ] }
+  },
+  "inline_conditions" : { "und" : [
+      {
+        "condition_name" : "commerce_discount_user_has_userpoints",
+        "condition_settings" : { "dummy" : "1", "condition_logic_operator" : null },
+        "condition_negate" : 0
+      }
+    ]
+  },
+  "commerce_compatibility_strategy" : { "und" : [ { "value" : "any" } ] },
+  "commerce_compatibility_selection" : [],
+  "commerce_discount_date" : []
+}';
+
+  $imported_entity = entity_import('commerce_discount', $userpoints_default_discount);
+  $imported_entity->export_status = ENTITY_IN_CODE;
+  entity_save('commerce_discount', $imported_entity);
+}
+
+/**
+ * Implements hook_install().
+ */
+function commerce_discount_userpoints_uninstall() {
+  $discount_wrapper = entity_metadata_wrapper('commerce_discount', 'default_userpoints_discount');
+  $discount_wrapper->delete();
+
+  module_load_include('module', 'commerce');
+  // Drop userpoints bundle attached to commerce_discount_offer.
+  field_attach_delete_bundle('commerce_discount_offer', 'userpoints');
+}

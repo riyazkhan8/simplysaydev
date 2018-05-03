@@ -1,0 +1,68 @@
+<?php
+
+/**
+ * @file
+ * ji_commerce_stripe.module.
+ */
+function ji_commerce_stripe_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id === 'commerce_stripe_refund_form') {
+    $oid = arg(3);
+    $order = commerce_order_load($oid);
+
+    $form['commerce_order'] = array(
+      '#type' => 'value',
+      '#value' => $order,
+    );
+
+    $form['amount']['#value'] = $order->commerce_order_total['und'][0]['amount'] * .01;
+    $form['amount']['#default_value'] = $order->commerce_order_total['und'][0]['amount'] * .01;
+    $form['amount']['#disabled'] = TRUE;
+    $form['amount']['#required'] = FALSE;
+
+    $form['refund_note'] = array(
+      '#title' => t('Refund note'),
+      '#type' => 'textarea',
+      '#description' => t(''),
+      '#default_value' => '',
+      '#weight' => 1,
+    );
+
+    $form['actions']['#weight'] = 2;
+
+    $form['#validate'][] = 'ji_commerce_stripe_form_validate';
+    $form['#submit'][] = 'ji_commerce_stripe_form_submit';
+  }
+}
+
+/**
+ * Validate callback.
+ *
+ * It's important that we void QBO invoice and payments in this validation
+ * function since if this fails, we can stop the refund from occurring
+ * in the commerce_stripe submit callback.
+ */
+function ji_commerce_stripe_form_validate($form, &$form_state) {
+  if (isset($form_state['order'])) {
+    $quickbooks_service = new JIQuickBooksService(FALSE);
+    if (empty($quickbooks_service->settingErrorMessage)) {
+      $order = $form_state['order'];
+
+      // Void the invoice.
+      $invoice_id = ji_quickbooks_get_response_id($quickbooks_service->realmId, $order->uid, 'invoice', $order->order_id);
+      $void_invoice_response = $quickbooks_service->voidInvoice($invoice_id);
+      ji_quickbooks_log_process($order->order_id, $quickbooks_service->realmId, $order->uid, 'void invoice', $void_invoice_response);
+
+      // Void the payment.
+      $payment_id = ji_quickbooks_get_response_id($quickbooks_service->realmId, $order->uid, 'payment', $order->order_id);
+      $void_payment_response = $quickbooks_service->voidPayment($payment_id);
+      ji_quickbooks_log_process($order->order_id, $quickbooks_service->realmId, $order->uid, 'void payment', $void_payment_response);
+    }
+  }
+}
+
+/**
+ * Submit callback.
+ */
+function ji_commerce_stripe_form_submit($form, &$form_state) {
+  commerce_order_status_update($form_state['order'], 'canceled', FALSE, NULL, $form_state['values']['refund_note']);
+}

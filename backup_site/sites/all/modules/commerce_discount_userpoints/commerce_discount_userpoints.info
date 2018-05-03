@@ -1,0 +1,14 @@
+name = Commerce Discount Userpoints
+description = Allow commerce customer to use userpoints to get discount on their orders
+package = Commerce (contrib)
+core = 7.x
+
+dependencies[] = userpoints
+dependencies[] = commerce_discount
+
+; Information added by Drupal.org packaging script on 2018-01-07
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "commerce_discount_userpoints"
+datestamp = "1515333486"
+

@@ -1,0 +1,694 @@
+<?php
+$lib_path = libraries_get_path('phpqrcode');
+
+$file_path = getcwd().base_path().$lib_path.'/qrlib.php';
+
+ include($file_path); 
+ //include(dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR.'libraries'.DIRECTORY_SEPARATOR.'phpqrcode'.DIRECTORY_SEPARATOR.'qrlib.php'); 
+
+/**
+ * Implements hook_block_info().
+ */
+function product_barcode_block_info() {
+	$blocks['product_barcode'] = array(
+	      'info' => t('Product Barcode'),
+	    );
+
+	return $blocks;
+}
+
+/**
+ * Implements hook_help().
+ *
+ * Displays help and module information.
+ *
+ * @param path 
+ *   Which path of the site we're using to display help
+ * @param arg 
+ *   Array that holds the current path as returned from arg() function
+ */
+function product_barcode_help($path, $arg) {
+	switch ($path) {
+    	case "admin/help#product_barcode":
+      		return t("Displays links to nodes created on this date"); 
+      		break; 
+  	}
+}
+
+function product_barcode_commerce_order_insert($order)
+{
+	saveOrderProductBarcodes($order);
+}
+
+function product_barcode_commerce_order_update($order)
+{
+  	// echo "<pre>".print_r($order,1)."<pre>";exit();
+	saveOrderProductBarcodes($order);
+}
+
+function saveOrderProductBarcodes($order)
+{
+	// echo "<pre>".print_r($order,1)."<pre>";exit();
+	$order_id = $order->order_id;
+
+	if (empty($order->is_new)) {
+	    // delete order_products barcodes before update
+		db_delete('order_product_barcodes')
+		  ->condition('order_id', $order_id)
+		  ->execute();
+	}
+
+	$order_products = array();
+	if (isset($order->commerce_line_items['und'])) {
+		$order_products = $order->commerce_line_items['und'];
+	}
+
+	$created_by = $GLOBALS['user']->uid;
+
+    $base_url = $GLOBALS['base_url'] . "/order/status/";
+
+	foreach ($order_products as $key => $product) {
+		$product_id = $product['line_item_id'];
+
+		// to get order id and product id
+		$query = db_select('commerce_line_item');
+	    $query->fields('commerce_line_item', array('type'));
+	    $query->condition('line_item_id', $product_id);
+	    $query->condition('order_id', $order_id);
+	    $commerce_line_item = $query->execute()->fetch();
+
+	    if ($commerce_line_item) {
+	    	if ($commerce_line_item->type == "product") {
+
+
+	    				$qr_query1 = db_select('card_qr_code_detail','cqr')
+							->fields('cqr')
+							->condition('cqr.item_id',$product_id)
+							->execute();
+		$qr_record1 = $qr_query1->fetchAll();
+		$qr_record_count1 = count($qr_record1);
+
+		
+		if ($qr_record_count1 == 0) {
+
+				if (isset($_SESSION['line_item_cart']['cid'])) {
+
+							$cid = $_SESSION['line_item_cart']['cid'];
+
+							$qr_query = db_select('card_qr_code_detail','cqr')
+												->fields('cqr')
+												->condition('cqr.cid',$cid)
+												->execute();
+							$qr_record = $qr_query->fetchAll();
+							$qr_record_count = count($qr_record);
+
+							
+							if ($qr_record_count > 0) {
+
+								$qr_query_update = db_update('card_qr_code_detail')
+													->fields(array(
+														'item_id'=>$product_id,
+														))
+													->condition('cid',$cid)
+													->execute();
+
+								//print "<pre>"; print_r($qr_record[0]->url_token);
+								//print "<pre>"; print_r($qr_record[0]->barcode_file_name);
+
+								$orderToken = $qr_record[0]->url_token;
+
+								$codeContents = $base_url . $orderToken;
+
+								$fileName = $qr_record[0]->barcode_file_name;
+
+
+
+								$product_barcode_data = array();		
+								$product_barcode_data['order_id'] = $order_id;
+								$product_barcode_data['product_id'] = $product_id;
+								$product_barcode_data['url_token'] = $orderToken;
+								$product_barcode_data['barcode'] = $codeContents;
+								$product_barcode_data['fileName'] = $fileName;
+								$product_barcode_data['created_by'] = $created_by;
+
+								//print "<pre>"; print_r($product_barcode_data); exit; 		
+
+								saveQRRecord($product_barcode_data);
+
+								// update product status in field_data_field_status table
+								db_update('field_data_field_status')
+											->fields(array('field_status_value' => $order->status))
+											->condition('entity_id', $product_id, '=')
+											->execute();
+
+							
+							}
+
+				}
+				
+		}	
+				// $orderToken = md5($order_id . $product_id);
+
+			 //    $codeContents = $base_url . $orderToken;
+			    
+			 //    // we need to generate filename somehow, 
+			 //    $fileName = $orderToken . '.png';
+
+				// generateQRImage($codeContents, $fileName);
+
+				// $product_barcode_data = array();		
+				// $product_barcode_data['order_id'] = $order_id;
+				// $product_barcode_data['product_id'] = $product_id;
+				// $product_barcode_data['url_token'] = $orderToken;
+				// $product_barcode_data['barcode'] = $codeContents;
+				// $product_barcode_data['fileName'] = $fileName;
+				// $product_barcode_data['created_by'] = $created_by;
+
+				// saveQRRecord($product_barcode_data);
+
+				// // update product status in field_data_field_status table
+				// db_update('field_data_field_status')
+				// 			->fields(array('field_status_value' => $order->status))
+				// 			->condition('entity_id', $product_id, '=')
+				// 			->execute();
+	    	}
+	    }
+	}
+}
+
+function generateQRImage($codeContents, $fileName)
+{
+	$pngAbsoluteFilePath = variable_get('product_barcode_default_path', 'public://product_barcodes') . "/" . $fileName;
+
+    // generating
+    if (!file_exists($pngAbsoluteFilePath)) {
+        QRcode::png($codeContents, $pngAbsoluteFilePath);
+    //     echo 'File generated!';
+    //     echo '<hr />';
+    // } else {
+    //     echo 'File already generated! We can use this cached file to speed up site on common codes!';
+    //     echo '<hr />';
+    }
+    
+    // echo 'Server PNG File: '.$pngAbsoluteFilePath;
+    // echo '<hr />';
+}
+
+function saveQRRecord($product_barcode_data)
+{
+	db_insert('order_product_barcodes')
+		->fields(array('order_id','product_id','url_token','barcode','barcode_file_name','status','created_by','created_at'))
+		->values(
+			array(
+				'order_id'=>$product_barcode_data['order_id'],
+				'product_id'=>$product_barcode_data['product_id'],
+				'url_token'=>$product_barcode_data['url_token'],
+				'barcode'=>$product_barcode_data['barcode'],
+				'barcode_file_name'=>$product_barcode_data['fileName'],
+				'status'=>1,
+				'created_by'=>$product_barcode_data['created_by'],
+				'created_at'=>date("Y-m-d H:i:s", time()),
+			)
+		)
+		->execute();
+}
+
+/**
+ * Returns the barcode settings.
+ */
+function product_barcode_get_settings() {
+  return array(
+    'default_path' => variable_get('product_barcode_default_path', 'public://barcodes'),
+    'font' => variable_get('product_barcode_font', drupal_get_path('module', 'product_barcode') ."/fonts/DroidSans.ttf"),
+    'encoding' => variable_get('product_barcode_encoding', 'EAN-13'),
+    'height' => 40,
+    'scale' => 2.0,
+    'bgcolor' => '#FFFFFF',
+    'barcolor' => '#000000',
+    'image_format' => 'png',
+  );
+}
+
+function product_barcode_menu() {
+	$items = array();
+	$items['order/status/%'] = array( // change 'foo/myurl' to the url you want
+		'title' => 'Order Status',
+		'type' => MENU_CALLBACK,
+		'page callback' => 'product_barcode_menu_callback',
+		'page arguments' => array(2),
+		'access arguments' => array('access content'),
+	);
+
+	$items['barcode/ajaxupdateorderstatus'] = array(    
+		'page callback' => 'product_barcode_update_order_status',
+		'type' => MENU_CALLBACK,
+		'access arguments' => array('access content'),
+	);
+
+	$items['barcode/ajaxsaveorderstatusnotes'] = array(    
+		'page callback' => 'product_barcode_save_order_status_notes',
+		'type' => MENU_CALLBACK,
+		'access arguments' => array('access content'),
+	);
+
+	return $items;
+}
+
+function product_barcode_menu_callback($token)
+{
+	drupal_add_css(drupal_get_path('module', 'product_barcode') . '/product_barcode.css', 'module', 'all', TRUE);
+	drupal_add_js(drupal_get_path('module', 'product_barcode') . '/product_barcode.js');
+	drupal_add_js(drupal_get_path('module', 'product_barcode') . '/bootbox.min.js');
+
+	// $page is an array of 'page elements' (see the Form API for a complete list of pre-defined elements)
+	$page = array();
+
+	// gather the data you need to be sent to your template file
+	// starting with $myvar1 (defined in the hook_theme implementation above ^)
+	$myvar1 = t('Hello World');        // t() is Drupal's "Translation" function
+	$myvar2 = array(
+		'option1' => t('Option 1'),
+		'option2' => t('This is how we say Hello World in Drupal land!'),
+	);
+	$myobj = new stdClass();
+	// $myobj->thisData = 'This Data';
+	// $myobj->thatData = 'That Data';
+
+	// to get order id and product id
+	$query = db_select('order_product_barcodes');
+    $query->fields('order_product_barcodes', array('order_id', 'product_id'));
+    $query->condition('url_token', $token);
+    $result = $query->execute()->fetch();
+
+    $myobj->order_id = 0;
+    $myobj->product_id = 0;
+    if ($result) {
+	    $myobj->order_id = $result->order_id;
+	    $myobj->product_id = $result->product_id;
+    }
+
+    // to check order product status (pending/completed)
+	$query = db_select('field_data_field_status');
+    $query->fields('field_data_field_status', array('field_status_value'));
+    $query->condition('entity_id', $myobj->product_id);
+    $query->condition('field_status_value', 'completed');
+    $order_product_status = $query->execute()->fetch();
+
+    if ($order_product_status || (!$myobj->order_id && !$myobj->product_id)) {
+		drupal_goto('<front>');
+    }
+
+    // to get customer name and addresss
+	/*$query = db_select('field_data_commerce_customer_shipping');
+    $query->fields('field_data_commerce_customer_shipping', array('commerce_customer_shipping_profile_id'));
+    $query->condition('entity_id', $myobj->order_id);
+    $shipping_profile = $query->execute()->fetch();
+
+    $myobj->name = "";
+    $myobj->address1 = "";
+    $myobj->address2 = "";
+    $myobj->city = "";
+    $myobj->state = "";
+    $myobj->postcode = "";
+    if ($shipping_profile) {
+		$query = db_select('field_data_commerce_customer_address');
+	    $query->fields('field_data_commerce_customer_address', array('commerce_customer_address_name_line','commerce_customer_address_thoroughfare','commerce_customer_address_premise','commerce_customer_address_locality','commerce_customer_address_administrative_area','commerce_customer_address_postal_code'));
+	    $query->condition('entity_id', $shipping_profile->commerce_customer_shipping_profile_id);
+	    $customer_address = $query->execute()->fetch();
+
+	    if ($customer_address) {
+		    $myobj->name = $customer_address->commerce_customer_address_name_line;
+		    $myobj->address1 = $customer_address->commerce_customer_address_thoroughfare;
+		    $myobj->address2 = $customer_address->commerce_customer_address_premise;
+		    $myobj->city = $customer_address->commerce_customer_address_locality;
+		    $myobj->state = $customer_address->commerce_customer_address_administrative_area;
+		    $myobj->postcode = $customer_address->commerce_customer_address_postal_code;
+	    }
+    }*/
+	$query = db_select('line_item_simplysay_card', 'li')
+          		->fields('li')
+	            ->condition('li.line_item_id', $myobj->product_id)
+	            ->execute();
+	$line_item_simplysay_card = $query->fetchAll();
+
+	$cid = 0;
+	$fid = 0;
+	if ($line_item_simplysay_card) {
+		$cid = $line_item_simplysay_card[0]->cid;
+		$fid = $line_item_simplysay_card[0]->fid;
+	}
+
+	$query_card = db_select('user_saved_card', 'uc')
+                    ->fields('uc')
+                    ->condition('uc.cid', $cid)
+			        ->execute();
+	$user_saved_card = $query_card->fetchAll();
+	$count_card = count($user_saved_card);
+
+	$myobj->delivery_type = 'Direct to recipient';
+	$shipping_profile_id = 0;
+	if ($count_card > 0) {
+		$shipping_profile_id = $user_saved_card[0]->address_pid;
+		if ($user_saved_card[0]->return_delivery_type_status == 1) {
+	        $myobj->delivery_type = 'Returned to customer (+ extra envelope)';
+	    }
+	}
+
+    $myobj->name_line = "";
+    $myobj->address1 = "";
+    $myobj->address2 = "";
+    $myobj->locality = "";
+    $myobj->administrative_area = "";
+    $myobj->country = "";
+    $myobj->postal_code = "";
+    if (!empty($shipping_profile_id)) {
+        $value = commerce_customer_profile_load($shipping_profile_id);
+		// print "<pre>"; print_r($value); exit;
+
+        $myobj->country = $value->commerce_customer_address['und'][0]['country'];
+        $myobj->administrative_area = $value->commerce_customer_address['und'][0]['administrative_area'];
+        // $myobj->sub_administrative_area = $value->commerce_customer_address['und'][0]['sub_administrative_area'];
+        $myobj->locality = $value->commerce_customer_address['und'][0]['locality'];
+        // $myobj->dependent_locality = $value->commerce_customer_address['und'][0]['dependent_locality'];
+        $myobj->postal_code = $value->commerce_customer_address['und'][0]['postal_code'];
+        // $myobj->organisation_name = $value->commerce_customer_address['und'][0]['organisation_name'];
+        // $myobj->first_name = $value->commerce_customer_address['und'][0]['first_name'];
+        $myobj->address1 = $value->commerce_customer_address['und'][0]['thoroughfare'];
+        $myobj->address2 = $value->commerce_customer_address['und'][0]['premise'];
+        // $myobj->last_name = $value->commerce_customer_address['und'][0]['last_name'];
+        $myobj->name_line = $value->commerce_customer_address['und'][0]['name_line'];
+        // $myobj->data = $value->commerce_customer_address['und'][0]['data'];
+
+    	// $myaddress = $myobj->name_line." ".$myobj->addres1." ".$myobj->addres2.", ".$myobj->locality.", ".$myobj->administrative_area.", ".$myobj->postal_code;    
+    }
+    // print "<pre>"; print_r($myaddress); exit;
+
+    // to get quantity
+	$query = db_select('commerce_line_item');
+    $query->fields('commerce_line_item', array('quantity'));
+    $query->condition('order_id', $myobj->order_id);
+    $query->condition('line_item_id', $myobj->product_id);
+    $commerce_line_item = $query->execute()->fetch();
+
+    $myobj->quantity = 0;
+    if ($commerce_line_item) {
+    	$myobj->quantity = $commerce_line_item->quantity;
+    }
+
+    // to get product image
+    /*$product_image = $GLOBALS['base_url'] . "/sites/default/files/card_images/sample-card.jpg";
+    if ($myobj->product_id) {
+	    $sql = "SELECT cp.sku, fci.field_card_image_fid, fm.filename, fm.uri FROM commerce_line_item cli
+					INNER JOIN commerce_product cp on cp.sku = cli.line_item_label
+					INNER JOIN field_data_field_card_image fci on fci.entity_id=cp.product_id AND fci.revision_id=cp.revision_id
+					INNER JOIN file_managed fm on fm.fid = fci.field_card_image_fid
+					WHERE cli.line_item_id = :line_item_id";
+	    $result = db_query($sql, array(':line_item_id' => $myobj->product_id));
+	    $record = $result->fetchObject();
+	    if ($record) {
+    		$product_image = $GLOBALS['base_url'] . "/sites/default/files/card_images/" . ($record->filename ? : "sample-card.jpg");
+	    }
+    }
+    $myobj->product_image = $product_image;*/
+
+	$query_card = db_select('file_managed', 'fm')
+	      ->fields('fm')
+	      ->condition('fm.fid', $fid)
+	    ->execute();
+	$file_managed = $query_card->fetchAll();
+	$count_card = count($file_managed);    
+
+	global $base_path;
+	global $base_url;
+	$filepath = variable_get('file_public_path', conf_path() . '/files');
+
+	if ($count_card > 0) {
+		$imageuri = $file_managed[0]->uri;
+		//$imagename = explode('card_cart_images', $imageuri);
+		$imagename = file_create_url($imageuri);
+
+		// $myobj->product_image = $base_url.''.$base_path.''.$filepath.'/card_cart_images'.$imagename[1];
+		//$myobj->product_image = $GLOBALS['base_url'] .'/'.$filepath.'/card_cart_images'.$imagename[1];
+		$myobj->product_image = $imagename;
+	} else {
+		// $myobj->product_image =  '/'.$theme_path."/images/dtl_card.png";
+		//$myobj->product_image =  $GLOBALS['base_url'] .'/' . $filepath ."/card_cart_images/sample-card.jpg";
+		$myobj->product_image =  $GLOBALS['base_url'] .'/' . $filepath ."/cart_image_save_outlay/sample-card.jpg";
+	}
+
+	// to get notes
+	$query = db_select('order_product_status_notes', 'sn')
+	    ->fields('sn')
+	    ->condition('sn.order_id', $myobj->order_id)
+	    ->condition('sn.product_id', $myobj->product_id)
+    	->execute();
+	$myobj->notes = $query->fetchAll();
+
+	// Next, we're going to add a page element that Drupal will render..
+	$page['view_order_status'] = array(
+		'#theme' => 'orderstatus',        // this is the theme 'key' defined in 'mymodule_theme',
+		'#myvar1' => $myvar1,        // remember the 'myvar1' variable key...?
+		'#myvar2' => $myvar2,
+		'#myobj' => $myobj,
+	);
+	# NOTE: Drupal will correctly parse all array keys that begin with '#' and process them accordingly.
+
+	# NOTE 2: The above can also be done like this -- it's a matter of personal taste:
+	// $page['bio-content'] = theme('bio-content', array('myvar1' => $myvar1, 'myvar2' => $myvar2, 'myobj' => $myobj));
+
+	return $page;
+}
+
+function product_barcode_theme() {
+	return array(
+		'orderstatus' => array(
+			'template' => 'view_order_status',    // name of the template file, minus the '.tpl.php'
+
+			// these are the template variables that will available to your template
+			'variables' => array (
+				'myvar1' => NULL,    // you will be able to use $myvar1 as a PHP variable in your 'view_order_status.tpl.php' file
+				'myvar2' => NULL,
+				'myobj' => NULL,
+			),
+		),
+	);
+}
+
+function product_barcode_update_order_status() {
+	$response = array();
+
+	$status = "error";
+	$message = "There was an error while processing your request!";
+
+	if (isset($_POST['order_id']) && isset($_POST['line_item_id'])) {
+		$order_id = $_POST['order_id'];
+		$line_item_id = $_POST['line_item_id'];
+
+		db_update('field_data_field_status')
+			->fields(array('field_status_value' => 'completed'))
+			->condition('entity_id', $line_item_id, '=')
+			->execute();
+		db_update('field_revision_field_status')
+			->fields(array('field_status_value' => 'completed'))
+			->condition('entity_id', $line_item_id, '=')
+			->execute();
+
+		// check to update order status
+		$query = db_select('commerce_line_item');
+	    $query->fields('commerce_line_item', array('line_item_id','created'));
+		$query->condition('order_id', $order_id);    
+	    $line_items = $query->execute()->fetchAll();
+
+	    $order_status = "completed";
+	    foreach ($line_items as $line_item) {
+	    	$line_item_id = $line_item->line_item_id;
+
+	    	if ($line_item->type == "product") {
+				$query = db_select('field_data_field_status');
+			    $query->fields('field_data_field_status', array('field_status_value'));
+				$query->condition('entity_id', $line_item_id);
+			    $field_data_field_status = $query->execute()->fetch();
+
+			    if ($field_data_field_status) {
+			    	if ($field_data_field_status->field_status_value == "pending") {
+			    		$order_status = "pending";
+			    	}
+			    }
+		    }
+    	}
+
+    	if ($order_status == "completed") {
+			$orderObj = commerce_order_load($order_id);
+			commerce_order_status_update($orderObj, 'completed', TRUE, 'All product status are completed');
+			$orderObj->log = 'Order completed programatically';
+			commerce_order_save($orderObj);
+    	}
+
+		$status = "success";
+		$message = "Order status successfully updated!";
+	}
+
+	$response = array(
+			'status'=>$status,
+			'message'=>$message
+		);
+
+	echo json_encode($response);
+	die;
+}
+
+function product_barcode_save_order_status_notes() {
+	$response = array();
+
+	$status = "error";
+	$message = "There was an error while processing your request!";
+	$notes = array();
+
+	$user_ip = getUserIP();
+
+	if (isset($_POST['order_id']) && isset($_POST['line_item_id']) && isset($_POST['notes'])) {
+		$order_id = $_POST['order_id'];
+		$line_item_id = $_POST['line_item_id'];
+		$notes = $_POST['notes'];
+
+		db_insert('order_product_status_notes')
+			->fields(array('order_id','product_id','notes','user_ip','created_at'))
+			->values(
+				array(
+					'order_id'=>$order_id,
+					'product_id'=>$line_item_id,
+					'notes'=>$notes,
+					'user_ip'=>$user_ip,
+					'created_at'=>date("Y-m-d H:i:s", time()),
+				)
+			)
+			->execute();
+
+	    // to get notes
+	    $query = db_select('order_product_status_notes', 'sn')
+	        ->fields('sn')
+	        ->condition('sn.order_id', $order_id)
+	        ->condition('sn.product_id', $line_item_id)
+	        ->execute();
+	    $notes = $query->fetchAll();
+
+		$status = "success";
+		$message = "Order status notes successfully saved!";
+	}
+
+	$response = array(
+			'status'=>$status,
+			'message'=>$message,
+			'notes' => $notes
+		);
+
+	echo json_encode($response);
+	die;
+}
+
+function getUserIP()
+{
+    $client  = @$_SERVER['HTTP_CLIENT_IP'];
+    $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+    $remote  = $_SERVER['REMOTE_ADDR'];
+
+    if(filter_var($client, FILTER_VALIDATE_IP))
+    {
+        $ip = $client;
+    }
+    elseif(filter_var($forward, FILTER_VALIDATE_IP))
+    {
+        $ip = $forward;
+    }
+    else
+    {
+        $ip = $remote;
+    }
+
+    return $ip;
+}	
+
+/*
+ * Implements hook_cron().
+ */
+/*function product_barcode_cron() {
+	$result = db_query('SELECT title,nid FROM {node}');
+	$queue = DrupalQueue::get('change_order_status');
+	foreach ($result as $hf_info) {
+		$queue->createItem($hf_info);
+	}
+}*/
+
+/*
+ * Implements hook_cron_queue_info().
+ */
+/*function product_barcode_cron_queue_info() {
+	$queues['change_order_status'] = array(
+		'worker callback' => 'update_order_status',
+		'time' => 120,
+	);
+
+	return $queues;
+}*/
+
+/*function update_order_status($data) {
+	print_r("printed from cron function"); exit();
+}*/
+
+function product_barcode_order_status_update_cron() {
+    // print 'I am executed with my own cron job';
+
+	$current_date_time = date('Y-m-d H:i:s');
+
+	$query = db_select('commerce_order');
+    $query->fields('commerce_order', array('order_id', 'status', 'created'));
+    
+    $db_or = db_or();
+	$db_or->condition('status', 'pending', '=');
+	$db_or->condition('status', 'processing', '=');
+	$query->condition($db_or);
+    
+    $pending_orders = $query->execute()->fetchAll();
+
+    foreach ($pending_orders as $order) {
+    	$order_id = $order->order_id;
+
+		$query = db_select('commerce_line_item');
+	    $query->fields('commerce_line_item', array('line_item_id','created'));
+		$query->condition('order_id', $order_id);    
+	    $line_items = $query->execute()->fetchAll();
+
+	    $product_order_status = "completed";
+	    foreach ($line_items as $line_item) {
+	    	$line_item_id = $line_item->line_item_id;
+	    	$created = date('Y-m-d H:i:s', $line_item->created);
+
+			$ts1 = strtotime($current_date_time);
+			$ts2 = strtotime($created);
+			
+			$seconds_diff = $ts1 - $ts2;
+			$days_diff = $seconds_diff / 3600; 
+
+			if ($days_diff >= 24) { // 720 (720 hours = 30 days)
+				db_update('field_data_field_status')
+					->fields(array('field_status_value' => 'completed'))
+					->condition('entity_id', $line_item_id, '=')
+					->execute();
+			} else {
+				$product_order_status = "pending";
+			}
+	    }
+
+	    // to update order status if all product order status is already completed
+		if ($product_order_status == "completed") {
+			$orderObj = commerce_order_load($order_id);
+			commerce_order_status_update($orderObj, 'completed', TRUE, '30 days completed');
+			$orderObj->log = 'Order completed programatically';
+			commerce_order_save($orderObj);
+		}
+    }
+
+    // echo "<pre>" . print_r($pending_orders,1) . "<pre>"; exit();
+    echo "Order status update cron successfully completed!";
+    exit();
+}

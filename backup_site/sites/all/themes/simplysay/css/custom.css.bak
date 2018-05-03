@@ -1,0 +1,4044 @@
+@charset "utf-8";
+@import 'jquery.fontselector.css';
+@import 'jquery.minicolors.css';
+@import 'select2.min.css';
+@import 'fiera.toolbar.css';
+@import 'simplysay.toolbox.css';
+/* CSS Document */
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-shadow: rgba(255,255,255,0.01) 0 0 1px;
+  -webkit-text-stroke: rgba(255,255,255,0.01) 0.1px;
+  
+  -moz-text-size-adjust: 100%;
+  -moz-font-smoothing: antialiased;
+  -moz-text-shadow: rgba(255,255,255,0.01) 0 0 1px;
+  -moz-text-stroke: rgba(255,255,255,0.01) 0.1px;
+  
+  text-size-adjust: 100%;
+  font-smoothing: antialiased;
+  text-shadow: rgba(255,255,255,0.01) 0 0 1px;
+  text-stroke: rgba(255,255,255,0.01) 0.1px;
+}
+
+
+/*****************************************************************************
+***************************Global css start **********************************
+******************************************************************************/
+ul, ol{margin:0; padding:0; list-style:none;}
+h1,h2,h3,h4,h5,h6,p{margin:0;}
+a:hover{ text-decoration:none;}
+a:focus{ outline:none !important; text-decoration:none;}
+.btn:focus{ outline:none !important;}
+a{ -webkit-transition: all 0.2s ease-in-out; -moz-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out;}
+@font-face {
+  font-family: 'PantonW01-Bold';
+  src: url('../fonts/PantonW01-Bold.eot?#iefix') format('embedded-opentype'),  
+  url('../fonts/PantonW01-Bold.woff') format('woff'), 
+  url('../fonts/PantonW01-Bold.ttf')  format('truetype'), 
+  url('../fonts/PantonW01-Bold.svg#PantonW01-Bold') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'PantonW01-Regular';
+  src: url('../fonts/PantonW01-Regular.eot?#iefix') format('embedded-opentype'),  
+  url('../fonts/PantonW01-Regular.woff') format('woff'), 
+  url('../fonts/PantonW01-Regular.ttf')  format('truetype'), 
+  url('../fonts/PantonW01-Regular.svg#PantonW01-Regular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+    font-family: 'PAPYRUS';
+    src: url('../fonts/PAPYRUS.eot');
+    src: url('../fonts/PAPYRUS.eot') format('embedded-opentype'),
+         url('../fonts/PAPYRUS.woff2') format('woff2'),
+         url('../fonts/PAPYRUS.woff') format('woff'),
+         url('../fonts/PAPYRUS.ttf') format('truetype'),
+         url('../fonts/PAPYRUS.svg#PAPYRUS') format('svg');
+}
+@font-face {
+    font-family: 'ComicSansMSRegular';
+    src: url('../fonts/ComicSansMSRegular.eot');
+    src: url('../fonts/ComicSansMSRegular.eot') format('embedded-opentype'),
+         url('../fonts/ComicSansMSRegular.woff2') format('woff2'),
+         url('../fonts/ComicSansMSRegular.woff') format('woff'),
+         url('../fonts/ComicSansMSRegular.ttf') format('truetype'),
+         url('../fonts/ComicSansMSRegular.svg#ComicSansMSRegular') format('svg');
+}
+/**
+font-family: 'Open Sans', sans-serif;
+regular 400
+semi-bold 600
+bold 700
+**/
+
+body{
+  font-family: 'PantonW01-Regular';
+  color:#1d1d1d;
+  font-size: 14px;
+}
+button, h3, h4, h2{
+  font-family: 'PantonW01-Bold';
+}
+button:focus{
+  outline: none;
+}
+/*****************************************************************************
+***************************Global css end ************************************
+******************************************************************************/
+
+
+
+/*****************************************************************************
+***************************css for header sec start***************************
+******************************************************************************/
+.top-bar{
+  background: #b4e97a;
+}
+.top-bar ul{
+  float:right;
+}
+.top-bar li{
+  float: left;
+  padding: 5px 0 2px;  
+}
+.top-bar li a{
+  color:#2e4c0d;
+  font-size: 12px;
+  font-weight: 700;
+  margin-left:30px;
+  line-height: 21px;
+  text-transform: uppercase;
+}
+.main_navigation {
+  border-bottom: 1px solid #eee;
+  box-shadow: 0 0 1px 1px #f5f5f5;
+  font-family: 'Open Sans', sans-serif;
+}
+.main_navigation .navbar-default{
+  border-color:transparent;
+  background: transparent;
+  border-radius:0;
+  margin-bottom: 5px;
+}
+.main_navigation .navbar-right{
+  margin-top:30px;
+  margin-right: 0;
+}
+.logo{
+  float:left;
+}
+.logo .navbar-brand{
+  height:auto;
+  padding:10px;  
+}
+.main_navigation .logo .navbar-brand > img {
+  max-width: 190px;
+}
+.logo .logo_slogan {
+  left: 100%;
+  max-width: 350px;
+  position: absolute;
+  top: 54px;
+}
+.logo_slogan img {
+  max-width: inherit;
+}
+.main_navigation .navbar-right li a {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 20px 25px 20px 0;
+  padding: 0;
+  text-transform: uppercase;
+  color: #777;
+}
+.main_navigation .navbar-right li a:hover{
+  color:#00aff3;
+}
+.main_navigation .navbar-right li .dropdown-menu a{
+  padding:10px 15px;
+  margin:0;
+}
+.navbar-default .navbar-nav > .open > a, 
+.navbar-default .navbar-nav > .open > a:focus, 
+.navbar-default .navbar-nav > .open > a:hover{
+  background: transparent;
+}
+.mycart{
+  position: relative;
+}
+.mycart button{
+  width:157px;
+  height: 51px;
+  background: #00aff3 url(../images/cart.png) no-repeat;
+  background-position: 16px;
+  border:none;
+  color:#ffffff;
+  font-weight: 700;
+  padding-left: 42px;
+  text-align: left;
+  text-transform: uppercase;
+  font-family: 'Open Sans', sans-serif;
+}
+/*.mycart span{
+  color: #fff;
+  position: absolute;
+  right: 16px;
+  top: 23px;
+}*/
+
+/*****************************************************************************
+***************************css for header sec end  ***************************
+******************************************************************************/
+
+
+/*****************************************************************************
+***************************css for conten sec start***************************
+******************************************************************************/
+.three-card-section{
+  background: #f6f5f0;
+}
+.greetingcard-col{
+  position: relative;
+}
+.front .greetingcard-section .greetingcard > img {
+    height: auto;
+    width: 219px;
+    max-width: 100%;
+}
+.greetingcard{
+  background: #f5f5f5;
+  border-radius: 20px;
+  height: 425px;
+  padding-top:25px;
+  margin-bottom:77px;
+  border:1px solid #e9e9e9;
+}
+.greetingcard-link{
+  background: #00aef3 url(../images/blue-pattern.jpg);
+  border:6px solid #b4e97a;
+  border-radius: 10px;
+  position: absolute;
+  bottom:0;
+  font-size: 26px;
+  color:#fff;
+  width:100%;  
+}
+.greetingcard-col:hover .greetingcard, 
+.greetingcard-col:hover .greetingcard-link{
+  box-shadow:0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+}
+.greetingcard-col:hover .greetingcard{
+  border-color:transparent;
+}
+.greetingcard-link a,.greetingcard-link{
+  font-size: 24px;
+  line-height: 36px;
+  color:#fff;
+  padding:22px 0;
+  display: block;
+  font-weight: 500;
+}
+.greetingcard-link span{
+  display: block;
+  font-family: 'PantonW01-Bold';
+  font-size: 28px;
+}
+.title h2{
+  font-size: 30px;
+  color:#1d1d1d;
+  margin:25px 0 25px;
+  font-family: 'PantonW01-Bold';
+}
+
+.title span{
+  color:#00aff3;
+}
+.featured-section{
+  background: #b4e97a;
+  padding-bottom: 15px;
+  padding-top: 45px;
+}
+.featured-section .title{
+  margin:54px 0 51px;
+}
+.featuredcard{
+  margin-bottom:30px;
+  position: relative;
+}
+.featuredcard img{
+  border-radius:15px;
+}
+.featuredcard span{
+  font-size: 18px;
+  color:#454545;
+  display: block;
+  text-align: center;
+  background: #f9f9f9;
+  border-radius: 0 0 15px 15px;
+  position:absolute;
+  bottom: 0;
+  line-height: 65px;
+  width: 100%;
+  visibility: hidden;
+  bottom: -20px;
+  text-transform: uppercase;
+  font-family: 'PantonW01-Bold';
+  -webkit-transition: all 0.2s ease-in-out; 
+  -moz-transition: all 0.2s ease-in-out; 
+  transition: all 0.2s ease-in-out;
+}
+.featuredcard:hover span{
+  visibility: visible; 
+  -webkit-transition: all 0.2s ease-in-out; 
+  -moz-transition: all 0.2s ease-in-out; 
+  transition: all 0.2s ease-in-out;
+  bottom:0;
+}
+.memorable-section{
+  background: #00aef3 url(../images/blue-pattern.jpg);
+  padding: 12px 0 64px;
+}
+.memorable-section .title h2 {
+  font-family: "PantonW01-Regular";
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.memorable-section p{
+  font-size: 18px;
+}
+.memorable-section button{
+  background: #f8eb00;
+  border-radius:50px;
+  border:0;
+  height: 57px;
+  width: 351px;
+  font-size: 16px;
+  text-transform: uppercase;
+  margin-top:34px;
+  font-family: 'PantonW01-Bold';
+  -webkit-transition: all 0.4s ease-in-out; 
+  -moz-transition: all 0.4s ease-in-out; 
+  transition: all 0.4s ease-in-out;
+}
+.memorable-section button:hover{
+  background: rgba(3, 89, 122, 0.9) none repeat scroll 0 0;
+  color:#fff;
+  -webkit-transition: all 0.4s ease-in-out; 
+  -moz-transition: all 0.4s ease-in-out; 
+  transition: all 0.4s ease-in-out;
+}
+
+/** Slider **/
+
+.ftr_post_slider {
+    /*margin: 20px 0px;*/
+    height: 300px;
+}
+
+.ftr_post_slider .slick_item {
+    margin: 0px;
+    overflow: hidden;
+}
+
+.ftr_post_slider .slick_item img {
+    width: auto;
+    /*height: 423px;*/
+    max-width: inherit;
+    /*max-height: 18vw;*/
+    height: 300px;
+}
+
+.ftr_post_slider {
+    overflow: hidden;
+}
+#postfooter_slider {
+    position: relative;
+    margin: 0px -150px;
+}
+#postfooter_slider .slick-prev:before, 
+#postfooter_slider .slick-next:before{
+  color:#fff;
+}
+#postfooter_slider .slick-arrow {
+    color: #333;
+    cursor: pointer;
+    display: block;
+    height: 60px;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    left: 18.5%;
+    width: 60px;
+    z-index: 9;
+    font-size: 0px;
+    border: none;
+    background: none;
+    /*margin-top: -30px;*/
+    padding: 0px;
+    z-index: 9;
+    /*text-shadow: 0px 0px 2px #fff;*/
+}
+
+#postfooter_slider .slick-arrow.slick-next {
+    left: auto;
+    right: 17.5%;
+}
+
+#postfooter_slider .slick-arrow:before,
+#postfooter_slider .slick-arrow:before {
+    font-family: "fontawesome";
+    font-size: 16px;
+    content: "\f053";
+    height: 47px;
+    width: 47px;
+    line-height: 37px;
+    text-align: center;
+    font-weight: 300;
+    opacity: 1;
+    background: #00aff3;
+    border-radius: 50%;
+    border:6px solid #fff;
+    display: block;
+    padding-right: 3px;
+}
+
+#postfooter_slider .slick-arrow.slick-next::before {
+    content: "\f054";
+    padding-left: 3px;
+}
+
+#postfooter_slider::after,
+#postfooter_slider::before {
+    background: rgba(255, 255, 255, 0.7) none repeat scroll 0 0;
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 19.7%;
+    z-index: 4;
+}
+
+#postfooter_slider::before {
+    left: auto;
+    right: 0px;
+}
+.ftr_post_slider .slick_item {
+  position: relative;
+}
+.ftr_post_slider .slick_item::after, .ftr_post_slider .slick_item::before {
+  background: rgba(255, 255, 255, 0.7) none repeat scroll 0 0;
+  content: "";
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 4;
+}
+.ftr_post_slider .slick_item.slick-current::after, .ftr_post_slider .slick_item.slick-current::before {
+  display: none;
+}
+#postfooter_slider::after, #postfooter_slider::before{display:none;}
+
+.nav .main-search{
+  position: relative;
+  margin-left: 56px;
+}
+.main-search .search-wrap{
+  background: #00aff3;
+  height: 51px;
+  border: none;
+  color:#fff;
+  padding: 8px 11px;
+  position: absolute;
+  right:0;
+ /* cursor: pointer;*/
+  z-index: 999;
+}
+.main-search .search-wrap:hover{
+/*  background: rgba(3, 89, 122, 0.9) none repeat scroll 0 0;
+  color:#fff;*/
+}
+.main-search .search-box{
+  opacity: .01;
+  background: transparent;
+  border: none;
+  width:30px;
+  cursor: pointer;
+  height: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  transition-duration: .5s;
+  transition-property: width,opacity;
+  outline: none;
+  box-shadow: none;
+  color: #fff;
+}
+.main-search span.input-group-btn{
+  color: #fff;
+  font-size: 17px;
+  margin: auto;
+  position: absolute;
+  right: 16px;
+  top: 17px;
+}
+.expand li{
+  /*display: none;*/
+}
+.expand li.main-search{
+  /*display: block;*/
+}
+.expand li.main-search .search-box{
+  width:400px;
+  opacity:1;
+}
+
+li{
+  -webkit-transition: all 0.5s ease-in-out; 
+  -moz-transition: all 0.5s ease-in-out; 
+  transition: all 0.5s ease-in-out;
+}
+/**** Other Card Select ****/
+.cd-filter-block .cd-select{
+  width:209px;
+}
+.cd-filter-block{
+  margin-top:45px;
+}
+.gallery-title{
+  margin-top:58px;
+}
+.numofcards .cd-filter-content .cd-select{
+  width:88px;
+}
+h3{
+  font-size: 24px;
+  color:#1d1d1d;
+}
+
+/***** Tool 1 *****/
+.canvas-board{
+  background: #f4f4f4;
+  padding:32px;
+  /*border-radius: 20px;*/
+  margin-top: 0px;
+  /* border: 1px solid rgba(197, 197, 197, 0.4); */
+}
+.preview_page .canvas-board{
+  border: none;
+}
+.tool-title h2{
+  font-size: 30px;
+  font-family: 'PantonW01-Bold';
+  margin:20px 0 10px;
+}
+.tool-board .nav-tabs li a{
+  color:#fff;
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding:0;
+  width:187px;
+  line-height: 52px;
+  border-radius: 15px 15px 0 0;
+  border:none;
+  margin-right: 3px;
+  text-align: center;
+}
+.tool-board .nav-tabs li:last-child a{
+  margin-right:0;
+}
+.tool-board .nav-tabs li.active a{
+  color:#2e4c0d;
+}
+.tool-board .nav-tabs > li > a{
+  background: #00aff3;
+}
+.tool-board .nav-tabs > li.active > a,
+.tool-board .nav-tabs > li > a:focus,
+.tool-board .nav-tabs > li.active > a:hover {
+  background: #b4e97a;
+  color:#2e4c0d;
+  border:none;
+}
+.tool-board .nav-tabs > li > a:hover{
+  background: rgba(3, 89, 122, 0.9) none repeat scroll 0 0;
+  color:#fff;
+}
+.gap-right{padding-right:4px;}
+.gap-left{padding-left:3px;}
+.mtop20{margin-top:20px;}
+.tool-board .tab-content{
+  background: #f1f1f1;
+  padding:44px 22px 37px;
+  border-radius:0 0 15px 15px;
+
+  min-height: 605px;
+}
+.tool-title h3{
+  font-size: 16px;
+  font-family: 'PantonW01-Bold';
+  margin-bottom:14px;
+}
+.sample-cards .slick-slide.slick-current img{
+  margin-left:1px;
+}
+.sample-cards .slick-slide img{
+  margin: 0px;
+  padding: 0px;
+}
+.sample-cards .slick-prev::before{
+  content:"\f102" !important;
+}
+.sample-cards .slick-next::before{
+  content:"\f103" !important;
+}
+.sample-cards .slick-prev::before, .sample-cards .slick-next::before{
+  font-family: 'fontawesome';
+  color:#00aff3;
+  font-size: 20px;
+  font-weight: bold;
+}
+.sample-cards .slick-prev , .sample-cards .slick-next {
+  left:calc(50% - 10px);
+  top: 5px;
+   /*transform: rotate(90deg);*/
+}
+ .sample-cards .slick-next {
+    top:auto;
+    bottom: -10px;
+ }
+
+hr{
+  border-color:#e6e6e6;
+  margin:30px 0;
+}
+.color-swatch{
+  float:left;
+  width:309px;
+  height: 95px;
+}
+.color-swatch li{
+  border: 1px solid #fff;
+  float: left;
+  height: 17px;
+  width: 17px;
+}
+ .color-swatch li.color-wrap div{
+  height:17px;
+  width:17px;
+  cursor: pointer;
+  transition:all 0.375s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+}
+.color-swatch .color-wrap:hover div {
+  border-radius: 1px;
+  border:1px solid #fff;
+  transform: scale(1.8);
+}
+.custom-color-section {
+  float: left;
+  margin-left: 0px;
+}
+.custom-color-section span{
+  display: inline-block;
+  background: #e9e9e9;
+  width:100px;
+  padding:0 12px;
+  line-height: 31px;
+  border-radius: 4px; 
+  font-size: 12px;
+  color:#7d7d7d;
+}
+.tool-title h4{
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.custom-color-section input[type="color"]{
+width:84px;
+height: 31px;
+border:1px solid #e9e9e9;
+border-radius: 4px;
+background: #fff;
+padding:8px;
+vertical-align: middle;
+margin-right: 6px;
+}
+.tool-bar{
+  margin-top:20px;
+  margin-bottom:0px;
+}
+.tool-bar button, .tool-bar .rect-btn{
+  border:1px solid #e9e9e9;
+  background: #fff;
+  border-radius: 4px;
+}
+.sqr-btn{
+  width:39px;
+  height: 40px;
+}
+.rect-btn{
+  width:106px;
+  height: 40px;
+  font-family: 'PantonW01-Bold';
+  color: #1d1d1d;
+  line-height: 25px;
+}
+.blue-round-btns a.btn-blue-nxt, 
+.blue-round-btns a.btn-blue-prv{
+  background: #00aff3;
+  color:#fff;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+.btn-blue-nxt::after {
+  content: "\f101";
+  font-family: fontawesome;
+  font-size: 15px;
+  padding-left: 7px;
+}
+.btn-blue-prv::before {
+  content: "\f100";
+  font-family: fontawesome;
+  font-size: 15px;
+  padding-right: 7px;
+}
+a.btn-blue-prv:hover, a.btn-blue-nxt:hover{
+  background: rgba(3,89,122,0.9);
+  color:#fff;
+  -webkit-transition: all 0.2s ease-in-out; 
+  -moz-transition: all 0.2s ease-in-out; 
+  transition: all 0.2s ease-in-out;
+}
+.single-btn {
+  margin-bottom: 78px;
+  margin-left: -20%;
+  margin-top: 20%;
+}
+.double-btn{
+  margin-bottom: 78px;
+  margin-left: -32%;
+  margin-top: 20%;
+}
+
+.tool-bar .ff-select::after{
+  content:"\f0d7";
+  font-family: 'fontawesome';
+  pointer-events: none;
+  position: absolute;
+  right: 15px;
+  top: 10px;
+}
+.tool-bar .ff-select{
+  position: relative;
+  background: #fff none repeat scroll 0 0;
+  border:1px solid #e2e2e2;
+  border-radius: 4px;
+  height: auto;
+  padding: 0;
+  margin: 0px 0;
+  vertical-align: middle;
+  position: relative;
+  display: inline-block;
+  width:190px;
+  font-size: 12px;
+  color:#7d7d7d;
+}
+.tool-bar .ff-select select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  padding: 0.8em;
+  width: 100%;
+  border: 0;
+  border-radius: 4px;
+}
+.tool-bar .fs-select{
+  width:80px;
+}
+.select-emoji-section li {
+  background: #fff none repeat scroll 0 0;
+  border: 1px solid #e9e9e9;
+  border-radius: 5px;
+  float: left;
+  font-size: 40px;
+  height: 88px;
+  line-height: 78px;
+  margin-bottom: 20px;
+  margin-right: 15px;
+  text-align: center;
+  width: 87px;
+}
+.select-emoji-section {
+  height: 410px;
+  overflow: auto;
+  margin-bottom: 70px;
+}
+.yellow-btn .btn{
+  background: #f8eb00;
+  border:1px solid #f8eb00;
+  color:#1d1d1d;
+  width:89px;
+  height: 40px;
+  margin-top: 27px;
+  margin-bottom: 20px;
+}
+.yellow-btn .btn:hover, .yellow-btn .btn:focus{
+  background:rgba(3, 89, 122, 0.9) none repeat scroll 0 0;
+  color:#fff;
+  border: transparent;
+}
+.photo-upload-section{
+  background: #fff;
+  border: 1px solid #e9e9e9;
+  border-radius: 4px;
+  padding: 23px 27px;
+}
+.photo-upload-section h3{
+  font-size: 16px;
+}
+.select-device {
+  float: left;
+  width: 50%;
+}
+.select-social-media {
+  border-left: 1px solid #e9e9e9;
+  float: right;
+  padding-left: 20px;
+  width: 50%;
+}
+.preview-photo-section  ul.previewIMG{
+  float:left;
+}
+.preview-photo-section li {
+  width:100px;
+  height: 120px;
+  background: #fff;
+  border: 1px solid #e9e9e9;
+  border-radius: 5px;
+  position: relative;
+  margin-bottom: 15px;
+  margin-right: 5px;
+  float: left;
+  cursor: pointer;
+  z-index: 999;
+}
+.preview-photo-section li:nth-child(5n) {
+    margin-right: 0;
+}
+.preview-photo-section li img{
+  max-width:100%;
+  height: auto;
+  padding:1px;
+  position: absolute;
+  left:0;
+  right: 0;
+  top:0;
+  bottom:0;
+  margin:auto;
+}
+.preview-photo-section li i{
+  color:#d2d2d2;
+  font-size: 35px;
+}
+.preview-photo-section .prevClose {
+  position: relative;
+}
+.preview-photo-section .prevClose  i{
+  position: absolute;
+  font-size: 18px;
+  right: 0;
+  left:0;
+  text-align: center;
+  z-index: 99;
+  color: #777;
+  cursor: pointer;
+  top: 40%;
+}
+.preview-photo-section{
+  min-height: 271px;
+}
+.prevClose .closeIMG{
+  cursor: pointer;
+  float: right;
+  font-family: 'fontawesome';
+  font-size: 15px;
+  text-align: center;
+  width: 20px;
+  position: absolute;
+  right: 0;
+  top:2px;
+  color:#D3173A;
+  z-index: 4;
+}
+.select-social-media .yellow-btn .btn{
+  margin:15px 0 0;
+}
+.select-device input[type="file"]{
+  display: none;
+}
+
+.inputfile + label {
+  max-width: 80%;
+  font-size: 1.25rem;
+  /* 20px */
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.625rem 1.25rem;
+  /* 10px 20px */
+}
+.inputfile + label:hover{
+  background:rgba(3, 89, 122, 0.9) none repeat scroll 0 0;
+  color:#fff;
+}
+.no-js .inputfile + label {
+    display: none;
+}
+
+.inputfile:focus + label,
+.inputfile.has-focus + label {
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
+.inputfile-1 + label {
+  background-color: #f8eb00;
+  border-radius: 5px;
+  color: #1d1d1d;
+  height: 40px;
+  line-height: 30px;
+  text-align: center;
+  text-transform: uppercase;
+  width: 89px;
+  margin-top:14px;
+  margin-bottom: 0;
+}
+
+.inputfile-1:focus + label,
+.inputfile-1.has-focus + label,
+.inputfile-1 + label:hover {
+
+}
+#customscroll {
+    height: 98%;
+    overflow: hidden;
+    position: relative;
+}
+/*.select-social-media .modal-sm{
+  width:450px;
+}
+.social-media-modal{
+  padding:53px 63px 56px;
+}*/
+#social_login .modal-sm {
+  max-width: 500px;
+  text-align: center;
+  width: 100%;
+}
+.social-media-modal {
+  padding: 30px;
+}
+.modal-content h3{
+  font-size: 26px;
+   margin-bottom: 39px;
+}
+/*.media-btns {
+  border: 0 none;
+  border-radius: 3px;
+  color: #fff;
+  font-family: 'PantonW01-Bold';
+  font-size: 14px;
+  line-height: 40px;
+  margin: 7px 0;
+  padding: 0 0 0 40px;
+  position: relative;
+  text-transform: uppercase;
+  width: 293px;
+}*/
+.media-btns {
+  border: 0 none;
+  border-radius: 3px;
+  color: #fff;
+  font-family: "PantonW01-Bold";
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  line-height: 40px;
+  margin: 7px 0;
+  padding-left: 29px;
+  position: relative;
+  text-align: center;
+  text-transform: uppercase;
+  width: 293px;
+}
+.fb-media{
+  background: #4867aa;
+}
+.media-btns i {
+  font-size: 24px;
+  left: 12px;
+  position: absolute;
+  top: 9px;
+}
+.fb-media::before, .insta-media::before {
+/*  background: #395186;
+  content: "";
+  height: 57px;
+  left: 57px;
+  position: absolute;
+  top: 7px;
+  width: 1px;
+*/}
+.insta-media::before{
+  background: #db3132;
+}
+.insta-media{
+  background: #ff393a;
+}
+.modal-content{
+  border-radius: 20px;
+  overflow: hidden;
+}
+.modal-dialog{
+  margin:10% auto;
+}
+.modal-content .close{
+  opacity: 1;
+}
+.modal-content .close span,.close.custom_close span {
+  color: #fff;
+  font-size: 20px;
+  display: block;
+  transform: rotate(-45deg);
+}
+.modal-content .close{
+  background: #00aff3 none repeat scroll 0 0;
+  display: inline-block;
+  height: 65px;
+  position: absolute;
+  right: -55px;
+  top: -5px;
+  transform: rotate(45deg);
+  width: 153px;
+}
+/*** Tool - 4  ***/
+.column {
+  float: left;
+  margin: 2px;
+  width: 33%;
+}
+.tool_4 .tool-board .nav-tabs li {
+  width: 33.3%;
+}
+.tool_4 .tool-board .nav-tabs li a{
+  width:auto;
+}
+.column  .canvas-content{
+  background: #fff;
+  padding: 38px 24px;
+}
+.content-area{
+  margin-bottom:25px;
+}
+.content-area:last-child{
+  margin: 0;
+}
+.content-area textarea{
+  border:1px dashed #e9e9e9;
+  height: 120px;
+  width:100%;
+  resize: none;
+  border-radius: 5px;
+  padding:15px;
+}
+.content-area-sm textarea{
+  height: 120px;
+}
+.content-area-md textarea{
+  height: 287px;
+}
+.content-area-lg textarea{
+  height: 580px;
+}
+.tool_4 .tool-bar .ff-select{
+  width:25%;
+}
+.tool_4 .tool-bar .fs-select {
+  width: 12%;
+}
+.tool_4 .tool-bar {
+  margin-top: 6px;
+  min-height: 495px;
+}
+.tool_4 .bottom-btns{
+  margin-top: 26px;
+  margin-bottom:78px;
+}
+.tool_4 .preview-photo-section li{
+  width: 18%;
+}
+.green-round-btns{margin-top: 10px;}
+.green-round-btns li{
+  float: left;
+  margin-left: 5px;
+}
+.green-round-btns a, .blue-round-btns a{
+  background: #b4e97a;
+  text-transform: uppercase;
+  font-size: 14px;
+  padding:10px 20px;
+  border:none;
+  border-radius: 30px;
+  font-family: 'PantonW01-Bold';
+  margin-top: 10px;
+  display: inline-block;
+  color: #2e4c0d;
+  -webkit-transition: all 0.2s ease-in-out; 
+  -moz-transition: all 0.2s ease-in-out; 
+  transition: all 0.2s ease-in-out;
+}
+.green-round-btns a:hover {
+  background: rgba(3, 89, 122, 0.9) none repeat scroll 0 0;
+  color: #fff;
+  -webkit-transition: all 0.2s ease-in-out; 
+  -moz-transition: all 0.2s ease-in-out; 
+  transition: all 0.2s ease-in-out;
+}
+.blankcard-modal .modal-sm{
+  width:653px;
+}
+.blankcard-select{
+  padding:53px 32px 63px;
+}
+.blankcard-select li{
+  float:left;
+  margin: 0 15px;
+}
+/*.blankcard-select li.active a, */
+.blankcard-select li:hover a{
+  border: 1px solid #b4e97a;
+}
+.blankcard-select li a{
+  background: #f5f5f5;
+  border-radius: 15px;
+  height: 335px;
+  padding: 30px;
+  width: 263px;
+  display: block;
+  position: relative;
+  border: 1px solid #f5f5f5;
+}
+.blankcard-select li a h4{
+  bottom: 31px;
+  color: #1d1d1d;
+  font-size: 20px;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+.blankcard-select li a img {
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: -50px;
+}
+.load-more a{
+  width:351px;
+  height: 57px;
+  line-height: 57px;
+  padding:0;
+  margin:6px 0 33px;
+}
+/******* Registration Popup ********/
+.register-modal .modal-sm{
+  width:450px;
+}
+
+/*****************************************************************************
+***************************css for conten sec end  ***************************
+******************************************************************************/
+
+
+
+
+
+/*****************************************************************************
+***************************css for footer sec start ***************************
+******************************************************************************/
+.footer-logo {
+    margin-top: 45px;
+    margin-bottom: 15px;
+}
+.social-icons{
+  margin-left: 30px;
+}
+.social-icons li{
+  float: left;  
+}
+.social-icons li a{
+  background: #dadada;
+  width:30px;
+  height: 30px;
+  display: block;
+  border-radius:50%;
+  margin:5px;
+  line-height: 30px;
+  text-align: center;
+  color:#454545;
+}
+.social-icons li a:hover{
+  background: rgba(3, 89, 122, 0.9) none repeat scroll 0 0;
+  color: #fff;
+  transition: all 0.4s ease-in-out 0s;
+}
+.footer-nav {
+  font-family: 'PantonW01-Regular';
+  padding:52px 0 51px;
+}
+.footer-nav ul{
+  float: left;
+}
+.footer-about ul {
+    margin-right: 124px;
+}
+.footer-support ul {
+    margin-right: 121px;
+}
+.footer-nav li a{
+  color:#1d1d1d;
+  font-size: 14px;
+  line-height: 26px;
+}
+.footer-nav li a:hover{
+  color:#00aff3;
+}
+.footer-nav li a strong{
+  font-family: 'PantonW01-Bold';
+  margin-bottom:15px;
+  display: block;
+}
+.footer-bottom{
+  background: #f1f0f0;  
+  padding:13px 0 11px
+  ;
+}
+.footer-bottom p{
+  color:#1d1d1d;
+  font-size: 14px;
+  font-family: 'PantonW01-Regular';
+  padding-top:6px;
+}
+.debitcards{
+  float:right;
+}
+.debitcards li{
+  float: left;
+  margin-left:9px;
+}
+
+
+/*****************************************************************************
+***************************css for footer sec end ***************************
+******************************************************************************/
+
+
+
+
+
+/***** css start for 28-aprl preview and delivery page *****/
+/*.canvas_duumy_image img{
+  height: 650px;
+}*/
+.preview_page .column .canvas-board{
+  min-height: 605px;
+}
+
+.preview_page .blue-round-btns{
+  text-align: center;
+  margin: 25px 0px 78px 0;
+}
+.preview_page .canvas-board{
+  margin-top: 0px;
+}
+.delivery_box{
+  min-height: 340px;
+  background: #f5f5f5;
+  border: 3px solid #f5f5f5;
+  padding: 40px 40px;
+  text-align: center;
+  border-radius: 10px;
+  float: left;
+  width: 48.5%;
+  margin-bottom: 30px;
+  cursor: pointer;
+  transition: none;
+}
+.delivery_box:nth-child(2n){
+  margin-left: 3%;
+}
+.delivery_box.active{
+  border: 3px solid #b4e97a;  
+}
+.delivery_box i{
+  height:70px;
+  width: 70px;
+  background: #cecece;
+  display: inline-block;
+  color: #fff;
+  border-radius: 50%;
+  line-height: 70px;
+  font-size: 30px;
+}
+.delivery_box.active i{
+  background: #00aff3;
+}
+.delivery_box h4{
+  font-size: 20px;
+  text-transform: uppercase;
+  margin-top: 20px;
+}
+.delivery_box p{
+  font-size: 16px;
+  letter-spacing: 0.025em;
+  line-height: 24px;
+  padding-top: 30px;
+}
+
+ .blue-round-btns {
+  margin-bottom: 40px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.canvas_container{
+  position: relative;;
+}
+
+#right-menu {
+    width: 150px;
+    position: absolute;
+    background-color: #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 999999999999;
+}
+#right-menu li{
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+/*tool 4 start*/
+.column {
+  float: left;
+  margin: 2px;
+  width: 33%;
+}
+.tool_4 .tool-board .nav-tabs li {
+  width: 33.3%;
+}
+.tool_4 .tool-board .nav-tabs li a{
+  width:auto;
+}
+.column  .canvas-content{
+  background: #fff;
+  padding: 38px 32px;
+}
+.content-area{
+  margin-bottom:25px;
+}
+.content-area:last-child{
+  margin: 0;
+}
+.content-area canvas{
+  border:1px dashed #e9e9e9;
+  height: 120px;
+  width:100%;
+  resize: none;
+  border-radius: 5px;
+  padding:0;
+}
+.content-area-sm canvas{
+  height: 120px;
+}
+.content-area-md canvas{
+  height: 287px;
+}
+.content-area-lg canvas{
+  height: 580px;
+}
+.tool_4 .tool-bar .ff-select{
+  width:25%;
+}
+.tool_4 .tool-bar .fs-select {
+  width: 12%;
+}
+.tool_4 .tool-bar {
+  margin-top: 6px;
+  min-height: 495px;
+}
+.tool_4 .bottom-btns{
+  margin-top: 26px;
+  margin-bottom:78px;
+}
+.tool_4 .preview-photo-section li{
+  width: 100px;
+}
+.t4_textbox textarea{
+  height: 150px;
+  width: 100%;
+}
+/*tool 4 end*/
+
+/*** css start for 9-may header ***/
+.have_point_btn {
+  background: #00aff3 none repeat scroll 0 0;
+  bottom: -28px;
+  color: #fff;
+  font-size: 12px;
+  left: 0;
+  padding: 3px 5px;
+  position: absolute;
+  text-align: center;
+  width: 213px;
+}
+
+.have_point_btn.blue {
+  /*background: #00aff3 none repeat scroll 0 0;*/
+  background: /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#70cee9+0,00aff3+100 */
+background: #70cee9; /* Old browsers */
+background: -moz-linear-gradient(top, #70cee9 0%, #00aff3 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(top, #70cee9 0%,#00aff3 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom, #70cee9 0%,#00aff3 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#70cee9', endColorstr='#00aff3',GradientType=0 ); /* IE6-9 */
+}
+.have_point_btn.gold{
+ /*background: #ffd700 none repeat scroll 0 0;*/
+ color: black;
+ background: /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#fff7af+0,f0ca7f+100 */
+background: #fff7af; /* Old browsers */
+background: -moz-linear-gradient(top, #fff7af 0%, #f0ca7f 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(top, #fff7af 0%,#f0ca7f 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom, #fff7af 0%,#f0ca7f 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff7af', endColorstr='#f0ca7f',GradientType=0 ); /* IE6-9 */
+}
+
+.point_info_hove i.fa {
+  font-size: 18px;
+  position: absolute;
+  right: 4px;
+  top: 3px;
+}
+
+
+.have_point_btn input {
+  background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+  border: medium none;
+  box-shadow: none;
+  color: #fff;
+  display: inline-block;
+  font-size: 12px;
+  height: auto;
+  line-height: 14px;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+  width: 22px;
+  box-sizing: border-box;
+ 
+}
+/*.mycart button i.fa{
+  position: absolute;
+  right: 10px;
+  top: 19px;
+}*/
+.mycart button i.fa {
+  padding-left: 9px;
+}
+.main_navigation .navbar-default , 
+.main_navigation{
+  height: 150px;
+}
+.logo {
+  background: #fff none repeat scroll 0 0;
+  float: left;
+  left: 0;
+  max-width: 220px;
+  position: absolute;
+  top: 0;
+  z-index: 9;
+}
+.ppover_custom {
+  background-color: #b4e97a;
+  color: #1d1d1d;
+  font-size: 12px;
+  font-style: normal;
+  left: 0;
+  margin: 0 auto;
+  padding: 3px;
+  position: absolute;
+  display: none;
+  right: 0;
+  top: 28px;
+  z-index: 9;
+}
+.ppover_custom::after {
+  border-bottom: 8px solid #b4e97a;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  content: "";
+  position: absolute;
+  right: 5px;
+  top: -6px;
+}
+.point_info_hove:hover .ppover_custom{
+  display: block;
+}
+/*************end*************/
+
+/*******profile css start**********/
+.user_profile {
+  background-color: #00aff3;
+  border-radius: 20px 20px 0 0;
+  padding: 20px;
+  text-align: center;
+}
+.user_img {
+  border: 5px solid #fff;
+  border-radius: 50%;
+  display: inline-block;
+  height: 164px;
+  overflow: hidden;
+  position: relative;
+  width: 164px;
+}
+.upload_icon {
+  background: rgba(0, 0, 0, 0.5) none repeat scroll 0 0;
+  bottom: 0;
+  color: #fff;
+  font-size: 18px;
+  padding: 7px;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+  cursor: pointer;
+}
+.user_name {
+  color: #fff;
+  font-size: 18px;
+  padding: 10px;
+  font-family: 'PantonW01-Bold';
+}
+.profile_sidebar ul li{
+  display: block;
+}
+.profile_sidebar ul li a {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  color: #1d1d1d;
+  display: block;
+  font-size: 16px;
+  background-color: #f5f5f5;
+  padding: 13px 20px;
+  font-family: 'PantonW01-Bold';
+}
+.profile_sidebar ul li:last-child a{
+  border: 0;
+}
+.profile_sidebar ul li a i{
+  font-size: 18px;
+  padding-right: 10px;
+}
+.profile_sidebar ul li.active a,.profile_sidebar ul li a:hover{
+background-color: #b4e97a;
+}
+.profile_sec {
+  padding: 55px 0;
+}
+.profile_sidebar ul {
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 2px 1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+.userprofile_right h4,
+.page-user-addressbook h4.page-header,
+.page-user h4.page-header {
+  color: #1d1d1d;
+  font-size: 22px;
+  padding-bottom: 20px;
+}
+.card_bar ul li {
+  background-color: #f5f5f5;
+  border: 2px solid #f5f5f5;
+  border-radius: 8px;
+  display: inline-block;
+  margin-right: 30px;
+  padding: 30px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 50px;
+  text-align: center;
+  width: 30.7%;
+}
+.card_bar ul li:hover .saved_cross{
+  opacity: 1;
+}
+.saved_cross {
+  background-color: #b4e97a;
+  color: #000;
+  font-size: 18px;
+  height: 25px;
+  line-height: 20px;
+  position: absolute;
+  right: 0;
+  opacity: 0;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  top: 0;
+  cursor: pointer;
+  width: 25px;
+}
+.card_bar ul li:hover{
+  border-color:#b4e97a;
+}
+.card_bar ul li:nth-child(3n){
+  margin-right: 0;
+}
+.card_img {
+  display: inline-block;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+.card_name {
+  font-size: 20px;
+  padding-top: 15px;
+  font-family: 'PantonW01-Bold';
+}
+.card_datime {
+  font-size: 12px;
+  padding: 5px 0 15px;
+}
+.btn_continue {
+  background-color: #f8eb00;
+  border: 0 none;
+  border-radius: 20px;
+  display: inline-block;
+  padding: 8px 20px;
+  font-family: 'PantonW01-Bold';
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+  text-transform: uppercase;
+}
+.card_bar ul li:hover .btn_continue{
+  background-color: #b4e97a;
+}
+.view_dtlbox {
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: block;
+  padding: 20px;
+}
+.detail_boximg {
+  background-color: #fff;
+  border: 1px solid #ededed;
+  display: inline-block;
+  padding: 10px 20px;
+  text-align: center;
+}
+.detail_boximg img{
+  max-width: 62px;
+}
+.detail_boxcont {
+  display: inline-block;
+  padding: 5px 0 5px 15px;
+  vertical-align: top;
+  width: 55%;
+}
+.detail_boxcont h5 {
+  font-size: 18px;
+  padding-bottom: 10px;
+  font-family: 'PantonW01-Bold';
+}
+.detail_boxcont ul li {
+  display: inline-block;
+  font-size: 14px;
+  font-family: 'PantonW01-Bold';
+  padding: 10px 0;
+  width: 49%;
+}
+.detail_boxcont ul li span{
+font-family: 'PantonW01-Regular';
+}
+.detail_boxcont ul li:first-child span{
+  color:#00aff3;
+}
+.btn_dtlbtn {
+  background-color: #00aff3;
+  border: 0 none;
+  border-radius: 20px;
+  color: #1d1d1d;
+  display: inline-block;
+  font-family: 'PantonW01-Bold';
+  padding: 10px 20px;
+  text-transform: uppercase;
+}
+.view_dtlbtn {
+  float: right;
+  margin-top: 40px;
+}
+.userprofile_right h4 a {
+  float: right;
+  font-size: 14px;
+  font-family: 'PantonW01-Bold';
+  text-transform: uppercase;
+  padding-top: 5px;
+  color:#00aff3;
+}
+.histry_tab .nav.nav-tabs {
+  border: 0 none;
+}
+.histry_tab{
+  padding-bottom: 20px;
+}
+.histry_tab .nav-tabs  li  a {
+  background-color: #f5f5f5;
+  border-radius: 20px;
+  color: #1d1d1d;
+  display: block;
+  font-size: 12px;
+  margin-right: 10px;
+  padding: 13px 23px;
+  font-family: 'PantonW01-Bold';
+  text-transform: uppercase;
+  border: 0;
+}
+.histry_tab .nav-tabs a,.histry_tab .nav-tabs  li  a:hover{
+  border: 0 !important;
+  background-color: #b4e97a;
+}
+.detail_boxcont p {
+  color: #5d5d5d;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  line-height: 22px;
+}
+.detail_boxcont.order_cnt {
+  padding: 0;
+  width: 100%;
+}
+.order_field {
+  padding-top: 20px;
+}
+.order_field input {
+  border: 1px solid #ededed;
+  border-radius: 5px;
+  color: rgba(0, 0, 0, 0.5);
+  display: inline-block;
+  height: 40px;
+  max-width: 270px;
+  padding: 6px 12px;
+  width: 100%;
+}
+.order_field > button {
+  background-color: #f8eb00;
+  border: 0 none;
+  border-radius: 5px;
+  font-size: 12px;
+  margin-left: 15px;
+  padding: 10px 20px;
+  text-transform: uppercase;
+}
+.userprofile_right .form-control {
+  height: 52px;
+  border: 1px solid #e9e9e9;
+  border-radius: 5px;
+  background-color:#f5f5f5;
+}
+.conform_dtl .detail_boxcont ul {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+.conform_dtl .detail_boxcont {
+  padding: 5px 30px 5px 15px;
+  width: 65%;
+}
+.conform_dtl .detail_boxcont ul li {
+  padding: 5px 0;
+}
+.conform_dtl .detail_boxcont ul.delivery_detal li {
+  width: 100%;
+}
+.conform_dtl .detail_boxcont ul.delivery_detal{
+  border: 0;
+  margin-bottom: 0;
+}
+.userprofile_right .view_dtlbox h4 {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  color: #1d1d1d;
+  font-size: 22px;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+}
+.detail_boxcont h4 span {
+  float: right;
+  font-size: 16px;
+  padding-top: 6px;
+}
+.detail_boxcont h4 span i {
+  background-color: #00aff3;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 13px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  width: 20px;
+}
+.conform_dtl .detail_boximg img {
+  max-width: 200px;
+}
+.detail_boximg > a {
+  background-color: #b4e97a;
+  border-radius: 20px;
+  color: #2e4c0d;
+  display: inline-block;
+  margin-top: 15px;
+  padding: 5px 15px;
+  text-transform: uppercase;
+}
+.detail_boxcont.pending_dtl {
+  width: 100%;
+}
+.pending_dtl .order_field > button {
+  margin-left: 0;
+}
+.blankcard-select .form-control {
+  background-color: #f5f5f5;
+  border: 1px solid #e9e9e9;
+  border-radius: 5px;
+  text-align: center;
+  font-family: 'PantonW01-Bold';
+  height: 52px;
+  font-size: 16px;
+  color: rgba(0,0,0,0.6);
+}
+.login_cnt {
+  font-size: 16px;
+}
+.login_cnt a{
+  font-family: 'PantonW01-Bold';
+  color: #000;
+}
+.form-group.frtpswrd {
+  font-size: 16px;
+  text-align: left;
+}
+.form-group.frtpswrd label{
+  font-weight: 400;
+}
+.form-group.frtpswrd a{
+  float: right;
+  color: #1d1d1d;
+}
+.view_dtlbtn .btn_dtlbtn:last-child {
+  background-color: #b4e97a;
+}
+.column.full_column {
+  width: 66.3%;
+}
+.page-user .profile_sidebar {
+    background-color: transparent;
+    border: medium none;
+    margin: 50px 0 0;
+    padding: 0;
+}
+/***********Profile drupal section************/
+.logged-in.page-user .tabs--primary {
+    display: none;
+    visibility: hidden;
+}
+/*****profile css end**********/
+
+
+/*** css start 23-may ***/
+.banner_img_fade{position: relative;}
+.banner_img_fade:after, .banner_img_fade:before {
+  background-image: url("../images/slide.jpg");
+  background-size: 100% auto;
+  content: "";
+  height: 100%;
+  position: absolute;
+  right: 100%;
+  top: 0;
+  width: 100%;
+  opacity: .3;
+}
+.banner_img_fade:before{
+  right: auto;
+  left: 100%;
+}
+
+/* new changes */
+.new_set li{
+  display: inline-block;
+  padding: 0;
+  margin-right: 3px;
+  margin-bottom: 3px;
+  margin-top: 2px;
+}
+
+/**21-jun css start ***/
+.upper-canvas.focus {
+  border-color: #000;
+}
+.new_set {
+  background: #f0f0f0 none repeat scroll 0 0;
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 10px;
+}
+.inlay_verticle .canvas-board,
+.preview_page .canvas-board{padding: 15px 9px;}
+
+.inlay_verticle .column .canvas-content,
+.inlay_verticle .column .preview_page{
+  padding: 10px;
+}
+.inlay_verticle .green-round-btns a{padding: 10px 15px;}
+.inlay_verticle .tool-board .tab-content{padding: 10px;}
+.tool_4 .inlay_verticle .tool-bar .fs-select{width: 60px;}
+ .tool_4 .inlay_verticle .tool-bar .ff-select {
+  width: 60px;
+}
+.tool_4 .inlay_verticle .tool-bar{min-height: 368px;}
+ .inlay_verticle .tool-board .nav-tabs li a{
+  font-size: 12px; line-height: 34px;
+}
+.inlay_verticle .t4_textbox{margin-top: 5px;}
+
+.tool_1 .nav-tabs > li{width: 32.6%;}
+.tool_1 .nav-tabs > li{margin-right: 1%;}
+.tool_1 .nav-tabs > li:last-child{margin-right: 0px;}
+.tool_1 .nav-tabs > li a{width: 100%;}
+.pre_full_bg{background: #f4f4f4; padding: 0px 0px; border-radius: 10px;} 
+
+.padd_left0{padding-left: 0px !important;}
+.padd_right0{padding-right: 0px !important; }
+
+.canvas-board.cart_right_page,
+.canvas-board.cart_left_page{position: relative; padding: 30px 0;}
+.canvas-board.cart_right_page{padding: 30px 0;}
+.canvas-board.cart_left_page:after {
+	top: 0px;
+	left: 0;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(241, 241, 241, 0);
+	border-bottom-color: #fff;
+	border-width:15px 402px 15px 0;
+	margin-left: 0;
+}
+.canvas-board.cart_left_page:before {
+	bottom: 0;
+	left: 0;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(241, 241, 241, 0);
+	border-top-color: #fff;
+	border-width:15px 402px 15px 0;
+	margin-left: 0;
+}
+
+.canvas-board.cart_right_page:after {
+	top: 0px;
+	right: 0;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(241, 241, 241, 0);
+	border-bottom-color: #fff;
+	border-width:15px 0px 15px 402px;
+	margin-left: 0;
+}
+.canvas-board.cart_right_page:before {
+	bottom: 0;
+	right: 0;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(241, 241, 241, 0);
+	border-top-color: #fff;
+	border-width:15px 0px 15px 402px;
+	margin-left: 0;
+}
+.preview_page .column .canvas-content{padding: 15px 10px;}
+
+body.page-user-addressbook #block-system-main > div {
+  background: #f1f1f1 none repeat scroll 0 0;
+  border-radius: 10px;
+
+  padding: 15px;
+  margin-bottom: 10px;
+
+
+}
+body.page-user-addressbook #block-system-main .addressbook-links{font-size: 0px;}
+body.page-user-addressbook #block-system-main .addressbook-links a{
+  display: inline-block;
+  font-size: 14px;
+  padding: 8px 15px;
+  background: #00aef3;
+  color: #fff;
+  margin-right: 5px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.views-field-path .field-content a,
+ .views-field-url .field-content a {
+  display:inline-block;
+  background: #00aff3;
+  padding: 8px 15px;
+  min-width: 120px;
+  color: #fff;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.page-search-node .node-results a {
+  display:inline-block;
+  background: #00aff3;
+  padding: 8px 15px;
+  min-width: 120px;
+  color: #fff;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+
+}
+.views-field-path .field-content a:hover,
+.views-field-url .field-content a:hover,
+.page-search-node .node-results a:hover {
+    background: #b4e97a none repeat scroll 0 0;
+    color: #1d1d1d;
+}
+.page-search-node .col-sm-4 .search-buy {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+#addTextCanvas{
+  background: #00aff3;
+  color: #fff;
+}
+.view-greeting-cards .views-exposed-form select{border-radius: 10px;
+
+}
+
+
+/*****all card view css***/
+.view-all-cards .field-content a:hover img,
+.view-greeting-cards .field-content a:hover img,
+.view-photo-cards .field-content a:hover img,
+.view-anniversaries .field-content a:hover img,
+.view-birthdays .field-content a:hover img,
+.view-chinese-new-year .field-content a:hover img,
+.view-christmas .field-content a:hover img,
+.view-congratulations .field-content a:hover img,
+.view-easter .field-content a:hover img,
+.view-engagement .field-content a:hover img,
+.view-exams .field-content a:hover img,
+.view-friendship .field-content a:hover img,
+.view-get-well .field-content a:hover img,
+.view-good-bye .field-content a:hover img,
+.view-good-luck .field-content a:hover img,
+.view-halloween .field-content a:hover img,
+.view-new-baby .field-content a:hover img,
+.view-new-year .field-content a:hover img,
+.view-singapore .field-content a:hover img,
+.view-sympathy .field-content a:hover img,
+.view-teachers-day .field-content a:hover img,
+.view-thank-you .field-content a:hover img,
+.view-thanksgiving .field-content a:hover img,
+.view-valentines-day .field-content a:hover img,
+.view-weddings .views-row .field-content a:hover img {
+  box-shadow: 0 2px 4px rgba(61, 192, 238, 1.0);
+}
+
+
+.page-all-cards .views-row,
+.page-greeting-cards .views-row,
+.page-photo-cards .views-row,
+.page-anniversaries .views-row,
+.page-birthdays .views-row,
+.page-chinese-new-year .views-row,
+.page-christmas .views-row,
+.page-congratulations .views-row,
+.page-easter .views-row,
+.page-engagement .views-row,
+.page-exams .views-row,
+.page-friendship .views-row,
+.page-get-well .views-row,
+.page-good-bye .views-row,
+.page-good-luck .views-row,
+.page-halloween .views-row,
+.page-new-baby .views-row,
+.page-new-year .views-row,
+.page-singapore .views-row,
+.page-sympathy .views-row,
+.page-teachers-day .views-row,
+.page-thank-you .views-row,
+.page-thanksgiving .views-row,
+.page-valentines-day .views-row,
+.page-weddings .views-row {
+  float: left;
+  margin-bottom: 25px;
+  margin-right: 2%;
+  overflow: hidden;
+  width: 32%;
+}
+
+.page-all-cards .views-row:nth-child(3n),
+.page-greeting-cards .views-row:nth-child(3n),
+.page-photo-cards .views-row:nth-child(3n),
+.page-anniversaries .views-row:nth-child(3n),
+.page-birthdays .views-row:nth-child(3n),
+.page-chinese-new-year .views-row:nth-child(3n),
+.page-christmas .views-row:nth-child(3n),
+.page-congratulations .views-row:nth-child(3n),
+.page-easter .views-row:nth-child(3n),
+.page-engagement .views-row:nth-child(3n),
+.page-exams .views-row:nth-child(3n),
+.page-friendship .views-row:nth-child(3n),
+.page-get-well .views-row:nth-child(3n),
+.page-good-bye .views-row:nth-child(3n),
+.page-good-luck .views-row:nth-child(3n),
+.page-halloween .views-row:nth-child(3n),
+.page-new-baby .views-row:nth-child(3n),
+.page-new-year .views-row:nth-child(3n),
+.page-singapore .views-row:nth-child(3n),
+.page-sympathy .views-row:nth-child(3n),
+.page-teachers-day .views-row:nth-child(3n),
+.page-thank-you .views-row:nth-child(3n),
+.page-thanksgiving .views-row:nth-child(3n),
+.page-valentines-day .views-row:nth-child(3n),
+.page-weddings .views-row:nth-child(3n) {
+  margin-right: 0;
+}
+
+/*.page-all-cards .views-field-field-card-image .field-content,
+.view-greeting-cards .views-field-field-card-image .field-content{
+  height: 300px;
+  line-height: 276px;
+  padding: 10px;
+  overflow: hidden;
+  text-align: center;
+  background: #f1f1f1 none repeat scroll 0 0;
+}*/
+
+.page-all-cards .views-field-field-card-sample-image .field-content,
+.page-all-cards .views-field-product-id .field-content,
+.page-anniversaries .views-field-field-card-sample-image .field-content,
+.page-anniversaries .views-field-product-id .field-content,
+.page-birthdays .views-field-field-card-sample-image .field-content,
+.page-birthdays .views-field-product-id .field-content,
+.page-chinese-new-year .views-field-field-card-sample-image .field-content,
+.page-chinese-new-year .views-field-product-id .field-content,
+.page-christmas .views-field-field-card-sample-image .field-content,
+.page-christmas .views-field-product-id .field-content,
+.page-congratulations .views-field-field-card-sample-image .field-content,
+.page-congratulations .views-field-product-id .field-content,
+.page-easter .views-field-field-card-sample-image .field-content,
+.page-easter .views-field-product-id .field-content,
+.page-engagement .views-field-field-card-sample-image .field-content,
+.page-engagement .views-field-product-id .field-content,
+.page-exams .views-field-field-card-sample-image .field-content,
+.page-exams .views-field-product-id .field-content,
+.page-friendship .views-field-field-card-sample-image .field-content,
+.page-friendship .views-field-product-id .field-content,
+.page-get-well .views-field-field-card-sample-image .field-content,
+.page-get-well .views-field-product-id .field-content,
+.page-good-bye .views-field-field-card-sample-image .field-content,
+.page-good-bye .views-field-product-id .field-content,
+.page-good-luck .views-field-field-card-sample-image .field-content,
+.page-good-luck .views-field-product-id .field-content,
+.page-greeting-cards .views-field-field-card-sample-image .field-content,
+.page-greeting-cards .views-field-product-id .field-content,
+.page-halloween .views-field-field-card-sample-image .field-content,
+.page-halloween .views-field-product-id .field-content,
+.page-new-baby .views-field-field-card-sample-image .field-content,
+.page-new-baby .views-field-product-id .field-content,
+.page-new-year .views-field-field-card-sample-image .field-content,
+.page-new-year .views-field-product-id .field-content,
+.page-photo-cards .views-field-field-card-sample-image .field-content,
+.page-photo-cards .views-field-product-id .field-content,
+.page-singapore .views-field-field-card-sample-image .field-content,
+.page-singapore .views-field-product-id .field-content,
+.page-sympathy .views-field-field-card-sample-image .field-content,
+.page-sympathy .views-field-product-id .field-content,
+.page-teachers-day .views-field-field-card-sample-image .field-content,
+.page-teachers-day .views-field-product-id .field-content,
+.page-thanksgiving .views-field-field-card-sample-image .field-content,
+.page-thanksgiving .views-field-product-id .field-content,
+.page-thank-you .views-field-field-card-sample-image .field-content,
+.page-thank-you .views-field-product-id .field-content,
+.page-valentines-day .views-field-field-card-sample-image .field-content,
+.page-valentines-day .views-field-product-id .field-content,
+.page-weddings .views-field-field-card-sample-image .field-content,
+.page-weddings .views-field-product-id .field-content {
+   display:-webkit-flex;
+  -webkit-flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  height: 360px;
+ -webkit-justify-content: center;
+ justify-content: center;
+  line-height: 200px;
+  overflow: hidden;
+  padding: 0 20px;
+  text-align: center;
+}
+
+
+
+.page-all-cards .views-field-field-card-sample-image .field-content img,
+.page-all-cards .views-field-product-id .field-content img,
+.page-anniversaries .views-field-field-card-sample-image .field-content img,
+.page-anniversaries .views-field-product-id .field-content img,
+.page-birthdays .views-field-field-card-sample-image .field-content img,
+.page-birthdays .views-field-product-id .field-content img,
+.page-chinese-new-year .views-field-field-card-sample-image .field-content img,
+.page-chinese-new-year .views-field-product-id .field-content img,
+.page-christmas .views-field-field-card-sample-image .field-content img,
+.page-christmas .views-field-product-id .field-content img,
+.page-congratulations .views-field-field-card-sample-image .field-content img,
+.page-congratulations .views-field-product-id .field-content img,
+.page-easter .views-field-field-card-sample-image .field-content img,
+.page-easter .views-field-product-id .field-content img,
+.page-engagement .views-field-field-card-sample-image .field-content img,
+.page-engagement .views-field-product-id .field-content img,
+.page-exams .views-field-field-card-sample-image .field-content img,
+.page-exams .views-field-product-id .field-content img,
+.page-friendship .views-field-field-card-sample-image .field-content img,
+.page-friendship .views-field-product-id .field-content img,
+.page-get-well .views-field-field-card-sample-image .field-content img,
+.page-get-well .views-field-product-id .field-content img,
+.page-good-bye .views-field-field-card-sample-image .field-content img,
+.page-good-bye .views-field-product-id .field-content img,
+.page-good-luck .views-field-field-card-sample-image .field-content img,
+.page-good-luck .views-field-product-id .field-content img,
+.page-greeting-cards .views-field-field-card-sample-image .field-content img,
+.page-greeting-cards .views-field-product-id .field-content img,
+.page-halloween .views-field-field-card-sample-image .field-content img,
+.page-halloween .views-field-product-id .field-content img,
+.page-new-baby .views-field-field-card-sample-image .field-content img,
+.page-new-baby .views-field-product-id .field-content img,
+.page-new-year .views-field-field-card-sample-image .field-content img,
+.page-new-year .views-field-product-id .field-content img,
+.page-photo-cards .views-field-field-card-sample-image .field-content img,
+.page-photo-cards .views-field-product-id .field-content img,
+.page-singapore .views-field-field-card-sample-image .field-content img,
+.page-singapore .views-field-product-id .field-content img,
+.page-sympathy .views-field-field-card-sample-image .field-content img,
+.page-sympathy .views-field-product-id .field-content img,
+.page-teachers-day .views-field-field-card-sample-image .field-content img,
+.page-teachers-day .views-field-product-id .field-content img,
+.page-thanksgiving .views-field-field-card-sample-image .field-content img,
+.page-thanksgiving .views-field-product-id .field-content img,
+.page-thank-you .views-field-field-card-sample-image .field-content img,
+.page-thank-you .views-field-product-id .field-content img,
+.page-valentines-day .views-field-field-card-sample-image .field-content img,
+.page-valentines-day .views-field-product-id .field-content img,
+.page-weddings .views-field-field-card-sample-image .field-content img,
+.page-weddings .views-field-product-id .field-content img {
+  /*max-height: 280px;*/
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
+    display: inline-block;
+    max-height: 360px;
+    width: 100%;
+    margin-bottom: 21px;
+}
+
+.page-all-cards .views-field-path .field-content,
+.page-all-cards .views-field-url .field-content,
+.page-anniversaries .views-field-path .field-content,
+.page-anniversaries .views-field-url .field-content,
+.page-birthdays .views-field-path .field-content,
+.page-birthdays .views-field-url .field-content,
+.page-chinese-new-year .views-field-path .field-content,
+.page-chinese-new-year .views-field-url .field-content,
+.page-christmas .views-field-path .field-content,
+.page-christmas .views-field-url .field-content,
+.page-congratulations .views-field-path .field-content,
+.page-congratulations .views-field-url .field-content,
+.page-easter .views-field-path .field-content,
+.page-easter .views-field-url .field-content, 
+.page-engagement .views-field-path .field-content,
+.page-engagement .views-field-url .field-content,
+.page-exams .views-field-path .field-content,
+.page-exams .views-field-url .field-content,
+.page-friendship .views-field-path .field-content,
+.page-friendship .views-field-url .field-content,
+.page-get-well .views-field-path .field-content,
+.page-get-well .views-field-url .field-content,
+.page-good-bye .views-field-path .field-content,
+.page-good-bye .views-field-url .field-content,
+.page-good-luck .views-field-path .field-content,
+.page-good-luck .views-field-url .field-content,
+.page-greeting-cards .views-field-path .field-content,
+.page-greeting-cards .views-field-url .field-content,
+.page-halloween .views-field-path .field-content,
+.page-halloween .views-field-url .field-content,
+.page-new-baby .views-field-path .field-content,
+.page-new-baby .views-field-url .field-content,
+.page-new-year .views-field-path .field-content,
+.page-new-year .views-field-url .field-content,
+.page-photo-cards .views-field-path .field-content,
+.page-photo-cards .views-field-url .field-content,
+.page-singapore .views-field-path .field-content,
+.page-singapore .views-field-url .field-content,
+.page-sympathy .views-field-path .field-content,
+.page-sympathy .views-field-url .field-content,
+.page-teachers-day .views-field-path .field-content,
+.page-teachers-day .views-field-url .field-content,
+.page-thanksgiving .views-field-path .field-content,
+.page-thanksgiving .views-field-url .field-content,
+.page-thank-you .views-field-path .field-content,
+.page-thank-you .views-field-url .field-content,
+.page-valentines-day .views-field-path .field-content,
+.page-valentines-day .views-field-url .field-content,
+.page-weddings .views-field-path .field-content,
+.page-weddings .views-field-url .field-content {
+  text-align: center; display: block;
+}
+
+.page-all-cards .view-all-cards .views-exposed-form select,
+.page-greeting-cards .view-all-cards .views-exposed-form select,
+.page-photo-cards .view-all-cards .views-exposed-form select,
+.page-anniversaries .view-all-cards .views-exposed-form select,
+.page-birthdays .view-all-cards .views-exposed-form select,
+.page-chinese-new-year .view-all-cards .views-exposed-form select,
+.page-christmas .view-all-cards .views-exposed-form select,
+.page-congratulations .view-all-cards .views-exposed-form select,
+.page-easter .view-all-cards .views-exposed-form select,
+.page-engagement .view-all-cards .views-exposed-form select,
+.page-exams .view-all-cards .views-exposed-form select,
+.page-friendship .view-all-cards .views-exposed-form select,
+.page-get-well .view-all-cards .views-exposed-form select,
+.page-good-bye .view-all-cards .views-exposed-form select,
+.page-good-luck .view-all-cards .views-exposed-form select,
+.page-halloween .view-all-cards .views-exposed-form select,
+.page-new-baby .view-all-cards .views-exposed-form select,
+.page-new-year .view-all-cards .views-exposed-form select,
+.page-singapore .view-all-cards .views-exposed-form select,
+.page-sympathy .view-all-cards .views-exposed-form select,
+.page-teachers-day .view-all-cards .views-exposed-form select,
+.page-thank-you .view-all-cards .views-exposed-form select,
+.page-thanksgiving .view-all-cards .views-exposed-form select,
+.page-valentines-day .view-all-cards .views-exposed-form select,
+.page-weddings .view-all-cards .views-exposed-form select {
+  background-color: #f1f1f1;
+  border-color: #ccc;
+  outline: medium none;
+  padding: 5px 10px ;
+}
+
+.page-all-cards .views-exposed-form .views-widget,
+.page-greeting-cards .views-exposed-form .views-widget,
+.page-photo-cards .views-exposed-form .views-widget,
+.page-anniversaries .views-exposed-form .views-widget,
+.page-birthdays .views-exposed-form .views-widget,
+.page-chinese-new-year .views-exposed-form .views-widget,
+.page-christmas .views-exposed-form .views-widget,
+.page-congratulations .views-exposed-form .views-widget,
+.page-easter .views-exposed-form .views-widget
+.page-engagement .views-exposed-form .views-widget,
+.page-exams .views-exposed-form .views-widget,
+.page-friendship .views-exposed-form .views-widget,
+.page-get-well .views-exposed-form .views-widget,
+.page-good-bye .views-exposed-form .views-widget,
+.page-good-luck .views-exposed-form .views-widget,
+.page-halloween .views-exposed-form .views-widget,
+.page-new-baby .views-exposed-form .views-widget,
+.page-new-year .views-exposed-form .views-widget,
+.page-singapore .views-exposed-form .views-widget,
+.page-sympathy .views-exposed-form .views-widget,
+.page-teachers-day .views-exposed-form .views-widget,
+.page-thank-you .views-exposed-form .views-widget,
+.page-thanksgiving .views-exposed-form .views-widget,
+.page-valentines-day .views-exposed-form .views-widget,
+.page-weddings .views-exposed-form .views-widget {
+  display: inline-block;
+}
+
+.page-all-cards .views-exposed-form .form-control,
+.page-greeting-cards .views-exposed-form .form-control,
+.page-photo-cards .views-exposed-form .form-control,
+.page-anniversaries .views-exposed-form .form-control,
+.page-birthdays .views-exposed-form .form-control,
+.page-chinese-new-year .views-exposed-form .form-control,
+.page-christmas .views-exposed-form .form-control,
+.page-congratulations .views-exposed-form .form-control,
+.page-easter .views-exposed-form .form-control,
+.page-engagement .views-exposed-form .form-control,
+.page-exams .views-exposed-form .form-control,
+.page-friendship .views-exposed-form .form-control,
+.page-get-well .views-exposed-form .form-control,
+.page-good-bye .views-exposed-form .form-control,
+.page-good-luck .views-exposed-form .form-control,
+.page-halloween .views-exposed-form .form-control,
+.page-new-baby .views-exposed-form .form-control,
+.page-new-year .views-exposed-form .form-control,
+.page-singapore .views-exposed-form .form-control,
+.page-sympathy .views-exposed-form .form-control,
+.page-teachers-day .views-exposed-form .form-control,
+.page-thank-you .views-exposed-form .form-control,
+.page-thanksgiving .views-exposed-form .form-control,
+.page-valentines-day .views-exposed-form .form-control,
+.page-weddings .views-exposed-form .form-control {
+  display: inline-block; width: auto;
+}
+
+.page-all-cards .views-exposed-form .views-exposed-widget,
+.page-greeting-cards .views-exposed-form .views-exposed-widget,
+.page-photo-cards .views-exposed-form .views-exposed-widget,
+.page-anniversaries .views-exposed-form .views-exposed-widget,
+.page-birthdays .views-exposed-form .views-exposed-widget,
+.page-chinese-new-year .views-exposed-form .views-exposed-widget,
+.page-christmas .views-exposed-form .views-exposed-widget,
+.page-congratulations .views-exposed-form .views-exposed-widget,
+.page-easter .views-exposed-form .views-exposed-widget,
+.page-engagement .views-exposed-form .views-exposed-widget,
+.page-exams .views-exposed-form .views-exposed-widget,
+.page-friendship .views-exposed-form .views-exposed-widget,
+.page-get-well .views-exposed-form .views-exposed-widget,
+.page-good-bye .views-exposed-form .views-exposed-widget,
+.page-good-luck .views-exposed-form .views-exposed-widget,
+.page-halloween .views-exposed-form .views-exposed-widget,
+.page-new-baby .views-exposed-form .views-exposed-widget,
+.page-new-year .views-exposed-form .views-exposed-widget,
+.page-singapore .views-exposed-form .views-exposed-widget,
+.page-sympathy .views-exposed-form .views-exposed-widget,
+.page-teachers-day .views-exposed-form .views-exposed-widget,
+.page-thank-you .views-exposed-form .views-exposed-widget,
+.page-thanksgiving .views-exposed-form .views-exposed-widget,
+.page-valentines-day .views-exposed-form .views-exposed-widget,
+.page-weddings .views-exposed-form .views-exposed-widget {
+  float: right; margin-bottom: 10px; min-width: 50px;
+}
+
+.page-all-cards .view-content::after, .view-content::before,
+.page-greeting-cards .view-content::after, .view-content::before,
+.page-photo-cards .view-content::after, .view-content::before,
+.page-anniversaries .view-content::after, .view-content::before,
+.page-birthdays .view-content::after, .view-content::before,
+.page-chinese-new-year .view-content::after, .view-content::before,
+.page-christmas .view-content::after, .view-content::before,
+.page-congratulations .view-content::after, .view-content::before,
+.page-easter .view-content::after, .view-content::before,
+.page-engagement .view-content::after, .view-content::before,
+.page-exams .view-content::after, .view-content::before,
+.page-friendship .view-content::after, .view-content::before,
+.page-get-well .view-content::after, .view-content::before,
+.page-good-bye .view-content::after, .view-content::before,
+.page-good-luck .view-content::after, .view-content::before,
+.page-halloween .view-content::after, .view-content::before,
+.page-new-baby .view-content::after, .view-content::before,
+.page-new-year .view-content::after, .view-content::before,
+.page-singapore .view-content::after, .view-content::before,
+.page-sympathy .view-content::after, .view-content::before,
+.page-teachers-day .view-content::after, .view-content::before,
+.page-thank-you .view-content::after, .view-content::before,
+.page-thanksgiving .view-content::after, .view-content::before,
+.page-valentines-day .view-content::after, .view-content::before,
+.page-weddings .view-content::after, .view-content::before {
+  clear: both;
+  content: "";
+  display: table;
+}
+
+#views-exposed-form-all-cards-page #edit-submit-all-cards,
+#views-exposed-form-greeting-cards-page #edit-submit-greeting-cards,
+#views-exposed-form-photo-cards-page #edit-submit-photo-cards,
+#views-exposed-form-anniversaries-page #edit-submit-anniversaries,
+#views-exposed-form-birthdays-page #edit-submit-birthdays,
+#views-exposed-form-chinese-new-year-page #edit-submit-chinese-new-year,
+#views-exposed-form-christmas-page #edit-submit-christmas,
+#views-exposed-form-congratulations-page #edit-submit-congratulations,
+#views-exposed-form-easter-page #edit-submit-easter,
+#views-exposed-form-engagement-page #edit-submit-engagement,
+#views-exposed-form-exams-page #edit-submit-exams,
+#views-exposed-form-friendship-page #edit-submit-friendship,
+#views-exposed-form-get-well-page #edit-submit-get-well,
+#views-exposed-form-good-bye-page #edit-submit-good-bye,
+#views-exposed-form-good-luck-page #edit-submit-good-luck,
+#views-exposed-form-halloween-page #edit-submit-halloween,
+#views-exposed-form-new-baby-page #edit-submit-new-baby,
+#views-exposed-form-new-year-page #edit-submit-new-year,
+#views-exposed-form-singapore-page #edit-submit-singapore,
+#views-exposed-form-sympathy-page #edit-submit-sympathy,
+#views-exposed-form-teachers-day-page #edit-submit-teachers-day,
+#views-exposed-form-thank-you-page #edit-submit-thank-you,
+#views-exposed-form-thanksgiving-page #edit-submit-thanksgiving,
+#views-exposed-form-valentines-day-page #edit-submit-valentines-day,
+#views-exposed-form-weddings-page #edit-submit-weddings {
+    display: none;
+}
+
+.view-all-cards .views-exposed-form select,
+.view-greeting-cards .views-exposed-form select,
+.view-photo-cards .views-exposed-form select,
+.view-anniversaries .views-exposed-form select,
+.view-birthdays .views-exposed-form select,
+.view-chinese-new-year .views-exposed-form select,
+.view-christmas .views-exposed-form select,
+.view-congratulations .views-exposed-form select,
+.view-easter .views-exposed-form select,
+.view-engagement .views-exposed-form select,
+.view-exams .views-exposed-form select,
+.view-friendship .views-exposed-form select,
+.view-get-well .views-exposed-form select,
+.view-good-bye .views-exposed-form select,
+.view-good-luck .views-exposed-form select,
+.view-halloween .views-exposed-form select,
+.view-new-baby .views-exposed-form select,
+.view-new-year .views-exposed-form select,
+.view-singapore .views-exposed-form select,
+.view-sympathy .views-exposed-form select,
+.view-teachers-day .views-exposed-form select,
+.view-thank-you .views-exposed-form select,
+.view-thanksgiving .views-exposed-form select,
+.view-valentines-day .views-exposed-form select,
+.view-weddings .views-exposed-form select{
+  width: 100%;
+  padding: .8em;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  box-shadow: none;
+}
+
+.view-all-cards .views-exposed-form select,
+.view-greeting-cards .views-exposed-form select,
+.view-photo-cards .views-exposed-form select,
+.view-anniversaries .views-exposed-form select,
+.view-birthdays .views-exposed-form select,
+.view-chinese-new-year .views-exposed-form select,
+.view-christmas .views-exposed-form select,
+.view-congratulations .views-exposed-form select,
+.view-easter .views-exposed-form select,
+.view-engagement .views-exposed-form select,
+.view-exams .views-exposed-form select,
+.view-friendship .views-exposed-form select,
+.view-get-well .views-exposed-form select,
+.view-good-bye .views-exposed-form select,
+.view-good-luck .views-exposed-form select,
+.view-halloween .views-exposed-form select,
+.view-new-baby .views-exposed-form select,
+.view-new-year .views-exposed-form select,
+.view-singapore .views-exposed-form select,
+.view-sympathy .views-exposed-form select,
+.view-teachers-day .views-exposed-form select,
+.view-thank-you .views-exposed-form select,
+.view-thanksgiving .views-exposed-form select,
+.view-valentines-day .views-exposed-form select,
+.view-weddings .views-exposed-form select {
+  /* shared style for input elements */
+  font-family: "Open Sans", sans-serif;
+  border-radius: 15px;
+  background-color: #f5f5f5;
+  border: 1px solid #e9e9e9;
+}
+
+.view-all-cards .views-exposed-form select,
+.view-greeting-cards .views-exposed-form select,
+.view-photo-cards .views-exposed-form select,
+.view-anniversaries .views-exposed-form select,
+.view-birthdays .views-exposed-form select,
+.view-chinese-new-year .views-exposed-form select,
+.view-christmas .views-exposed-form select,
+.view-congratulations .views-exposed-form select,
+.view-easter .views-exposed-form select,
+.view-engagement .views-exposed-form select,
+.view-exams .views-exposed-form select,
+.view-friendship .views-exposed-form select,
+.view-get-well .views-exposed-form select,
+.view-good-bye .views-exposed-form select,
+.view-good-luck .views-exposed-form select,
+.view-halloween .views-exposed-form select,
+.view-new-baby .views-exposed-form select,
+.view-new-year .views-exposed-form select,
+.view-singapore .views-exposed-form select,
+.view-sympathy .views-exposed-form select,
+.view-teachers-day .views-exposed-form select,
+.view-thank-you .views-exposed-form select,
+.view-thanksgiving .views-exposed-form select,
+.view-valentines-day .views-exposed-form select,
+.view-weddings .views-exposed-form select {
+  width: 100%;
+  padding: .8em;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  box-shadow: none;
+}
+
+.view-all-cards .views-exposed-form select,
+.view-greeting-cards .views-exposed-form select,
+.view-photo-cards .views-exposed-form select,
+.view-anniversaries .views-exposed-form select,
+.view-birthdays .views-exposed-form select,
+.view-chinese-new-year .views-exposed-form select,
+.view-christmas .views-exposed-form select,
+.view-congratulations .views-exposed-form select,
+.view-easter .views-exposed-form select,
+.view-engagement .views-exposed-form select,
+.view-exams .views-exposed-form select,
+.view-friendship .views-exposed-form select,
+.view-get-well .views-exposed-form select,
+.view-good-bye .views-exposed-form select,
+.view-good-luck .views-exposed-form select,
+.view-halloween .views-exposed-form select,
+.view-new-baby .views-exposed-form select,
+.view-new-year .views-exposed-form select,
+.view-singapore .views-exposed-form select,
+.view-sympathy .views-exposed-form select,
+.view-teachers-day .views-exposed-form select,
+.view-thank-you .views-exposed-form select,
+.view-thanksgiving .views-exposed-form select,
+.view-valentines-day .views-exposed-form select,
+.view-weddings .views-exposed-form select {
+  outline: none;
+  background-color: #ffffff;
+  border-color: #41307c;
+}
+
+.view-all-cards .pager-load-more a,
+.view-greeting-cards .pager-load-more a,
+.view-photo-cards .pager-load-more a,
+.view-anniversaries .pager-load-more a,
+.view-birthdays .pager-load-more a,
+.view-chinese-new-year .pager-load-more a,
+.view-christmas .pager-load-more a,
+.view-congratulations .pager-load-more a,
+.view-easter .pager-load-more a,
+.view-engagement .pager-load-more a,
+.view-exams .pager-load-more a,
+.view-friendship .pager-load-more a,
+.view-get-well .pager-load-more a,
+.view-good-bye .pager-load-more a,
+.view-good-luck .pager-load-more a,
+.view-halloween .pager-load-more a,
+.view-new-baby .pager-load-more a,
+.view-new-year .pager-load-more a,
+.view-singapore .pager-load-more a,
+.view-sympathy .pager-load-more a,
+.view-teachers-day .pager-load-more a,
+.view-thank-you .pager-load-more a,
+.view-thanksgiving .pager-load-more a,
+.view-valentines-day .pager-load-more a,
+.view-weddings .pager-load-more a  {
+    height: 57px;
+    line-height: 57px;
+    margin: 6px 0 33px;
+    padding: 0;
+    width: 351px;
+}
+
+.view-all-cards .pager-load-more a,
+.view-greeting-cards .pager-load-more a,
+.view-photo-cards .pager-load-more a,
+.view-anniversaries .pager-load-more a,
+.view-birthdays .pager-load-more a,
+.view-chinese-new-year .pager-load-more a,
+.view-christmas .pager-load-more a,
+.view-congratulations .pager-load-more a,
+.view-easter .pager-load-more a,
+.view-engagement .pager-load-more a,
+.view-exams .pager-load-more a,
+.view-friendship .pager-load-more a,
+.view-get-well .pager-load-more a,
+.view-good-bye .pager-load-more a,
+.view-good-luck .pager-load-more a,
+.view-halloween .pager-load-more a,
+.view-new-baby .pager-load-more a,
+.view-new-year .pager-load-more a,
+.view-singapore .pager-load-more a,
+.view-sympathy .pager-load-more a,
+.view-teachers-day .pager-load-more a,
+.view-thank-you .pager-load-more a,
+.view-thanksgiving .pager-load-more a,
+.view-valentines-day .pager-load-more a,
+.view-weddings .pager-load-more a {
+    background: #b4e97a none repeat scroll 0 0;
+    border: medium none;
+    border-radius: 30px;
+    color: #2e4c0d;
+    display: inline-block;
+    font-family: "PantonW01-Bold";
+    font-size: 14px;
+    margin-top: 10px;
+    text-transform: uppercase;
+    transition: all 0.2s ease-in-out 0s;
+}
+
+.view-all-cards .pager-load-more a:hover,
+.view-greeting-cards .pager-load-more a:hover,
+.view-photo-cards .pager-load-more a:hover,
+.view-anniversaries .pager-load-more a:hover,
+.view-birthdays .pager-load-more a:hover,
+.view-chinese-new-year .pager-load-more a:hover,
+.view-christmas .pager-load-more a:hover,
+.view-congratulations .pager-load-more a:hover,
+.view-easter .pager-load-more a:hover,
+.view-engagement .pager-load-more a:hover,
+.view-exams .pager-load-more a:hover,
+.view-friendship .pager-load-more a:hover,
+.view-get-well .pager-load-more a:hover,
+.view-good-bye .pager-load-more a:hover,
+.view-good-luck .pager-load-more a:hover,
+.view-halloween .pager-load-more a:hover,
+.view-new-baby .pager-load-more a:hover,
+.view-new-year .pager-load-more a:hover,
+.view-singapore .pager-load-more a:hover,
+.view-sympathy .pager-load-more a:hover,
+.view-teachers-day .pager-load-more a:hover,
+.view-thank-you .pager-load-more a:hover,
+.view-thanksgiving .pager-load-more a:hover,
+.view-valentines-day .pager-load-more a:hover,
+.view-weddings .pager-load-more a:hover {
+    background: rgba(3, 89, 122, 0.9) none repeat scroll 0 0;
+    color: #fff;
+    transition: all 0.2s ease-in-out 0s;
+}
+
+
+
+
+/****23 june css changes**/
+
+.preview_page  .content-area canvas{
+  border: none;
+}
+
+
+.page-user-addressbook .views-view-grid td{
+    padding: 5px 5px 50px;
+}
+
+
+.inlay_verticle .column {
+  float: left;
+  margin: 2px;
+  width: 35.5%;
+}
+.inlay_verticle .column.margin0 {
+    width: 28%;
+}
+
+.content-area {
+    margin-bottom: 18px;
+}
+#vertical_slider .slick-slide a {
+  display: block;
+  text-align: center;
+}
+#vertical_slider{padding: 20px 0px;}
+#vertical_slider .slick-slide a img{display: inline-block; width: 100px; max-width: 100%; margin: 0 !important; padding: 0px;}
+.slider_left .tool-title {
+  margin-top: 22px;
+  text-align: center;
+}
+
+/**inlay_page**/
+.inlay_verticle .column:nth-child(2) {
+  margin-left: 0px;
+}
+.inlay_verticle {
+  background: #f4f4f4 none repeat scroll 0 0;
+  float: none;
+  margin: 0 auto;
+  padding: 10px 20px 20px 20px;
+  width: 84%;
+  border-radius: 10px;
+}
+.inlay_verticle .column {
+  float: left;
+  margin: 0;
+  width: 50%;
+}
+.column.col_inlay_right {
+  width: 15%;
+}
+.inlay_verticle .canvas-board{padding: 0px; background: none; margin-top: 0px;}
+
+/* .top_button_list {
+  border-bottom: 1px solid rgba(197, 197, 197, 0.4);
+  float: left;
+  margin-top: -20px;
+  width: 100%;
+} */
+.top_button_list {
+  float: none;
+  margin-top: 0;
+  width: 100%;
+  display: block;
+  margin-bottom: 15px;
+  text-align: center;
+}
+.top_button_list li{
+  display: inline-block;
+}
+.top_button_list li a{
+  display: block;
+  height: 32px;
+  width: 25px;
+  background-image:url("../images/svg/save.svg");
+  background-repeat: no-repeat;
+  background-position: 0 0; 
+  position: relative;
+    top: 6px;
+}
+.top_button_list > ul {
+  display: inline-block;
+  margin-right: 7px;
+}
+.top_button_list > ul:last-child{margin-right: 0px;}
+
+.top_button_list li a.clip_open_icon{background-image:url("../images/svg/clear_all.svg");}
+.top_button_list li a.clip_del_icon{background-image:url("../images/svg/delete.svg");}
+.top_button_list li a.clip_undo_icon{background-image:url("../images/svg/undo.svg");}
+.top_button_list li a.clip_copy_icon{background-image:url("../images/svg/copy.svg");}
+.top_button_list li a.clip_cut_icon{background-image:url("../images/svg/cut.svg");}
+.top_button_list li a.clip_paste_icon{background-image:url("../images/svg/paste.svg");}
+.top_button_list li a.clip_box_icon1{background-image:url("../images/svg/move_front.svg");background-size: 25px auto;}
+.top_button_list li a.clip_box_icon2{background-image:url("../images/svg/move_back.svg");background-size: 25px auto;}
+.top_button_list li a.clip_box_icon3{background-image:url("../images/svg/Send_to_front.svg");background-size: 30px auto;width: 30px;}
+.top_button_list li a.clip_box_icon4{background-image:url("../images/svg/Send_to_back.svg");background-size: 30px auto;width: 30px;}
+.top_button_list li a.clip_box_icon5{background-image:url("../images/svg/grid-off.png");background-size: 31px 32px; width: 31px;}
+
+.canvas_left_space .top_button_list li,.inlay_verticle .top_button_list li {
+  padding: 0 5px;
+}
+/*.top_button_list li a.clip_open_icon{background-position: -32px 0px;}
+.top_button_list li a.clip_del_icon{background-position: -64px 0px;}
+.top_button_list li a.clip_undo_icon{background-position: -94px 0px;}
+.top_button_list li a.clip_copy_icon{background-position: -124px 0px;}
+.top_button_list li a.clip_cut_icon{background-position: -156px 0px;}
+.top_button_list li a.clip_paste_icon{background-position: -186px 0px;}
+.top_button_list li a.clip_box_icon1{background-position: -222px 0px;}
+.top_button_list li a.clip_box_icon2{background-position: -259px 0px;}
+.top_button_list li a.clip_box_icon3{background-position: -295px 0px;}
+.top_button_list li a.clip_box_icon4{background-position: -327px 0px;}*/
+
+.slider_left {
+  background: #f4f4f4 none repeat scroll 0 0;
+  border-radius: 10px;
+  float: right;
+  margin-right: -23px;
+  margin-top: 22px;
+  padding: 5px;
+  width: 125px;
+}
+.outlay_can_board{
+  /* padding: 32px;
+  background: #f4f4f4; */
+  border-radius: 0px;
+  /* box-shadow: 0 9px 12px rgba(0,0,0,.3); */
+  /* position: relative;
+  overflow: hidden; */
+}
+.outlay_can_board .canvas-board{
+  padding: 0px;
+  background: none;
+}
+.outlay_can_board  .top_button_list > ul {
+  display: inline-block;
+  margin-right: 5px;
+ /* margin-top: -18px;*/
+  width: auto;
+}
+.top_button_list::after, .top_button_list::before {
+  clear: both;
+  content: "";
+  display: table;
+}
+.preview_page .column:nth-child(1) .canvas-board {
+  margin-top: 0;
+}
+.preview_page .column{
+  width: 32.7%;
+}
+
+
+/** landcape css start ***/
+.slider_bottom {
+  background: #f4f4f4 none repeat scroll 0 0;
+  border-radius: 20px;
+  margin-top: 20px;
+  padding: 10px 20px;
+}
+.slider_bottom .tool-title{display: inline-block; width: 13%; vertical-align: top; padding-top: 43px;}
+.slider_bottom .sample-cards{
+  display: inline-block;
+  width: 85%;
+  }
+  .slider_bottom .sample-cards .slick-prev, .slider_bottom .sample-cards .slick-next{
+    top: 50%;
+    left: -20px;
+    bottom: auto;
+  }
+  .slider_bottom .sample-cards .slick-next{
+    left: auto;
+    right: -20px;
+  }
+  .slider_bottom .sample-cards .slick-prev::before{
+    content: "\f100" !important;
+  }
+  .slider_bottom .sample-cards .slick-next::before{
+    content: "\f101" !important;
+  }
+.landscape .outlay_can_board .top_button_list > ul{
+  /*display: table-cell;
+  width: 1%;*/
+  margin: 0 10px 0 0;
+}
+.landscape .outlay_can_board .top_button_list.button_left > ul:last-child{
+  margin-right: 0;
+  /* float: left; */
+}
+.landscape .outlay_can_board .top_button_list > ul:last-child{
+  margin-right: 0;
+  /* float: right; */
+}
+
+
+.landscape .outlay_can_board .top_button_list {
+  /* margin-top: -41px; */
+  display: block;
+  float: none;
+  margin-bottom: 15px;
+}
+.landscape .tool_1 .container {
+  width: 1110px;
+  max-width: 100%;
+}
+.landscape .select-emoji-section li{width: 80px;}
+.inlay_vertical_landscape .inlay_verticle .column{width: 100%; margin: 0;}
+.tool_4 .tool-bar .ff-select{min-width: 130px;}
+.tool_4 .tool-bar .fs-select{min-width: 62px;}
+.inlay_vertical_landscape .container {
+  width: 1169px;
+}
+.inlay_vertical_landscape .inlay_verticle{width: 63.39%;}
+.inlay_vertical_landscape .column.col_inlay_right{width: 30%;}
+.select-emoji-section li{margin-right: 10px;}
+.landscape .preview_page{
+  width: 700px;
+  margin: 0 auto;
+}
+.landscape .preview_page .column{width: 100%;}
+.landscape .preview_page .column .canvas-board{min-height: inherit;}
+.landscape .preview_page .canvas_duumy_image {
+  background: #fff none repeat scroll 0 0;
+  padding: 10px;
+}
+.landscape .tool_4 .tool-bar{min-height: inherit;}
+
+
+.expand li.main-search .search-box::-webkit-input-placeholder{color: #fff;}
+.expand li.main-search .search-box:-moz-placeholder{color:#fff;}
+.expand li.main-search .search-box::-moz-placeholder{color:#fff;}
+.expand li.main-search .search-box:-ms-input-placeholder{ color:#fff;}
+/** .landscape {padding-bottom: 15px;} **/
+.top_button_list li a:hover {
+  opacity: 0.4;
+}
+
+
+/**  delivery page css start**/
+.delivery_page_main .delivery_main {
+  margin: 30px 0;
+  border-radius: 10px;
+}
+.delivery_page_main .delivery_main  h2{padding-bottom: 20px;}
+.delivery_add2cart_button {
+  display: inline-block;
+  vertical-align: top;
+}
+.delivery_add2cart_button button{
+  background: #f8eb00 !important;
+  text-transform: uppercase;
+  font-size: 14px;
+  padding:10px 20px;
+  border:none;
+  color: #333 !important;
+  border-radius: 30px;
+  font-family: 'PantonW01-Bold';
+  margin-top: 10px;
+  display: inline-block;
+  -webkit-transition: all 0.2s ease-in-out; 
+  -moz-transition: all 0.2s ease-in-out; 
+  transition: all 0.2s ease-in-out;
+}
+.delivery_add2cart_button button:hover {
+  background: rgba(3, 89, 122, 0.9) none repeat scroll 0 0;
+  color: #fff;
+}
+.delivery_bottombtn .form-group{margin-bottom: 0px;}
+.delivery_page_main #addressbook-select-form .radio {
+  background: #f5f5f5;
+  display: inline-block;
+  margin-right: 1%;
+  width: 32%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.delivery_page_main #addressbook-select-form .radio label {
+  display: block;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+.delivery_page_main #addressbook{line-height: 24px;}
+.delivery_page_main #addressbook-select-form .radio input:checked ~ #addressbook::after {
+  content: "";
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: -1;
+  border: 3px solid #b4e97a;
+  border-radius: 10px;
+}
+.delivery_page_main #addressbook-select-form .radio label > input{
+  opacity: 0;
+}
+.delivery_page_main .radio:last-child{
+  margin-bottom: 10px;
+}
+.delivery_page_main #addressbook-select-form .radio + .radio{margin-top: 0px;}
+#edit-reset {
+  background: #f8eb00 none repeat scroll 0 0;
+  border: medium none;
+  color: #333;
+  height: 40px;
+  padding: 10px 20px;
+}
+#edit-reset:hover{
+  background: #00aff3 ;
+}
+.delivery_add2cart_button button:hover{
+  background: rgba(3,89,122,0.9) !important;
+  color: #fff !important;
+}
+.view-commerce-cart-form-custom #cart_card_image,
+#commerce-checkout-form-complete .view-commerce-line-item-table #cart_card_image, .view-commerce-cart-summary #cart_card_image,  .view-line-items-custom #cart_card_image {
+    max-height: 200px;
+    max-width: 150px;
+}
+
+#commerce-checkout-form-complete .view-commerce-line-item-table #cart_card_image {
+	margin-right: 20px;	
+}
+
+/***19 July Tool css canvas size*/
+
+.landscape .outlay_can_board{
+  /* padding: 29px;
+  background: #f4f4f4;
+  border-radius: 20px; */
+}
+
+.landscape .slider_bottom .tool-title {
+    padding-top: 20px;
+}
+
+#portrait .tool_4 #inlayText-tool .color-swatch {
+    float: left;
+    height: 180px;
+    width: 160px;
+}
+#portrait  .tool_4 .inlay_verticle {
+
+    padding: 10px 10px 20px;
+    
+}
+
+.tool_4 .photo-upload-section {
+    border-radius: 4px;
+    padding: 15px;
+}
+.tool_4 .select-device {
+    float: none;
+    width: 100%;
+}
+
+.tool_4 .select-social-media {
+    border-top: 1px solid #e9e9e9;
+     border-left: medium none;
+    float: right;
+    padding-left: 0;
+    width: 100%;
+}
+
+/*****20 July Csss****/
+
+.main-search .search-wrap{
+
+  background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #70cee9 0%, #00aff3 100%) repeat scroll 0 0;
+}
+
+.mycart button,
+#commerce-checkout-form-checkout .panel-heading,
+#commerce-checkout-form-complete .panel-heading{
+
+  background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #70cee9 0%, #00aff3 100%) repeat scroll 0 0;
+}
+.page-admin .nav-tabs {
+    margin-bottom: 0;
+}
+
+
+#portrait .tool_4 .tool-board .tab-content{
+   padding: 44px 10px 37px;
+}
+#portrait .tool_4 .select-emoji-section li {
+  background: #fff none repeat scroll 0 0;
+  border: 1px solid #e9e9e9;
+  border-radius: 5px;
+  float: left;
+  font-size: 40px;
+  height: 71px;
+  line-height: 66px;
+  margin-bottom: 20px;
+  margin-right: 5px;
+  text-align: center;
+  width: 71px;
+}
+#portrait .tool_4 .select-social-media {
+  margin-top: 10px;
+ padding-top: 10px;
+}
+
+.page-user-addressbook .btn-success {
+  background: #f8eb00 none repeat scroll 0 0;
+  border-color: #f8eb00;
+  color: #000;
+  padding: 8px 10px;
+  font-size: 14px;
+}
+.page-user-addressbook .pagination > li > a,
+.page-user-addressbook .pagination > li > span{
+  background: #f5f5f5;
+  color: #1d1d1d !important;
+  font-size: 14px;
+  padding: 8px 10px;
+}
+.page-user-addressbook .pagination-sm > li:first-child{
+  float: right;
+}
+.page-user-addressbook .pagination-sm > li:last-child{
+  float: left;
+}
+.page-user-addressbook .pagination > li:first-child a {
+    border-radius: 0 5px 5px 0;
+}
+.page-user-addressbook .pagination > li:last-child a {
+    border-radius: 5px 0 0 5px;
+}
+.page-user-addressbook .pagination > li.active > a,
+.page-user-addressbook .pagination > li.active > span,
+.page-user-addressbook .pagination > li > a:hover,
+.page-user-addressbook .pagination > li > span:hover{
+  background-color: #b4e97a;
+  border-color: #b4e97a;
+}
+.header_sec .navbar-default .navbar-nav > .active > a,
+.header_sec .navbar-default .navbar-nav > .active > a:focus {
+  color: #00aff3 !important;
+}
+
+.home-card-button .title.text-center h2{
+  color:#777;  
+}
+
+/*****25 July css****/
+
+.header-cart table.views-table tr a {
+  font-size: 12px;
+  font-weight: 400;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.header-cart .line-item-total {
+  display: inline-block;
+  padding-right: 10px;
+}
+..header-cart line-item-summary .line-item-quantity {
+  float: left;
+  padding-left: 10px;
+}
+.header-cart .view-footer .line-item-summary {
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+.header-cart .line-item-summary .links {
+  border-top: 1px solid #ddd;
+  margin-left: 0;
+  padding-top: 10px;
+}
+.header-cart .line-item-summary .links li a {
+  font-weight: 500;
+  margin: 0;
+  padding-right: 10px;
+}
+.mycart button .total-item {
+  background-color: #b4e97a;
+  border-radius: 50%;
+  color: #000;
+  font-size: 10px;
+  height: 20px;
+  line-height: 20px;
+  position: absolute;
+  right: 12px;
+  text-align: center;
+  top: 5px;
+  width: 20px;
+  z-index: 2;
+}
+.header-cart .line-item-quantity {
+  padding-left: 10px;
+}
+.line-item-summary .links li.last a {
+  background-color: #b4e97a;
+  color: #000;
+}
+.header-cart .line-item-summary .links li a {
+    background-color: #46c2ed;
+    border-radius: 0;
+    color: #fff;
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 0;
+    padding: 10px;
+}
+.line-item-summary .links li.last {
+  padding-right: 10px;
+}
+
+button#add-address {
+  background-color: #f8eb00;
+  border: 0 none;
+  border-radius: 5px;
+  color: #000;
+  padding: 10px 15px;
+}
+
+.sencondary-menu .navbar-nav > li > a:hover, .sencondary-menu .navbar-nav > li > a:focus {
+  background: transparent none repeat scroll 0 0;
+}
+
+.btn.btn-success.form-submit.custom_submit {
+  background: #f8eb00 none repeat scroll 0 0;
+  border: 0 none;
+  color: #1d1d1d;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  padding: 15px 20px;
+  text-transform: uppercase;
+}
+#toolbox > form {
+  margin: 0 auto;
+  max-width: 500px;
+  width: 100%;
+}
+/*.field-content .img-responsive {
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
+}*/
+
+/******media query for header tag line******/
+ @media (max-width:1300px){
+.logo_slogan {
+  display: none;
+}
+}
+
+#search-form .btn.btn-primary {
+  background-color: #f8eb00;
+  border: 0 none;
+  color: #000;
+  padding: 10px 15px;
+}
+.search-results.node-results li.search-result {
+  border-bottom: 1px solid #ccc;
+  line-height: 26px;
+  padding: 15px 0;
+}
+#block-system-main > h2 {
+  font-weight: 400;
+  padding: 30px 0;
+}
+.view-commerce-addressbook-defaults .field-type-addressfield,
+.view-commerce-addressbook .field-type-addressfield {
+    max-width: 275px;
+    min-height: 150px;
+}
+.debitcards img {
+  border-radius: 2px;
+  width: 52px;
+}
+
+/***search page****/
+
+.page-search-node .card-result > h2 {
+  font-size: 20px;
+  margin: 0;
+  padding: 15px 0;
+}
+
+.page-search-node .card-result {
+  border-bottom: 0 none;
+  display:-webkit-flex;
+  -webkit-flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  height: 480px;
+ -webkit-justify-content: center;
+ justify-content: center;
+  margin-bottom: 5px;
+  padding: 15px;
+  text-align: center;
+}
+.page-search-node .card-image {
+  text-align: center;
+}
+
+.page-search-node .card-image img {
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
+    max-height: 480px;
+    width: 100%;
+}
+
+.view-all-cards .views-field-field-card-image object {
+    width: 100%;
+}
+.page-search-node .region .text-center {
+    clear: both;
+}
+
+.outlay .canvas_duumy_image img {
+    width: 405px;
+}
+.inlay_verticle .top_button_list {
+  margin-top: 0;
+  text-align: center;
+}
+.inlay_verticle .top_button_list {
+    margin-left: 1%;
+    margin-top: 0;
+    text-align: left;
+}
+.inlay_verticle .top_button_list > ul {
+  margin-right: 0;
+}
+.inlay_verticle .top_button_list ul:last-child{
+  margin-right: 0;
+}
+
+.page-cart .views-field-edit-delete .btn-info {
+    background: #fff737 none repeat scroll 0 0;
+    border: 1px solid #f8eb00;
+    color: black;
+    display: block;
+    font-family: "PantonW01-Bold";
+    margin-bottom: 10px;
+    width: 94px;
+}
+.page-cart .views-field-edit-delete .btn-info:hover {
+    background: #f8eb00 none repeat scroll 0 0;
+    border-color: #f8eb00;
+}
+.page-user-orders-items .card_preview {
+    margin: 0 auto;
+    max-width: 1270px;
+    text-align: center;
+    position: relative;
+}
+/*.detail_boximg.deck::after{
+  content: "";
+  background-image: url("../images/card_deck.jpeg");
+}*/
+.detail_boximg{
+  position: relative;
+}
+.detail_boximg.deck img {
+  position: relative;
+  z-index: 11;
+}
+.detail_boximg.deck > div {
+  height: 100%;
+  left: 22px;
+  position: absolute;
+  top: 10px;
+  width: 89%;
+  z-index: 1;
+}
+.detail_boximg.deck > div img{
+  height: 81%;
+}
+
+.card_preview .canvas_duumy_image img,
+.card_preview .card_preview_inlay_right img {
+    height: auto;
+    width: 300px;
+}
+.card_preview.landscape .canvas_duumy_image img,
+.card_preview.landscape .card_preview_inlay_right img {
+    height: auto;
+    width: 400px;
+}
+.card_preview_inlay_right, .card_preview_inlay, .card_preview_outlay {
+    background: #fff none repeat scroll 0 0;
+    float: left;
+    margin: 12px;
+}
+
+.card_preview.landscape .preview_card_detail .modal-dialog {
+    width: 425px;
+}
+.card_preview .pre_full_bg {
+    background-color: #eee;
+    border-radius: 10px;
+    /*left: 0;
+    padding: 0;
+    position: fixed;
+    top: 15%;
+    z-index: 999;
+    right: 0;
+    max-width: 100%;
+    margin: 0 auto;
+    width: 978px;*/
+}
+/*.button_closebox {
+    position: relative;
+    overflow: hidden;
+}*/
+
+.card_preview .content-area {
+    margin-bottom: 7px;
+}
+.card_preview.landscape .content-area {
+    margin-bottom: 3px;
+}
+.close.custom_close {
+  background: #00aff3 none repeat scroll 0 0;
+  display: inline-block;
+  height: 65px;
+  position: absolute;
+  right: -55px;
+  top: -5px;
+  transform: rotate(45deg);
+  width: 153px;
+  opacity: 1;
+  color: #fff;
+  text-shadow: none;
+}
+.page-user-orders-items .order-details #loading > img {
+    max-width: 50px;
+    margin-right:5px; 
+}
+.preview_card_detail .modal-dialog {
+  width: 975px;
+}
+/*#card-alert {
+  background: rgba(0, 0, 0, 0.5) none repeat scroll 0 0;
+  display:-webkit-flex;
+ -webkit-flex-direction: column;
+ -webkit-justify-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  text-align: center;
+  top: 0;
+  width: 100%;
+  z-index: 9;
+}
+#card-alert .alert.alert-success.alert-dismissable{
+  width: 60%;
+  text-align: left;
+  margin: 0 auto;
+}*/
+.node-type-display-card #saved-alert {
+    margin: 10px 75px 0;
+}
+
+.view-featured-card-categories .fcard-small .img-responsive {
+    min-height: 252px;
+    max-height: 252px;
+}
+.view-featured-card-categories .fcard-big .img-responsive {
+    min-height: 476px;
+    max-height: 476px;
+
+}
+
+.page-cart #edit-continue-shopping {
+    bottom: 0;
+    float: right;
+    position: relative;
+    right: 212px;
+    top: -34px;
+}
+.info-msg-landscape {
+    background-color: #b4e97a;
+    font-size: 12px;
+    padding: 5px;
+    position: absolute;
+    right: 6%;
+    text-align: center;
+    top: 4%;
+    transform: translate(0px, -50%);
+    width: 175px;
+}
+.info-msg-landscape > span {
+  color: #1d1d1d;
+  font-family: "Open Sans",sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+}
+.info-msg-landscape::after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+   /* border-top: 8px solid #b4e97a;*/
+    bottom: -6px;
+    content: "";
+    left: 0;
+    position: absolute;
+    right: 50%;
+
+}
+.main_container.landscape {
+  position: relative;
+}
+.btn-stroke {
+    width: 70px;
+}
+
+
+#emoji #loading > img {
+    display: block;
+    height: auto;
+    width: 50%;
+    margin: 20px;
+}
+#edit-commerce-payment-payment-method .form-item {
+  display: inline-block;
+  padding-right: 15px;
+  vertical-align: top;
+}
+h1.page-header{
+	color: #777;
+}
+#commerce-checkout-form-checkout .panel-heading,
+#commerce-checkout-form-complete .panel-heading{color: #fff;}
+#commerce-checkout-form-checkout .panel-title,
+#commerce-checkout-form-complete .panel-title{
+	font-size: 15px;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+#edit-continue, #edit-checkout{
+	background: #5cb85c;
+	color: #fff;
+	border: none;
+	padding:5px 10px;
+	height: 38px;
+	min-width: 90px;
+	margin-right: 10px;
+}
+#edit-checkout{padding: 6px 12px; height: auto; margin-right: 0; height: 34px;}
+#edit-cancel{
+	background: #d9534f;
+	color: #fff;
+	padding:5px 10px; 
+	height: 38px;
+	min-width: 90px;
+	
+	margin-left: 10px;
+}
+.commerce-paypal-ec-icon-wrapper .commerce-paypal-ec-icon.img-responsive {
+  display: none;
+}
+.commerce-paypal-ec-icon-wrapper{
+
+	background-image: url("../images/paypal-ec-logo.gif");
+	background-repeat: no-repeat;
+    background-size: auto 27px;
+    display: block;
+    height: 27px;
+    margin-left: 5px;
+    width: 60px;
+}
+#payment-details {
+    width: 50%;
+}
+/* Memberhip setup - Simply Say Reward Points*/
+.blue_reward_member {
+  background-image: url("https://s3-stage.simplysay.sg/s3fs-public/site_images/blue_member_logo_white_text_hologram_center.png");
+  background-repeat: no-repeat;
+  background-size: auto 229px;
+  display: block;
+  height: 229px;
+  width: 315px;
+}
+.blue_reward_member p {
+  text-shadow: 1px 1px 2px #000, -1px -1px 1px #fff;   
+  overflow:hidden;
+  font-size: 30px;
+  letter-spacing: 4px;
+  position: relative;
+  text-align: center;
+  color: white;
+  text-shadow: 1px 1px #2f2f2f;
+  padding-top: 30%;
+  }
+.gold_reward_member {
+  background-image: url("https://s3-stage.simplysay.sg/s3fs-public/site_images/gold_member_logo_black_text_hologram_center.png");
+  background-repeat: no-repeat;
+  background-size: auto 229px;
+  display: block;
+  height: 229px;
+  width: 315px;
+}
+.gold_reward_member p {
+  text-shadow: 1px 1px 2px #000, -1px -1px 1px #fff;   
+  overflow:hidden;
+  font-size: 30px;
+  letter-spacing: 4px;
+  position: relative;
+  text-align: center;
+  color: white;
+  text-shadow: 1px 1px #2f2f2f;
+  padding-top: 30%;
+ }
+.name_reward_member {
+  font-size: 15px;   
+}
+.expiry_reward_member {
+  font-size: 15px; 
+  margin-left: 20%;
+}
+.rewardsColumnCard {
+   float: left;
+   width: 40%;
+}
+.rewardsColumnGauge {
+   float: left;
+   width: 30%;
+}
+.rewardsTable:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+@media only screen and (max-width: 767px)
+{
+    .rewardsColumnCard, .rewardsColumnGauge
+    {
+        display: block; 
+        float: none; 
+        width: 100%;
+        padding: 20px 0;
+    }
+}
+
+.rewardsTitle p {
+   color:#989898;
+   text-anchor: middle;
+   font-family: sans-serif;
+   font-size: 24px;
+   font-weight: bold;
+   fill-opacity: 1;
+   padding-left: 50px;
+}
+
+
+/* Delivery setup */
+.form-item-commerce-shipping-shipping-service input[type="radio"] {
+  display: none;
+}
+
+.form-item-commerce-shipping-shipping-service input[type="radio"]:checked+span{
+   outline-style: solid;
+   outline-width: 3px;
+   outline-color: #B4E97A;
+   border-radius: 0px;
+ }
+
+.SingaporePost-Local {
+  background-image: url("https://s3-stage.simplysay.sg/s3fs-public/site_images/singpost_1st_logo_retina.png");
+  background-repeat: no-repeat;
+  background-size: auto 94.5px;
+  display: block;
+  height: 94.5px;
+  width: 196px;
+  box-shadow: 0 9px 12px rgba(0,0,0,.3);
+  border-radius: 0px;
+}
+
+/*
+.form-item-commerce-shipping-shipping-service label[for=edit-commerce-shipping-shipping-service-singapore-post-local]{
+   outline-style: solid;
+   outline-width: 3px;
+   outline-color: #B4E97A;
+   border-radius: 0px;
+ }
+
+.form-item-commerce-shipping-shipping-service label[for=edit-commerce-shipping-shipping-service-singapore-post-local]{
+  background-image: url("https://s3-stage.simplysay.sg/s3fs-public/site_images/singpost_1st_logo_retina.png");
+  background-repeat: no-repeat;
+  background-size: auto 94.5px;
+  display: block;
+  height: 94.5px;
+  width: 196px;
+  box-shadow: 0 9px 12px rgba(0,0,0,.3);
+  border-radius: 0px;
+}
+*/
+
+
+
+/* Commerce Payment setup  
+.form-item-commerce-payment-payment-method input[type="radio"] {visibility:hidden;} */
+
+.form-item-commerce-payment-payment-method input[type="radio"] {
+  display: none;
+}
+.form-item-commerce-payment-payment-method input[type="radio"]:checked+span{
+   outline-style: solid;
+   outline-width: 3px;
+   outline-color: #B4E97A;
+   border-radius: 0px;
+ }
+
+.stripe-logo{
+	background-image: url("https://s3-stage.simplysay.sg/s3fs-public/site_images/creditcard_logo_retina_small.png");
+	background-repeat: no-repeat;
+  background-size: auto 94.5px;
+  display: block;
+  height: 94.5px;
+  width: 196px;
+  box-shadow: 0 9px 12px rgba(0,0,0,.3);
+  border-radius: 0px;
+}
+
+.simplypay-logo{
+  background-image: url("https://s3-stage.simplysay.sg/s3fs-public/site_images/simplypay_logo_retina_yellow.png");
+  background-repeat: no-repeat;
+  background-size: auto 94.5px;
+  display: block;
+  height: 94.5px;
+  width: 196px;
+  box-shadow: 0 9px 12px rgba(0,0,0,.3);
+  border-radius: 0px;
+}
+
+.page-admin-commerce #loading > img {
+    height: auto;
+    max-width: 40px;
+}
+
+/* page loader css*/
+
+ #loader-wrapper {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 1000;
+                    background-color: #fff;
+                }
+  #loader {
+                    display: block;
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    text-align: center;
+                    transform: translate(-50% , -50%);
+                    -moz-transform: translate(-50% , -50%);
+                    -webkit-transform: translate(-50% , -50%);
+                   
+                    z-index: 1001;
+                }
+#loader img{display: inline-block;}
+
+#loader-wrapper #loader h5 {
+
+  color: #cccccc;
+}
+
+.preview_page #outlay_last .content-area {
+    margin-bottom: 0;
+}
+
+/***css changes 15 Nov 2017**/
+
+.top_button_list .tool-bar {
+    display: inline-block;
+    height: auto;
+    margin: 0 !important;
+    min-height: inherit !important;
+    padding: 0;
+    position: relative;
+    top:-15px;
+    vertical-align: top;
+}
+.top_button_list .tool-bar .select-bg-color-section.clearfix {
+    display: inline-block;
+    margin-top: 0;
+    position: relative;
+    top: 13px;
+}
+.top_button_list .tool-bar .custom-color-section input[type="color"] {
+  height: 40px;
+  padding: 0;
+  position: relative;
+  top: 3px;
+  width: 60px;
+}
+
+/**
+inlay part new css
+**/
+
+.pre_full_bg img {
+    max-width: 100%;
+}
+
+.node-type-display-card div#toolbox {
+    max-width: 1140px !important;
+}
+
+#cart_card_image {
+    box-shadow: 0 9px 12px rgba(0, 0, 0, .3);
+}
+
+.product_image img {
+    box-shadow: 0 9px 12px rgba(0, 0, 0, .3);
+    margin-bottom: 12px;
+}
+
+.ajax-progress-throbber {
+    display: none
+}
+
+/*
+#edit-customer-profile-billing-edit-button {
+  background:#fff737 none repeat scroll 0 0;
+  border: 1px solid #f8eb00;
+  color: #000;
+  display: block;
+  font-family: "PantonW01-Bold";
+  width: 94px;
+}*/
+
+/*
+    Toolbar buttons qith old icons
+*/
+.clip-icon:after {
+    display: inline-block;
+    content: "";
+    height: 25px;
+    width: 25px;
+    background-size: 23px auto;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+}
+
+.clip-icon.save:after {
+    background-image: url("../images/svg/save.svg");
+}
+
+.clip-icon.clip_open_icon:after {
+    background-image: url("../images/svg/clear_all.svg");
+}
+
+.clip-icon.clip_del_icon:after {
+    background-image: url("../images/svg/delete.svg");
+}
+
+.clip-icon.clip_undo_icon:after {
+    background-image: url("../images/svg/undo.svg");
+}
+
+.clip-icon.clip_copy_icon:after {
+    background-image: url("../images/svg/copy.svg");
+}
+
+.clip-icon.clip_cut_icon:after {
+    background-image: url("../images/svg/cut.svg");
+}
+
+.clip-icon.clip_paste_icon:after {
+    background-image: url("../images/svg/paste.svg");
+}
+
+.clip-icon.move_front:after {
+    background-image: url("../images/svg/move_front.svg");
+}
+
+.clip-icon.move_back:after {
+    background-image: url("../images/svg/move_back.svg");
+}
+
+.clip-icon.send_to_front:after {
+    background-image: url("../images/svg/Send_to_front.svg");
+}
+
+.clip-icon.send_to_back:after {
+    background-image: url("../images/svg/Send_to_back.svg");
+}
+
+.clip-icon.clip_box_icon5:after {
+    background-image: url("../images/icons/icons8-grid-filled-50.png");
+}
+
+.clip-icon.bg_colour:after {
+    background-image: url("../images/icons/BG_Colour.png");
+}
+
+.clip-icon.bg_image:after {
+    background-image: url("../images/icons/BG_Image.png");
+}
+
+.clip-icon.camera:after {
+    background-image: url("../images/icons/Camera.png");
+}
+
+.clip-icon.clear_All:after {
+    background-image: url("../images/icons/Clear_All.png");
+}
+
+.clip-icon.delete:after {
+    background-image: url("../images/icons/Delete.png");
+}
+
+.clip-icon.facebook:after {
+    background-image: url("../images/icons/Facebook.png");
+}
+
+.clip-icon.save:after {
+    background-image: url("../images/icons/Save.png");
+}
+
+.clip-icon.text:after {
+    background-image: url("../images/icons/Text.png");
+}
+
+.clip-icon.undo:after {
+    background-image: url("../images/icons/Undo.png");
+}
+
+.clip-icon.redo:after {
+    background-image: url("../images/icons/Redo.png");
+}
+
+.preview-image {
+    font-size: 0;
+    display: inline-block;
+    transform-origin: center center 0;
+    transition: all 0.2s ease 0s;
+    -webkit-transform-origin: center center 0;
+    -webkit-transition: all 0.2s ease 0s;
+}
+
+.preview-image:hover {
+    transform: matrix3d(1, 0, 0.00, 0, 0.00, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    -webkit-transform: matrix3d(1, 0, 0.00, 0, 0.00, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+}
+
+.preview-image-top {
+    transform: matrix3d(1, 0, 0.00, 0, 0.00, 0.92, 0.00, 0.0001, 0, 0, 1, 0, 0, 0, 0, 1);
+    -webkit-transform: matrix3d(1, 0, 0.00, 0, 0.00, 0.92, 0.00, 0.0001, 0, 0, 1, 0, 0, 0, 0, 1);
+    -webkit-transform-origin: center bottom 0;
+}
+
+.preview-image-bottom {
+    transform: matrix3d(1, 0, 0.00, 0, 0.00, 0.92, 0.00, -0.0001, 0, 0, 1, 0, 0, 0, 0, 1);
+    -webkit-transform: matrix3d(1, 0, 0.00, 0, 0.00, 0.92, 0.00, -0.0001, 0, 0, 1, 0, 0, 0, 0, 1);
+    -webkit-transform-origin: center top 0;
+}
+
+.preview-image-left {
+    margin-right: -4px;
+    transform: matrix3d(0.92, 0, 0.00, 0.0001, 0.00, 1, 0.00, 0.0000, 0, 0, 1, 0, 0, 0, 0, 1);
+    -webkit-transform: matrix3d(0.92, 0, 0.00, 0.0001, 0.00, 1, 0.00, 0.0000, 0, 0, 1, 0, 0, 0, 0, 1);
+    transform-origin: right center 0;
+}
+
+.preview-image-right {
+    transform: matrix3d(0.92, 0, 0.00, -0.0001, 0.00, 1, 0.00, 0.0000, 0, 0, 1, 0, 0, 0, 0, 1);
+    -webkit-transform: matrix3d(0.92, 0, 0.00, -0.0001, 0.00, 1, 0.00, 0.0000, 0, 0, 1, 0, 0, 0, 0, 1);
+    transform-origin: left center 0;
+}
+
+div#slide-menu {
+    float: right;
+}
+
+.tool-board p {
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+}
+
+.ftr_post_slider .slick_item img {
+    display: inline-block;
+    object-fit: contain;
+}

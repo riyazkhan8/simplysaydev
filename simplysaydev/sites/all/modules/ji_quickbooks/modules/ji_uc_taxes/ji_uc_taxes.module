@@ -1,0 +1,130 @@
+<?php
+
+/**
+ * @file
+ * Allows syncing taxes between Ubercart and QuickBooks.
+ */
+require_once drupal_get_path('module', 'ji_uc_taxes') . '/ji_uc_taxes_form_alter_uc_taxes_form.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function ji_uc_taxes_menu() {
+  $items['admin/store/settings/taxes/sync_from_quickbooks'] = array(
+    'title' => 'Sync tax rates from QuickBooks',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ji_uc_taxes_confirm_sync_from_quickbooks'),
+    'access arguments' => array('configure taxes'),
+    'file' => 'ji_uc_taxes_sync_quickbooks_dialog.admin.inc',
+    'type' => MENU_LOCAL_ACTION,
+  );
+
+  $items['taxagency/autocomplete/%'] = array(
+    'title' => 'Tax Agency',
+    'page callback' => 'ji_uc_taxes_agency_autocomplete',
+    'access arguments' => array('access content'),
+    'page arguments' => array(2),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ *
+ * Don't allow standard uc_taxes display code from executing.
+ * This will override uc_taxes menu_hook() and allow us to
+ * redirect execution.
+ */
+function ji_uc_taxes_menu_alter(&$items) {
+  if (isset($items['admin/store/settings/taxes'])) {
+    $items['admin/store/settings/taxes'] = array(
+      'title' => 'Taxes',
+      'description' => 'Configure tax rates and rules.',
+      'page callback' => 'ji_uc_taxes_admin_settings',
+      'access arguments' => array('configure taxes'),
+      'file' => 'ji_uc_taxes_display_all.admin.inc',
+      'module' => 'ji_uc_taxes',
+    );
+  }
+
+  if (isset($items['admin/store/settings/taxes/%/delete'])) {
+    $items['admin/store/settings/taxes/%/delete'] = array(
+      'title' => 'Delete tax rule',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('ji_uc_taxes_delete_form', 4),
+      'access arguments' => array('configure taxes'),
+      'file' => 'ji_uc_taxes_delete_dialog.admin.inc',
+      'module' => 'ji_uc_taxes',
+    );
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function ji_uc_taxes_form_alter(&$form, &$form_state, $form_id) {
+
+  // Give the form extras now that the ji_uc_taxes module is enabled.
+  if ($form_id == 'uc_taxes_form') {
+    // Keeping things organized.
+    ji_uc_taxes_form_alter_uc_taxes_form($form, $form_state, $form_id);
+  }
+}
+
+/**
+ * Implements hook_uc_line_item_data_alter().
+ *
+ * We have to call this hook since hook_form_alter didn't do any
+ * changes or didn't work as intended. This hook allows us to
+ * remove inactive tax rates during checkout (from calculating).
+ */
+function ji_uc_taxes_uc_line_item_data_alter(&$items) {
+  $items['tax_display']['callback'] = 'ji_uc_taxes_uc_line_item_tax_display';
+}
+
+/**
+ * Callback function for ji_uc_taxes_uc_line_item_data_alter().
+ */
+function ji_uc_taxes_uc_line_item_tax_display($op, $order) {
+  switch ($op) {
+    case 'display':
+      // Loop through each line_item and look for inactive tax rates,
+      // if it finds one, it nukes it!
+      foreach ($order->line_items as $key => $item) {
+        if (isset($item['data']['tax'])) {
+          if (!$item['data']['tax']->quickbooks_tax_active) {
+            unset($order->line_items[$key]);
+
+            $tax_id = $item['data']['tax']->id;
+            if (isset($order->taxes[$tax_id])) {
+              unset($order->taxes[$tax_id]);
+            }
+          }
+        }
+      }
+      return;
+  }
+}
+
+/**
+ * Returns the first QuickBooks tax code id from $order.
+ *
+ * During invoice creation, we have to know if a QuickBooks
+ * tax code is applied to the order.
+ */
+function ji_uc_taxes_get_qbo_taxid($order) {
+  // Loop because the first element may not be a tax type.
+  foreach ($order->line_items as $line_item) {
+    if ($line_item['type'] == 'tax') {
+      if (isset($line_item['data']['tax']->quickbooks_tax_id)) {
+        if ($line_item['data']['tax']->quickbooks_tax_active) {
+          // Only allow one tax code since QuickBooks doesn't allow
+          // multiples.
+          return $line_item['data']['tax']->quickbooks_tax_id;
+        }
+      }
+    }
+  }
+}

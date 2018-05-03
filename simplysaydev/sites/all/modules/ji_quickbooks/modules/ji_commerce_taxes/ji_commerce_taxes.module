@@ -1,0 +1,176 @@
+<?php
+
+/**
+ * @file
+ * JI Commerce Taxes file.
+ */
+require_once drupal_get_path('module', 'ji_commerce_taxes') . '/ji_commerce_taxes_form_alter_commerce_tax_ui_tax_rate_form.inc';
+
+/**
+ * Implements hook_commerce_checkout_pane_info().
+ *
+ * We tell Commerce to create a new pane. We disable it for
+ * first time installers with an option to move it needed.
+ */
+function ji_commerce_taxes_commerce_checkout_pane_info() {
+  $checkout_panes = array();
+
+  $apply_tax = NULL;
+  if (arg(0) === 'checkout' && arg(2) === 'shipping') {
+    $apply_tax = ji_commerce_taxes_check_sales_tax_rule(arg(1));
+  }
+
+  // Only if this Rule's Condition exists do we return or not. It may return
+  // NULL if a Condition isn't set.
+  if ($apply_tax === FALSE) {
+    return array();
+  }
+
+  $checkout_panes['ji_commerce_taxes'] = array(
+    'title' => t('Taxes'),
+    // Tell Commerce our new checkout pane base name.
+    'base' => 'ji_commerce_taxes_pane',
+    'file' => 'ji_commerce_taxes.checkout_pane.inc',
+    'page' => 'shipping',
+    'weight' => 2,
+    'review' => FALSE,
+    'enabled' => FALSE,
+  );
+
+  return $checkout_panes;
+}
+
+/**
+ * Remove inactive tax rates from the tax_rate_name list.
+ *
+ * This occurs when a drop down list is needed, such as, editing
+ * a rule.
+ */
+function ji_commerce_taxes_commerce_tax_rate_info_alter(&$tax_rates) {
+  foreach ($tax_rates as $key => $tax) {
+    if (isset($tax['quickbooks_tax_active'])) {
+      if ($tax['quickbooks_tax_active'] == FALSE) {
+        unset($tax_rates[$key]);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function ji_commerce_taxes_menu() {
+  $items['admin/commerce/config/taxes/sync_from_quickbooks'] = array(
+    'title' => 'Sync tax rates from QuickBooks',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ji_commerce_taxes_confirm_sync_from_quickbooks'),
+    'access arguments' => array('access content'),
+    'file' => 'ji_commerce_taxes_sync_quickbooks_dialog.admin.inc',
+    'type' => MENU_LOCAL_ACTION,
+  );
+
+  $items['taxagency/autocomplete/%'] = array(
+    'title' => 'Tax Agency',
+    'page callback' => 'ji_commerce_taxes_agency_autocomplete',
+    'access arguments' => array('access content'),
+    'page arguments' => array(2),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function ji_commerce_taxes_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id === 'commerce_tax_ui_tax_rate_form') {
+    ji_commerce_taxes_form_alter_commerce_tax_ui_tax_rate_form($form, $form_state);
+  }
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function ji_commerce_taxes_menu_alter(&$items) {
+  if (isset($items['admin/commerce/config/taxes'])) {
+    $items['admin/commerce/config/taxes'] = array(
+      'title' => 'Taxes',
+      'description' => 'Configure tax rates and rules.',
+      'page callback' => 'ji_commerce_tax_ui_overview',
+      'page arguments' => array('rates'),
+      'access arguments' => array('administer taxes'),
+      'file' => 'ji_commerce_tax_ui.admin.inc',
+      'module' => 'ji_commerce_taxes',
+    );
+  }
+}
+
+/**
+ * Returns the first QuickBooks tax code id from $order.
+ *
+ * During invoice creation, we have to know if a QuickBooks
+ * tax code is applied to the order.
+ */
+function ji_commerce_taxes_get_qbo_taxid($order) {
+  // Loop because the first element may not be a tax type.
+  foreach ($order->commerce_order_total[LANGUAGE_NONE] as $line_item) {
+    foreach ($line_item['data']['components'] as $component) {
+      if (isset($component['price']['data']['tax_rate'])) {
+        if (isset($component['price']['data']['tax_rate']['quickbooks_tax_id'])) {
+          // Just in case it's been marked as inactive.
+          if ($component['price']['data']['tax_rate']['quickbooks_tax_active']) {
+            return $component['price']['data']['tax_rate']['quickbooks_tax_id'];
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Checks if a Rule condition allows taxes.
+ *
+ * Rule commerce_tax_type_sales_tax can be edited by a user to check
+ * commerce_order_compare_address. This way we can set if we should
+ * allow a tax option to be displayed.
+ *
+ * @param type $arg
+ * @return boolean
+ */
+function ji_commerce_taxes_check_sales_tax_rule($arg) {
+  // The Rule named commerce_tax_type_sales_tax is a master Rule that
+  // allows execution of it's component parts. We check if this has
+  // has any specific conditions where we would want to exclude this
+  // pane.
+  $rules = rules_config_load('commerce_tax_type_sales_tax');
+  foreach ($rules->conditions() as $condition) {
+    if ($condition->getElementName() === 'commerce_order_compare_address') {
+      $address_field = explode('|', $condition->settings['address_field']);
+      $order = commerce_order_load($arg);
+      $profile = commerce_customer_profile_load($order->{$address_field[0]}['und'][0]['profile_id']);
+      if (!$condition->isNegated()) {
+        // Does $order shipping state 'CO' equal allowed taxable
+        // state 'CO'?
+        if ($profile->{$address_field[1]}['und'][0][$condition->settings['address_component']] === $condition->settings['value']) {
+          return TRUE;
+        }
+        else {
+          return FALSE;
+        }
+      }
+      else {
+        // Does $order shipping state 'CO' does not equal allowed
+        // taxable state 'CO'?
+        if ($profile->{$address_field[1]}['und'][0][$condition->settings['address_component']] === $condition->settings['value']) {
+          return FALSE;
+        }
+        else {
+          return TRUE;
+        }
+      }
+    }
+  }
+
+  return NULL;
+}

@@ -1,0 +1,17 @@
+name = JI Ubercart Taxes
+description = Uses taxes from QuickBooks or sends taxes that exist in Drupal to QuickBooks.
+core = 7.x
+
+dependencies[] = uc_taxes
+dependencies[] = ji_ubercart
+dependencies[] = uc_cart
+dependencies[] = ji_autocomplete
+
+package = JI QuickBooks
+
+; Information added by Drupal.org packaging script on 2018-02-21
+version = "7.x-1.0-rc16"
+core = "7.x"
+project = "ji_quickbooks"
+datestamp = "1519182488"
+

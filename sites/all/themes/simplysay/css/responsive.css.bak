@@ -1,0 +1,25 @@
+@charset "utf-8";
+/* CSS Document */
+@media (min-width:1200px){
+	
+/*.container{padding: 0px;}*/
+
+}
+
+
+@media (min-width:992px) and (max-width:1199px){
+	
+	}
+	
+	
+	
+@media (min-width:768px) and (max-width:991px){
+	
+	}
+	
+	
+	
+@media (max-width:767px){
+	
+
+}	

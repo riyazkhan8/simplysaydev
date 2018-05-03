@@ -1,0 +1,183 @@
+<?php
+
+/**
+ * @file
+ * Allows syncing between Ubercart and QuickBooks.
+ */
+
+/**
+ * Implements hook_uc_checkout_complete().
+ *
+ * Called when Ubercart receives a successful payment.
+ * Sends final customer, invoice, and payment data to
+ * QuickBooks.
+ */
+function ji_ubercart_uc_checkout_complete($order, $account) {
+  if (ji_quickbooks_check_common_errors()) {
+    return;
+  }
+
+  $quickbooks_service = new JIQuickBooksService();
+  if (!empty($quickbooks_service->settingErrorMessage)) {
+    return;
+  }
+
+  $qbo_customer_id = ji_ubercart_checkout_complete_send_customer($quickbooks_service, $order, $account);
+  if ($qbo_customer_id) {
+    $qbo_invoice_id = ji_ubercart_checkout_complete_send_invoice($quickbooks_service, $order, $qbo_customer_id);
+    if ($qbo_invoice_id) {
+      ji_ubercart_checkout_complete_send_payment($quickbooks_service, $order, $qbo_customer_id, $qbo_invoice_id);
+    }
+  }
+}
+
+/**
+ * Send customer information when checkout completes.
+ *
+ * Also called by ji_quickbooks.module hook_cron() as a module_invoke_all().
+ */
+function ji_ubercart_checkout_complete_send_customer($quickbooks_service, $order, $account) {
+  $qbo_id = ji_quickbooks_get_response_id($quickbooks_service->realmId, $account->uid);
+
+  $billing_country = uc_get_country_data(array('country_id' => $order->billing_country));
+  if ($billing_country === FALSE) {
+    $billing_country = array(0 => array('country_iso_code_3' => 'USA'));
+  }
+
+  $delivery_country = uc_get_country_data(array('country_id' => $order->delivery_country));
+  if ($delivery_country === FALSE) {
+    $delivery_country = array(0 => array('country_iso_code_3' => 'USA'));
+  }
+
+  $customer_data = array(
+    // Id is a required field.
+    // Setting 'Id' to '' tells QBO this is a new customer.
+    'Id' => $qbo_id,
+    // Required field.
+    'DisplayName' => $account->name . ' ' . $account->mail,
+    'CompanyName' => '',
+    'Title' => '',
+    'GivenName' => '',
+    'MiddleName' => '',
+    'FamilyName' => '',
+    'Notes' => '',
+    'PrimaryPhone' => '',
+    'Fax' => '',
+    'Mobile' => '',
+    'Email' => $order->primary_email,
+    'Website' => '',
+    'BillAddressStreet1' => $order->billing_street1,
+    'BillAddressStreet2' => $order->billing_street2,
+    'BillAddressCity' => $order->billing_city,
+    'BillAddressCountrySubDivisionCode' => uc_get_zone_code($order->billing_zone),
+    'BillAddressPostalCode' => $order->billing_postal_code,
+    'BillAddressCountry' => $billing_country[0]['country_iso_code_3'],
+    'ShipAddressStreet1' => '', //$order->delivery_street1,
+    'ShipAddressStreet2' => '', //$order->delivery_street2,
+    'ShipAddressCity' => '', //$order->delivery_city,
+    'ShipAddressCountrySubDivisionCode' => '', //uc_get_zone_code($order->delivery_zone),
+    'ShipAddressPostalCode' => '', //$order->delivery_postal_code,
+    'ShipAddressCountry' => '', //$delivery_country[0]['country_iso_code_3'],
+  );
+
+  $response = $quickbooks_service->processCustomer($customer_data);
+
+  return ji_quickbooks_log_process($order->order_id, $quickbooks_service->realmId, 'customer', $response);
+}
+
+/**
+ * Send invoice data to QuickBooks when the checkout process is completed.
+ *
+ * Also called by ji_quickbooks.module hook_cron() as a module_invoke_all().
+ */
+function ji_ubercart_checkout_complete_send_invoice($quickbooks_service, $order, $qbo_customer_id) {
+  $customer_type = new IPPReferenceType();
+  $customer_type->value = $qbo_customer_id;
+  $sales_term_type = new IPPReferenceType();
+  // Terms.
+  $sales_term_type->value = variable_get('ji_quickbooks_term');
+  $email_address = new IPPEmailAddress();
+  $email_address->Address = $order->primary_email;
+
+  $counter = 0;
+  $line = array();
+  foreach ($order->products as $products) {
+    $line1 = new IPPLine();
+    $line1->LineNum = $counter++;
+    $line1->Description = $products->title;
+    // Quickbooks requires this.
+    $line1->Amount = $products->price * $products->qty;
+    $line1->DetailType = 'SalesItemLineDetail';
+
+    $sales_item_line_detail = new IPPSalesItemLineDetail();
+    // Because SalesItemLineDetail is seleted above, we don't need the date.
+    // $salesItemLineDetail->ServiceDate = date("Y-m-d"); save.
+    $item_ref_type = new IPPReferenceType();
+    // Product ID.
+    $item_ref_type->value = variable_get('ji_quickbooks_default_product');
+    $sales_item_line_detail->ItemRef = $item_ref_type;
+    $sales_item_line_detail->UnitPrice = $products->price;
+    $sales_item_line_detail->Qty = $products->qty;
+    $tax_code_ref_type = new IPPReferenceType();
+    // Also, NON.
+    $tax_code_ref_type->value = 'TAX';
+    $sales_item_line_detail->TaxCodeRef = $tax_code_ref_type;
+    $line1->SalesItemLineDetail = $sales_item_line_detail;
+    $line[] = $line1;
+  }
+
+  // We assume tax id is NULL until code says otherwise. QuickBooks
+  // won't complain if no tax code is used.
+  $qbo_tax_id = NULL;
+  if (module_exists('ji_uc_taxes')) {
+    $qbo_tax_id = ji_uc_taxes_get_qbo_taxid($order);
+  }
+
+  $txn_detail = new IPPTxnTaxDetail();
+  $txn_code_ref_type = new IPPReferenceType();
+  // TAX ID.
+  $txn_code_ref_type->value = $qbo_tax_id;
+  $txn_detail->TxnTaxCodeRef = $txn_code_ref_type;
+
+  $invoice_data = array(
+    'AllowIPNPayment' => 1,
+    'AllowOnlinePayment' => 1,
+    'AllowOnlineCreditCardPayment' => 1,
+    'AllowOnlineACHPayment' => 1,
+    'CustomerRef' => $customer_type,
+    'SalesTermRef' => $sales_term_type,
+    'BillEmail' => $email_address,
+    'TxnDate' => date("Y-m-d"),
+    'Line' => $line,
+    'TxnTaxDetail' => $txn_detail,
+    'Id' => '',
+    'SyncToken' => '',
+    // Ubercart will email invoice.
+    'EmailInvoice' => FALSE,
+  );
+
+  $response = $quickbooks_service->processInvoice($invoice_data);
+
+  return ji_quickbooks_log_process($order->order_id, $quickbooks_service->realmId, 'invoice', $response);
+}
+
+/**
+ * Sends payment information to QuickBooks.
+ *
+ * Also called by ji_quickbooks.module hook_cron() as a module_invoke_all().
+ */
+function ji_ubercart_checkout_complete_send_payment($quickbooks_service, $order, $qbo_customer_id, $qbo_invoice_id) {
+  $payment_data = array(
+    'customer_ref' => $qbo_customer_id,
+    'payment_ref_num' => $order->order_id,
+    'total_amt' => $order->order_total,
+    'txn_date' => $order->created,
+    'currency_ref' => $order->currency,
+    'amount' => $order->order_total,
+    'txn_id' => $qbo_invoice_id,
+  );
+  
+  $response = $quickbooks_service->processPayment($payment_data);
+
+  return ji_quickbooks_log_process($order->order_id, $quickbooks_service->realmId, 'payment', $response);
+}
