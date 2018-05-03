@@ -1,0 +1,144 @@
+<?php
+
+/**
+ * @file
+ * Handles installation settings.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function ji_uc_taxes_schema() {
+  $schema['ji_uc_taxes_agencies'] = array(
+    'description' => 'The base table for all tax agencies related to uc_taxes.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The primary identifier for a record.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uc_tax_id' => array(
+        'description' => 'The uc_tax_id.',
+        'type' => 'int',
+        'length' => 11,
+        'not null' => FALSE,
+      ),
+      'component_name' => array(
+        'description' => 'Component name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'agency_name' => array(
+        'description' => 'Agency name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'agency_id' => array(
+        'description' => 'The agency id.',
+        'type' => 'int',
+        'length' => 11,
+        'not null' => FALSE,
+      ),
+      'agency_rate' => array(
+        'description' => 'The agency rate.',
+        'type' => 'float',
+        'size' => 'big',
+        'default' => 0.0,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  return $schema;
+}
+
+/**
+ * Add two new fields to the uc_taxes table.
+ *
+ * Helps keep QuickBooks tax code information in sync.
+ */
+function ji_uc_taxes_install() {
+  $table = 'uc_taxes';
+  $spec_quickbooks_tax_id = array(
+    'type' => 'int',
+    'description' => 'QuickBooks tax code id.',
+    'length' => 10,
+    'not null' => FALSE,
+  );
+  $quickbooks_tax_id = 'quickbooks_tax_id';
+  db_add_field($table, $quickbooks_tax_id, $spec_quickbooks_tax_id);
+
+  $spec_quickbooks_tax_active = array(
+    'type' => 'int',
+    'description' => '1 if QuickBooks tax code is active 0 otherwise.',
+    'length' => 1,
+    'not null' => FALSE,
+  );
+  $quickbooks_tax_active = 'quickbooks_tax_active';
+  db_add_field($table, $quickbooks_tax_active, $spec_quickbooks_tax_active);
+
+  $spec_quickbooks_updated = array(
+    'type' => 'int',
+    'description' => 'QBO updated timestamp. Used to compare like records.',
+    'length' => '11',
+    'not null' => FALSE,
+  );
+  $quickbooks_tax_updated = 'quickbooks_tax_updated';
+  db_add_field($table, $quickbooks_tax_updated, $spec_quickbooks_updated);
+}
+
+/**
+ * We have to modify the uc_taxes table schema.
+ *
+ * If we don't do this we won't be able to add new values to
+ * our new columns.
+ */
+function ji_uc_taxes_schema_alter(&$schema) {
+  if (isset($schema['uc_taxes'])) {
+    $schema['uc_taxes']['fields']['quickbooks_tax_id'] = array(
+      'type' => 'int',
+      'length' => 10,
+      'not null' => FALSE,
+    );
+    $schema['uc_taxes']['fields']['quickbooks_tax_active'] = array(
+      'type' => 'int',
+      'length' => 1,
+      'not null' => FALSE,
+    );
+    $schema['uc_taxes']['fields']['quickbooks_tax_updated'] = array(
+      'type' => 'int',
+      'length' => 11,
+      'mysql_type' => 'DATETIME',
+      'not null' => FALSE,
+    );
+  }
+}
+
+/**
+ * Return uc_taxes table to its original form.
+ */
+function ji_uc_taxes_uninstall() {
+  // Look for and delete any extra fields that were related to QBO.
+  $query = db_select('uc_taxes', 't');
+  $query->isNotNull('quickbooks_tax_id');
+  $query->fields('t', array('id'));
+
+  $record = $query->execute()->fetchAll();
+  if ($record) {
+    foreach ($record as $item) {
+      db_delete('uc_taxed_line_items')->condition('tax_id', $item->id, '=')->execute();
+      db_delete('uc_taxed_product_types')->condition('tax_id', $item->id, '=')->execute();
+      db_delete('rules_config')->condition('name', 'uc_taxes_' . $item->id, '=')->execute();
+    }
+  }
+
+  // Clean up the uc_taxes table by removing QBO related ones.
+  db_delete('uc_taxes')->isNotNull('quickbooks_tax_id')->execute();
+
+  // Drop extra fields we added.
+  db_drop_field('uc_taxes', 'quickbooks_tax_id');
+  db_drop_field('uc_taxes', 'quickbooks_tax_active');
+  db_drop_field('uc_taxes', 'quickbooks_tax_updated');
+}

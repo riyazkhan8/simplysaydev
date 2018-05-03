@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * ji_reports.module.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function ji_reports_menu() {
+  $items['admin/config/services/ji_quickbooks/reports'] = array(
+    'title' => 'JI QuickBooks Reports',
+    'description' => 'JI QuickBooks Reports.',
+    'page callback' => 'ji_reports_ui_overview',
+    'page arguments' => array('reports'),
+    'access arguments' => array('access quickbooks'),
+    'file' => 'ji_reports_ui.admin.inc',
+  );
+
+  return $items;
+}

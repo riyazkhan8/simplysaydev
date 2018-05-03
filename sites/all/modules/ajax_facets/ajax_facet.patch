@@ -1,0 +1,19 @@
+diff --git ajax_facets.pages.inc ajax_facets.pages.inc
+index 6bd47f1..e272d1c 100755
+--- ajax_facets.pages.inc
++++ ajax_facets.pages.inc
+@@ -58,11 +58,11 @@ function ajax_facets_refresh_facets_content() {
+       $dis_id = $received_view['view_display_id'];
+       $access = FALSE;
+       // Check that access to this display is restricted.
+-      if (!empty($view->display[$dis_id]->display_options['access'])) {
++      if (!empty($view->display['default']->display_options['access'])) {
+         // And that restriction is not "none".
+-        if ($view->display[$dis_id]->display_options['access']['type'] !== 'none') {
++        if ($view->display['default']->display_options['access']['type'] !== 'none') {
+           // Check that we have an access to this display.
+-          if ($view->access($dis_id)) {
++          if ($view->access('default')) {
+             $processed_views[$key] = [
+               'view_name' => $name,
+               'view_display_id' => $dis_id,

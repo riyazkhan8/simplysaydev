@@ -1,0 +1,138 @@
+ul.ui-autocomplete {
+  max-height: 240px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding: 3px;
+}
+
+a.ji-autocomplete-single:hover {
+  text-decoration: none;
+}
+
+.ji-autocomplete-container {
+  display: inline-block;
+  position: relative;
+  padding: 0;
+  border: 1px solid #cccccc;
+  background: no-repeat -38px -22px, -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(1%, #eeeeee), color-stop(15%, #ffffff));
+  background: no-repeat -38px -22px, -webkit-linear-gradient(top, #eeeeee 1%, #ffffff 15%);
+  background: no-repeat -38px -22px, -moz-linear-gradient(top, #eeeeee 1%, #ffffff 15%);
+  background: no-repeat -38px -22px, -o-linear-gradient(top, #eeeeee 1%, #ffffff 15%);
+  background: no-repeat -38px -22px, -ms-linear-gradient(top, #eeeeee 1%, #ffffff 15%);
+  background: no-repeat -38px -22px, linear-gradient(top, #eeeeee 1%, #ffffff 15%);
+}
+div.ji-autocomplete-container input.ji-autocomplete-form {
+  background: #fff no-repeat -38px -22px;
+  /*padding: 8px 5px 8px 5px;*/
+  border: none;
+}
+
+div.ji-autocomplete-container input.ji-autocomplete-form-single {
+  width: 247px;
+}
+
+.ji-autocomplete-search {
+  margin: 0px 0px 4px 0px;
+  padding: 3px 4px;
+  position: relative;
+  white-space: nowrap;
+  z-index: 1010;
+}
+
+span.ji-autocomplete-value-delete {
+  display: inline-block;
+  float: right;
+  background: url('x.gif') no-repeat center;
+  width: 18px;
+  /* Prevent text selection. */
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.ji-autocomplete-single-open {
+  display: none;
+}
+
+div.ji-autocomplete-multiple {
+  display: inline-block;
+  font-size: 13px;
+  position: relative;
+  background-color: #ffffff;
+  background: #fff no-repeat -38px -22px;
+  background: no-repeat -38px -22px, -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(1%, #eeeeee), color-stop(15%, #ffffff));
+  background: no-repeat -38px -22px, -webkit-linear-gradient(top, #eeeeee 1%, #ffffff 15%);
+  background: no-repeat -38px -22px, -moz-linear-gradient(top, #eeeeee 1%, #ffffff 15%);
+  background: no-repeat -38px -22px, -o-linear-gradient(top, #eeeeee 1%, #ffffff 15%);
+  background: no-repeat -38px -22px, -ms-linear-gradient(top, #eeeeee 1%, #ffffff 15%);
+  background: no-repeat -38px -22px, linear-gradient(top, #eeeeee 1%, #ffffff 15%);
+  padding: 4px 5px;
+  border: 1px solid #aaaaaa;
+  cursor: text;
+  height: auto !important;
+  margin: 0;
+  overflow: hidden;
+  padding: 5px;
+  position: relative;
+  line-height: 15pt;
+  width: 503px;
+  cursor: text;
+}
+
+input.ji-autocomplete-form.ji-autocomplete-multiple {
+  border: 3px none;
+  width: 25px;
+  margin-left: 5px;
+  float: left;
+}
+
+div.ji-autocomplete-throbber {
+  width: 16px;
+  float: right;
+  height: 50%;
+}
+
+.ji-autocomplete-closed {
+  display: none;
+}
+
+.ji-autocomplete-open {
+  display: none;
+}
+
+.ji-autocomplete-item {
+  float: left;
+  background-clip: padding-box;
+  background-color: #e4e4e4;
+  background-image: -moz-linear-gradient(center top , #f4f4f4 20%, #f0f0f0 50%, #e8e8e8 52%, #eeeeee 100%);
+  border: 1px solid #aaaaaa;
+  border-radius: 3px 3px 3px 3px;
+  box-shadow: 0 0 2px #ffffff inset, 0 1px 0 rgba(0, 0, 0, 0.05);
+  color: #333333;
+  cursor: default;
+  line-height: 13px;
+  margin: 3px 0 3px 5px;
+  padding: 3px 20px 3px 5px;
+  position: relative;
+}
+
+.ji-autocomplete-item-delete {
+  background: url("x.gif");
+  display: block;
+  font-size: 1px;
+  height: 13px;
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  width: 12px;
+}
+.ji-autocomplete-item-focus {
+  background: none repeat scroll 0 0 #d4d4d4;
+}
+
+.ji-autocomplete-highlight-char {
+  color: blue;
+  font-weight: bold;
+}

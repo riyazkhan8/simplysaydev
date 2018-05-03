@@ -1,0 +1,358 @@
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    Toolbars
+
+    example
+
+    <div id="objects-menu" class="toolbar-menu">
+/*/
+/*---------------------------------------------------
+    LESS Elements 0.9
+  ---------------------------------------------------
+    A set of useful LESS mixins
+    More info at: http://lesselements.com
+  ---------------------------------------------------*/
+.toolbar-menu-blue {
+  position: relative;
+  background-color: rgba(52, 164, 244, 0.11);
+  background-position: 65px 45px;
+  box-shadow: none;
+  border: 1px solid white;
+  border-radius: 10px;
+}
+.toolbar-menu-blue > .object-menu-item:first-child .object-menu-item:first-child,
+.toolbar-menu-blue > .object-menu-item:first-child {
+  border-top-left-radius: 10.1px;
+  border-bottom-left-radius: 10.1px;
+}
+.toolbar-menu-blue > .object-menu-item:last-child .object-menu-item:last-child,
+.toolbar-menu-blue > .object-menu-item:last-child {
+  border-top-right-radius: 10.1px;
+  border-bottom-right-radius: 10.1px;
+}
+.toolbar-menu-simple {
+  color: black;
+}
+.toolbar-menu-simple .object-menu-select label,
+.toolbar-menu-simple .option-title,
+.toolbar-menu-simple .button-title {
+  display: none;
+}
+.toolbar-menu-simple .btn {
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: lightgrey;
+}
+.toolbar-menu {
+  color: black;
+}
+.toolbar-menu .object-menu-select label,
+.toolbar-menu .option-title,
+.toolbar-menu .button-title {
+  display: none;
+}
+.toolbar-menu .btn {
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: lightgrey;
+}
+.toolbar-menu .-object-menu-item-input-box {
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+  display: none;
+}
+.toolbar-menu .-object-menu-item-input-box + label i {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  padding: 3px;
+  display: block;
+}
+.toolbar-menu .-object-menu-item-input-box:checked + label i {
+  background-color: #7FBFDE !important;
+}
+.toolbar-menu .toolbar-input-text {
+  height: 40px;
+  line-height: 34px;
+  margin: 1px;
+  background: #cecece;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f9f9f9), color-stop(1, #f0f0f0));
+  background: -ms-linear-gradient(bottom, #f9f9f9, #f0f0f0);
+  background: -moz-linear-gradient(center bottom, #f9f9f9 0%, #f0f0f0 100%);
+  background: -o-linear-gradient(#f0f0f0, #f9f9f9);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f0f0f0', endColorstr='#f9f9f9', GradientType=0);
+  border-radius: 4px;
+  border: 1px solid #cecece;
+  box-sizing: border-box;
+}
+.toolbar-menu .object-menu-item {
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+}
+.toolbar-menu .object-menu-item .btn {
+  box-sizing: border-box;
+  margin: 1px;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  cursor: pointer;
+}
+.toolbar-menu .object-menu-item.object-menu-select .select2-selection {
+  width: 100%;
+  height: 40px;
+  line-height: 34px;
+  margin: 1px;
+  background: #cecece;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f9f9f9), color-stop(1, #f0f0f0));
+  background: -ms-linear-gradient(bottom, #f9f9f9, #f0f0f0);
+  background: -moz-linear-gradient(center bottom, #f9f9f9 0%, #f0f0f0 100%);
+  background: -o-linear-gradient(#f0f0f0, #f9f9f9);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f0f0f0', endColorstr='#f9f9f9', GradientType=0);
+  border-radius: 4px;
+  border: 1px solid #cecece;
+  box-sizing: border-box;
+}
+.toolbar-menu .object-menu-item.object-menu-select .select2-selection .select2-selection__rendered {
+  line-height: 38px;
+}
+.toolbar-menu .object-menu-item.object-menu-select .select2-selection .select2-selection__arrow {
+  height: 40px;
+}
+.toolbar-menu .object-menu-item.object-menu-checkbox > input[type="checkbox"] {
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+  display: none;
+}
+.toolbar-menu .object-menu-item.object-menu-checkbox > input[type="checkbox"] + label i {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  padding: 3px;
+  display: block;
+}
+.toolbar-menu .object-menu-item.object-menu-checkbox > input[type="checkbox"]:checked + label i {
+  background-color: #7FBFDE !important;
+}
+.toolbar-menu .object-menu-item.object-menu-checkbox > input[type="checkbox"]:checked + label {
+  background-color: #7FBFDE !important;
+}
+.toolbar-menu .object-menu-item.object-menu-number input[type="number"] {
+  position: relative;
+  cursor: pointer;
+  width: 60px;
+  height: 40px;
+  line-height: 34px;
+  margin: 1px;
+  background: #cecece;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f9f9f9), color-stop(1, #f0f0f0));
+  background: -ms-linear-gradient(bottom, #f9f9f9, #f0f0f0);
+  background: -moz-linear-gradient(center bottom, #f9f9f9 0%, #f0f0f0 100%);
+  background: -o-linear-gradient(#f0f0f0, #f9f9f9);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f0f0f0', endColorstr='#f9f9f9', GradientType=0);
+  border-radius: 4px;
+  border: 1px solid #cecece;
+  box-sizing: border-box;
+}
+.toolbar-menu .object-menu-item.object-menu-font-family .fontSelect {
+  width: 188px;
+  height: 40px;
+  line-height: 34px;
+  margin: 1px;
+  background: #cecece;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f9f9f9), color-stop(1, #f0f0f0));
+  background: -ms-linear-gradient(bottom, #f9f9f9, #f0f0f0);
+  background: -moz-linear-gradient(center bottom, #f9f9f9 0%, #f0f0f0 100%);
+  background: -o-linear-gradient(#f0f0f0, #f9f9f9);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f0f0f0', endColorstr='#f9f9f9', GradientType=0);
+  border-radius: 4px;
+  border: 1px solid #cecece;
+  box-sizing: border-box;
+}
+.toolbar-menu .object-menu-item .minicolors.minicolors-theme-default {
+  width: 34px;
+  height: 34px;
+  margin: 3px;
+  display: block;
+}
+.toolbar-menu .object-menu-item .minicolors.minicolors-theme-default.minicolors-position-bottom .minicolors-panel {
+  margin-top: 5px;
+  top: 100%;
+}
+.toolbar-menu .object-menu-item .minicolors.minicolors-theme-default.minicolors-position-right .minicolors-panel {
+  right: -4px;
+}
+.toolbar-menu .object-menu-item .minicolors.minicolors-theme-default .minicolors-input {
+  display: none;
+}
+.toolbar-menu .object-menu-item .minicolors.minicolors-theme-default > .minicolors-swatch {
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  margin: 0;
+  border-radius: 40px;
+  right: 0 !important;
+  padding: 0;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.toolbar-menu .object-menu-item .minicolors.minicolors-theme-default > .minicolors-swatch .minicolors-swatch-color {
+  border-radius: 40px;
+}
+.toolbar-menu .object-menu-item.object-menu-menu {
+  padding: 0;
+}
+.toolbar-menu .object-menu-item.object-menu-menu > label {
+  display: block;
+  font-size: 12px;
+  color: white;
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 2px;
+  text-transform: capitalize;
+  border-bottom: 1px solid white;
+  right: 2px;
+  text-align: left;
+  left: 0;
+}
+.toolbar-menu .object-menu-item.object-menu-menu.hovered,
+.toolbar-menu .object-menu-item.object-menu-menu.toggled {
+  position: relative;
+}
+.toolbar-menu .object-menu-item.object-menu-menu.hovered .button-menu-trigger,
+.toolbar-menu .object-menu-item.object-menu-menu.toggled .button-menu-trigger {
+  display: block;
+}
+.toolbar-menu .object-menu-item.object-menu-menu.hovered .object-menu.submenu,
+.toolbar-menu .object-menu-item.object-menu-menu.toggled .object-menu.submenu {
+  position: absolute;
+  background-color: rgba(52, 164, 244, 0.11);
+  background-position: 65px 45px;
+  box-shadow: none;
+  border: 1px solid white;
+  color: white;
+  padding: 0;
+  border-radius: 10.1px;
+  z-index: 1;
+  height: 46px;
+}
+.toolbar-menu .object-menu-item.object-menu-menu:not(.toggled):not(.hovered) .button-menu-trigger {
+  display: none;
+}
+.toolbar-menu .object-menu-item.object-menu-menu .object-menu.submenu {
+  display: block ;
+}
+.toolbar-menu .object-menu-item.object-menu-options {
+  padding: 0;
+}
+.toolbar-menu .object-menu-item.object-menu-options .btn-selected-option input {
+  display: none;
+}
+.toolbar-menu .object-menu-item.object-menu-options .option-title {
+  position: absolute;
+  text-shadow: 1px 1px 0 white;
+  z-index: 1;
+  left: 2px;
+  bottom: 2px;
+  font-size: 10px;
+  line-height: 10px;
+}
+.toolbar-menu .object-menu-item.object-menu-options.items-column:hover > .object-menu-options-container {
+  display: block;
+}
+.toolbar-menu .object-menu-item.object-menu-options.items-column > .button-menu-trigger input {
+  display: none;
+}
+.toolbar-menu .object-menu-item.object-menu-options.items-column > .object-menu-options-container {
+  margin: 0px -1px;
+  display: none;
+  position: absolute;
+  bottom: 100%;
+}
+.toolbar-menu .object-menu-item.object-menu-options.items-column > .object-menu-options-container label.btn {
+  display: block;
+}
+.toolbar-menu .object-menu-item.object-menu-options.items-column > .object-menu-options-container input[type=radio]:checked + label {
+  background-color: #7FBFDE !important;
+}
+.toolbar-menu .object-menu-item.object-menu-options.items-column > .object-menu-options-container > .object-menu-item.active {
+  bottom: -46px;
+  position: absolute;
+}
+.toolbar-menu .object-menu-item.object-menu-options.items-column > .object-menu-options-container > .object-menu-item.object-menu-options {
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  z-index: 10;
+}
+.toolbar-menu .object-menu-item.object-menu-options.items-column > .object-menu-options-container:hover > div > .object-menu-item {
+  display: block;
+}
+.toolbar-menu .object-menu-item.object-menu-options.items-row {
+  width: auto !important;
+}
+.toolbar-menu .object-menu-item.object-menu-options.items-row input[type=radio]:checked + label.btn {
+  background-color: rgba(8, 20, 31, 0.1);
+}
+.toolbar-menu .object-menu-item.object-menu-options.items-row label.btn {
+  display: block;
+}
+.toolbar-menu .object-menu-item[disabled] {
+  cursor: default;
+}
+.toolbar-menu .object-menu-item[disabled] > * {
+  opacity: 0.5;
+  cursor: default;
+}
+.toolbar-menu .object-menu-item .menu-action-parameters {
+  padding: 10px;
+  text-align: left;
+  width: 300px;
+  position: absolute;
+  bottom: 100%;
+  background: white;
+  right: -6px;
+  margin-bottom: 10.1px;
+  border-radius: 10px;
+}
+.toolbar-menu .object-menu-item .menu-action-parameters:after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  border: 10px transparent solid;
+  border-bottom: 0;
+  border-width: 10px 10px 0 10px;
+  border-top: white 10px solid;
+  right: 20px;
+}
+.select2-dropdown .select2-results__option {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: left;
+}

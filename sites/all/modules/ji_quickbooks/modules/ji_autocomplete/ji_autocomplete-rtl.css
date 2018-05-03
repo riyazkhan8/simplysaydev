@@ -1,0 +1,36 @@
+span.ji-autocomplete-value-delete {
+  float: left;
+}
+div.ji-autocomplete-multiple {
+  padding: 4px 5px;
+}
+
+input.ji-autocomplete-form.ji-autocomplete-multiple {
+  margin-left: 0;
+  margin-right: 5px;
+  float: right;
+}
+
+div.ji-autocomplete-throbber {
+  float: left;
+}
+
+.ji-autocomplete-closed {
+  background-position: 0 6px;
+}
+
+.ji-autocomplete-open {
+  background-position: 0 -14px;
+}
+
+.ji-autocomplete-item {
+  float: right;
+  margin: 3px 5px 3px 0;
+  padding: 3px 5px 3px 20px;
+}
+
+.ji-autocomplete-item-delete {
+  position: absolute;
+  right: auto;
+  left: 3px;
+}

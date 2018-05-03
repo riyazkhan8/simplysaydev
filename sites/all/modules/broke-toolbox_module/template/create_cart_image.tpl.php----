@@ -1,0 +1,133 @@
+<?php
+global $base_path;
+
+
+ //print"<pre>"; print_r($_SESSION['line_item_cart']);   
+ //print"<pre>"; print_r($_POST); exit;
+
+if (isset($_POST['cid']) && !empty($_POST['cid']) && isset($_POST["pid"])) {
+
+  $product_id = $_POST["pid"];
+    $product = commerce_product_load($product_id);
+    $card_load='';
+
+    $tid = $product->field_card_orientation['und'][0]['tid'];
+
+
+
+  
+    $query = db_select('user_saved_card', 'uc')
+            ->fields('uc')
+            ->condition('uc.cid',$_POST['cid'])
+          ->execute();
+      $record = $query->fetchAll();
+      $count = count($record);    
+      //print $count;
+      if ($count > 0) {
+    
+      $json_data = $record[0]->outlay_card_jason;
+
+      if (!empty($_POST['card_load'])) {
+
+        $card_load = $_POST['card_load'];
+
+      }
+      
+        
+      }
+
+}
+ //print"<pre>"; print_r($product); exit;
+?>
+<div style="display:none">
+                  <?php if($tid != 16):?>
+                    <div class="col-sm-6">
+                        <div class="canvas-board">
+                            <div class="canvas_duumy_image" >
+                                <canvas id="canvas" width="500" height="661"  class="getCanvas" ></canvas>
+                            </div>
+                        </div>
+                    </div>
+                  <?php else: ?>  
+                    <div class="col-sm-8">
+                        <div class="canvas-board">
+                            <div class="canvas_duumy_image">
+                                <canvas id="canvas" width="661" height="500"  class="getCanvas" ></canvas>
+                            </div>
+                        </div>
+                    </div>
+                  <?php endif; ?>    
+</div>
+<script >
+
+ 
+
+ var canvas = new fabric.Canvas('canvas',{
+      preserveObjectStacking: true
+ });
+
+  var json_data = '<?php echo $json_data;  ?>';
+  var card_load = '<?php echo $card_load;  ?>';
+   
+ 
+  set_json(json_data,canvas,'');
+ 
+
+
+
+function set_json(data,canvas,count){
+
+      var json = data;
+      var getDATA;
+      var setdata = getDATA+""+count;
+
+    var setdata =canvas.loadFromJSON(json, canvas.renderAll.bind(canvas), function(o, object) {
+        
+        fabric.log(o, object);
+        
+        
+        });
+
+  }
+        setTimeout(
+                    function() 
+                    {
+                     var canvas_image = canvas.toDataURL('png');
+
+                     jQuery.ajax({
+                  type: "POST",
+                  url: "/canvassave",
+                  data: { 
+                      'image_data':canvas_image,
+                      'action': 'cart_image_save',
+       
+                    },
+                  success: function(result) {
+                      
+                      console.log(result);
+                      jQuery("#toolbox .blue-round-btns #insert-cart").removeClass('round-btns-disabled');
+                      jQuery("#toolbox .blue-round-btns a").removeClass('round-btns-disabled');
+
+                      if (card_load == 'cart') {
+                        window.location.href="/cart"; 
+                      }else{
+                        jQuery(".commerce-add-to-cart #edit-submit").click();
+                      }
+                       //alert(result);
+                       
+                       //jQuery(".commerce-add-to-cart #edit-submit").click();
+                                    
+                  },
+                  error: function(result) {
+                      alert('error');
+                      //alert(result);
+                  }
+              }); 
+
+                    }, 100);
+
+
+             
+     
+
+</script>

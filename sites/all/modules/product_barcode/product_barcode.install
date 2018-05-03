@@ -1,0 +1,237 @@
+<?php
+
+/**
+ * @file
+ *   Install file for product barcode module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function product_barcode_uninstall() {
+    // Delete variables.
+    variable_del('product_barcode_default_path');
+    variable_del('product_barcode_encoding');
+    variable_del('product_barcode_font');
+
+    if (db_table_exists('order_product_barcodes')) {
+        db_drop_table('order_product_barcodes');
+    }
+
+    if (db_table_exists('order_product_status_notes')) {
+        db_drop_table('order_product_status_notes');
+    }
+
+    drupal_flush_all_caches();
+}
+
+/**
+ * Implements hook_install().
+ */
+function product_barcode_install() {
+    // Create the default barcode directory and ensure it's writable.
+    $path = file_build_uri('product_barcodes');
+    if (file_prepare_directory($path, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
+        variable_set('product_barcode_default_path', $path);
+    }
+}
+
+function product_barcode_schema() {
+    $schema['order_product_barcodes'] = array(
+        'description' => 'The table for storing the barcodes of each product.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'The primary identifier for product barcode.',
+                'type' => 'serial',
+                'not null' => TRUE,
+                'unsigned' => TRUE,
+            ),
+            'order_id' => array(
+                'description' => 'Order Id',
+                'type' => 'int',
+                'not null' => TRUE,
+            ),
+            'product_id' => array(
+                'description' => 'Product Id',
+                'type' => 'int',
+                'not null' => TRUE,
+            ),
+            'url_token' => array(
+                'description' => 'MD5 string used in the url',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+            ),
+            'barcode' => array(
+                'description' => 'Product barcode',
+                'type' => 'text',
+                'not null' => TRUE,
+            ),
+            'barcode_file_name' => array(
+                'description' => 'Product barcode file name.',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+            ),
+            'status' => array(
+                'description' => 'Proudct barcode status(1=Unblock,0=Block).',
+                'type' => 'int',
+                'size' => 'tiny',
+                'length' => 1,
+                'not null' => TRUE,
+                'default' => 1,
+            ),
+            'created_by' => array(
+                'description' => 'This record is created by whom',
+                'type' => 'int',
+                'not null' => TRUE,
+                'default'=>0
+            ),
+            'created_at' => array(
+                'description' => 'Record created date time(yyyy-mm-dd H:i:s).',
+                'type' => 'varchar',
+                'mysql_type' => 'DATETIME',
+                'not null' => TRUE,
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+    $schema['order_product_status_notes'] = array(
+        'description' => 'The table for storing the notes of each product given from barcode status view.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'The primary identifier for product barcode.',
+                'type' => 'serial',
+                'not null' => TRUE,
+                'unsigned' => TRUE,
+            ),
+            'order_id' => array(
+                'description' => 'Order Id',
+                'type' => 'int',
+                'not null' => TRUE,
+            ),
+            'product_id' => array(
+                'description' => 'Product Id',
+                'type' => 'int',
+                'not null' => TRUE,
+            ),
+            'notes' => array(
+                'description' => 'Notes given by user',
+                'type' => 'text',
+                'not null' => TRUE,
+            ),
+            'user_ip' => array(
+                'description' => 'IP address of the user',
+                'type' => 'varchar',
+                'length' => 45,
+                'not null' => TRUE,
+            ),
+            'created_at' => array(
+                'description' => 'Record created date time(yyyy-mm-dd H:i:s).',
+                'type' => 'varchar',
+                'mysql_type' => 'DATETIME',
+                'not null' => TRUE,
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+    $schema['card_qr_code_detail'] = array(
+  'description' => 'QR Code detail odbc_tables(connection_id)',
+  'fields' => array(
+    'id' => array(
+      'description' => 'ID',
+      'type' => 'serial',
+      'not null' => TRUE,
+    ),
+    'cid' => array(
+      'description' => 'cid of card',
+      'type' => 'int',
+      'not null' => TRUE,
+    ),
+    'url_token' => array(
+      'description' => 'url token of barcode',
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => TRUE,
+    ),
+    'barcode_file_name' => array(
+      'description' => 'barcode file name',
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => TRUE,
+    ),
+    'item_id' => array(
+      'description' => 'line item id of card',
+      'type' => 'int',
+      'not null' => TRUE,
+    ),
+  ),
+  'primary key' => array('id'),
+);
+
+
+    return $schema;
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function product_barcode_requirements($phase) {
+    $requirements = array();
+    if ($phase != 'runtime') {
+      return $requirements;
+    }
+
+    // Create the styles directory and ensure it's writable.
+    $settings = product_barcode_get_settings();
+    $created = file_prepare_directory($settings['default_path'], FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+
+    if (!$created) {
+      $requirements['product_barcode_dirs'] = array(
+        'value' => t('Missing directory'),
+        'severity' => REQUIREMENT_ERROR,
+        'description' => t("The product barcode module's default directory %barcode-dir can not be created.", array('%barcode-dir' => $settings['default_path'])),
+      );
+    }
+    else {
+      $requirements['product_barcode_dirs'] = array(
+        'value' => t('Product barcode directory exists (%path).', array('%path' => $settings['default_path'])),
+        'severity' => REQUIREMENT_OK,
+      );
+    }
+    $requirements['product_barcode_dirs']['title'] = t('Product barcode module directories');
+
+    // Image library check.
+    if (!function_exists("imagecreate")) {
+      $requirements['product_barcode_image_library'] = array(
+        'value' => t('Missing image library'),
+        'severity' => REQUIREMENT_ERROR,
+        'description' => t('The barcode module needs GD library support.'),
+      );
+    }
+    else {
+      $requirements['barcode_image_library'] = array(
+        'value' => t('Image library exists.'),
+        'severity' => REQUIREMENT_OK,
+      );
+    }
+    $requirements['product_barcode_image_library']['title'] = t('Product barcode image library');
+
+    return $requirements;
+}
+
+/**
+ * Add the new database field
+ */
+function product_barcode_update_7100() {
+    $spec = array(
+        'type' => 'varchar', // A field definition exactly as you would have inside the 'fields' array in hook_schema
+        'length' => 255,
+        'not null' => FALSE,
+        'default' => '',
+        'description' => 'To maintain the status of this line item.',
+    );
+    db_add_field('commerce_line_item', 'status', $spec);
+}

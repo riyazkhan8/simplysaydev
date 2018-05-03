@@ -1,0 +1,1716 @@
+<?php
+/**
+ * Implements hook_menu().
+ */
+function toolbox_module_menu()
+{
+
+    $items = array();
+
+    $items['admin/commerce/products/create_canvas'] = array(
+        'title' => 'Create Product Tool',
+        'page callback' => 'show_create_canvas_toolbox',
+        'access callback' => 'toolbox_module_perm',
+        'access arguments' => array('access content'),
+        'type' => MENU_NORMAL_ITEM,
+        'weight' => 1,
+    );
+    $items['admin/commerce/products/create_canvas_landscape'] = array(
+        'title' => 'Create Product Tool Landscape',
+        'page callback' => 'show_create_canvas_toolbox_landscape',
+        'access callback' => 'toolbox_module_perm',
+        'access arguments' => array('access content'),
+        'type' => MENU_NORMAL_ITEM,
+        'weight' => 1,
+    );
+    $items['usersavedata'] = array(
+        'page callback' => 'usersavedata',
+        'access callback' => TRUE,
+    );
+    $items['usergetdata'] = array(
+        'page callback' => 'usergetdata',
+        'access callback' => TRUE,
+    );
+    $items['sampleshow'] = array(
+        'page callback' => 'sample_card_show',
+        'access callback' => TRUE,
+    );
+    $items['emojishow'] = array(
+        'page callback' => 'emoji_show',
+        'access callback' => TRUE,
+    );
+    $items['delivery_selection'] = array(
+        'page callback' => 'deliverySelectionPage',
+        'access callback' => TRUE,
+    );
+    $items['reorder_card'] = array(
+        'page callback' => 'reorder_user_card',
+        'access callback' => TRUE,
+    );
+    $items['instagram_redirect'] = array(
+        'page callback' => 'show_instagram_image',
+        'access callback' => TRUE,
+    );
+    $items['profile_upload'] = array(
+        'page callback' => 'user_profile_image_upload',
+        'access callback' => TRUE,
+    );
+    //ponomarevtlt: added new
+    $items['addressbook_add_address'] = array(
+        'page callback' => 'addressbook_add_address',
+        'access callback' => TRUE,
+    );
+    $items['addressbook_back_address'] = array(
+        'page callback' => 'addressbook_back_address',
+        'access callback' => TRUE,
+    );
+    $items['addressbook_refresh_form'] = array(
+        'page callback' => 'addressbook_refresh_form',
+        'access callback' => TRUE,
+    );
+    $items['address_form_save_address'] = array(
+        'page callback' => 'address_form_save_address',
+        'access callback' => TRUE,
+    );
+    $items['addressbook_insert_card'] = array(
+        'page callback' => 'addressbook_insert_card',
+        'access callback' => TRUE,
+    );
+    return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function toolbox_module_theme($existing, $type, $theme, $path)
+{
+
+    $tool = array();
+
+    /********Portrait Tempates*******/
+
+    $tool['html_page_landscape'] =  $tool['html_page'] = array(
+        'template' => 'admin_toolbox',
+        'path' => drupal_get_path('module', 'toolbox_module') . '/template',
+    );
+//
+//    $tool['outlay_landscape'] = array(
+//        'template' => 'outlay_toolbox',
+//        'variables' => array('nid' => NULL),
+//        'path' => drupal_get_path('module', 'toolbox_module') . '/template',
+//    );
+    $tool['outlay'] = array(
+        'template' => 'outlay_toolbox',
+        'variables' => array('nid' => NULL),
+        'path' => drupal_get_path('module', 'toolbox_module') . '/template',
+    );
+    $tool['inlay'] = array(
+        'template' => 'inlay_toolbox',
+        'path' => drupal_get_path('module', 'toolbox_module') . '/template',
+    );
+    $tool['preview'] = array(
+        'template' => 'preview_toolbox',
+        'path' => drupal_get_path('module', 'toolbox_module') . '/template',
+    );
+
+    /********Add New address templates*******/
+
+    $tool['add_address'] = array(
+        'template' => 'add_address_toolbox',
+        'path' => drupal_get_path('module', 'toolbox_module') . '/template',
+    );
+    // *********Crate cart image templates*******/
+    $tool['delivery'] = array(
+        'template' => 'delivery_toolbox',
+        'path' => drupal_get_path('module', 'toolbox_module') . '/template',
+    );
+
+    //    Delivery address selection template
+    $tool['delivery_selection_page'] = array(
+        'template' => 'delivery_selection_page',
+        'path' => drupal_get_path('module', 'toolbox_module') . '/template',
+    );
+
+    return $tool;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function toolbox_module_perm(){
+    global $user;
+    if ($user->uid == 1) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
+function ____getQRImage($cid){
+    $qr_query = db_select('card_qr_code_detail', 'cqr')
+        ->fields('cqr')
+        ->condition('cqr.cid', $cid)
+        ->execute();
+    $qr_record = $qr_query->fetchAll();
+
+    if (count($qr_record)) {
+        return $qr_record[0];
+    }
+    return false;
+}
+
+/**
+ * try to get rid of thos
+ */
+function ____createQRImage($cid , $pid){
+
+    if (____getQRImage($cid )) {
+        return;
+    }
+    $order_base_url = $GLOBALS['base_url'] . "/order/status/";
+    $orderToken = md5($cid . $pid);
+    $urlToken = $order_base_url . $orderToken;
+    // we need to generate filename somehow,
+    // ponomarevtlt: ... do we?
+    $fileName = $orderToken . '.png';
+    generateQRImage($urlToken, $fileName);
+
+    $qr_record = db_insert('card_qr_code_detail')
+        ->fields(array(
+            'cid' => $cid,
+            'url_token' => $urlToken,
+            'barcode_file_name' => $fileName,
+            'item_id' => 0
+        ))
+        ->execute();
+    return $qr_record[0];
+}
+
+/**
+ * @ponomarevtlt: not bad, but i am not going to use it
+ */
+function ____getBarcodeData($cid)
+{
+    $qr_record = ____getQRImage( $cid );
+
+    if ($qr_record) {
+        $barcode_image_name = $qr_record[0]->barcode_file_name;
+        $uri = 'public://product_barcodes';
+        $filepath = file_create_url($uri);
+        $barcode = $filepath . '/' . $barcode_image_name;
+        $path_base64 = base64_encode(file_get_contents($barcode));
+        $barcode_data = 'data:image/png;base64,' . $path_base64;
+    } else {
+        $barcode_data = '';
+    }
+    return $barcode_data;
+}
+
+
+
+
+function _getUserCard($nid, $pid, $cid)
+{
+    global $user;
+    // if($user->uid == 0){
+    //     return false;
+    // }
+    $query = db_select('user_saved_card', 'uc')
+        ->fields('uc')
+        ->condition('uc.node_id', $nid)
+        ->condition('uc.pid', $pid)
+        ->condition('uc.cid', $cid)
+        ->execute();
+    $record = $query->fetchAll();
+    $count = count($record);
+    if ($count > 0) {
+        return $record[0];
+    } else {
+        return false;
+    }
+}
+
+/*
+ * update user card in Database
+ */
+function _updateUserCard($nid, $pid, $cid, $fields)
+{
+    if (_getUserCard($nid, $pid, $cid)) {
+        return db_update('user_saved_card')// Table name no longer needs {}
+        ->fields($fields)
+            ->condition('node_id', $nid)
+            ->condition('cid', $cid)
+            ->execute();
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Get Slide dat from Drupal Database
+ * @return mixed
+ */
+function _getOutlayBackDesign($pid)
+{
+    $product = commerce_product_load($pid);
+    $card_mode = $product->field_card_orientation['und'][0]['tid'];
+    if ($card_mode == 16) {
+        $card_back = node_load(77);
+    } else {
+        $card_back = node_load(76);
+    }
+    return $card_back->field_card_back_json['und'][0]['value'];
+}
+function _debugDatabase(){
+    $db = array();
+    /**
+     * DB : loading saved card from database
+     */
+    $query = db_select('user_saved_card', 'uc')
+        ->fields('uc')
+        ->execute();
+    $records = $query->fetchAll();
+
+    foreach ($records as $value) {
+        $row = array(
+            'nid' => $value->node_id,
+            'pid' => $value->pid,
+            'cid' => $value->cid,
+            'uid' => $value->uid
+        );
+        array_push($db,$row);
+    }
+    return $db;
+}
+/**
+ * Get Card Data
+ */
+function usergetdata()
+{
+    global $user;
+    $nid = $_POST["nid"];
+    $pid = $_POST['pid'];
+    $cid = $_POST['cid'];
+
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    //clean session if product was changed
+    if ( isset($_SESSION['nid']) && $_SESSION['nid'] != $nid || isset($_SESSION['pid']) && $_SESSION['pid'] != $pid) {
+        unset($_SESSION['outlay_card_json']);
+        unset($_SESSION['inlay_card_json_1']);
+        unset($_SESSION['inlay_card_json_2']);
+        unset($_SESSION['pid']);
+        unset($_SESSION['nid']);
+        unset($_SESSION['cid']);
+    }
+
+    $delivery_type = 0;
+
+    try {
+        $outlay_card_back_json = _getOutlayBackDesign($pid);
+
+        if ($record = _getUserCard($nid, $pid, $cid)) {
+            $delivery_type = $record->return_delivery_type_status;
+            $card_data = array(
+                $outlay_card_back_json,
+                $record->outlay_card_jason,
+                $record->inlay_card_json_1,
+                $record->inlay_card_json_2,
+            );
+            $message = "LOADED FROM DATABASE";
+        }
+        /**
+         * SESSION: loading saved card from Session
+         */
+        elseif (isset($_SESSION['outlay_card_json'])) {
+            $delivery_type = $_SESSION['delivery_type'];
+            $card_data = array(
+                $outlay_card_back_json,
+                $_SESSION['outlay_card_json'],
+                $_SESSION['inlay_card_json_1'],
+                $_SESSION['inlay_card_json_2']
+            );
+            $message = "LOADED FROM SESSION";
+        }
+        /**
+         * CREATE NEW PRODUCT:
+         */
+        else {
+            $product = commerce_product_load($pid);
+            $card_data = array(
+                $outlay_card_back_json,
+                $product->field_outlay_card_json['und'][0]['value']
+            );
+            $message = "CREATED";
+        }
+
+        echo json_encode(array(
+            'USER' => $user->uid,
+            'DB' => _debugDatabase(),
+            'SESSION' => $_SESSION,
+            'message' => $message,
+            'slides' => $card_data,
+            'delivery_type' => $delivery_type,
+            'barcode_data' => ____getBarcodeData($cid),
+            'orderToken' => $GLOBALS['base_url'] . "/order/status/" . md5($cid . $pid)
+        ));
+        return true;
+    }catch(Exception $e) {
+
+        echo json_encode(array(
+            'USER' => $user->uid,
+            'SESSION' => $_SESSION,
+            'STATUS'  => "ERROR",
+            'MESSAGE' => $e->getMessage()
+        ));
+        return false;
+    }
+//        _doSomethingWhatIcantunderstand();
+}
+
+
+function _getDefaultShppingPID ($cid){
+    global $user;
+    if (!empty($cid)) {
+        $query = db_select('user_saved_card', 'uc')
+            ->fields('uc')
+            ->condition('uc.cid', $cid)
+            ->execute();
+        $record = $query->fetchAll();
+        $count = count($record);
+        if ($count > 0 && $record[0]->address_pid > 0) {
+            $default_pid = $record[0]->address_pid;
+        } else {
+            $default_pid1 = commerce_addressbook_get_default_profile_id($user->uid, 'shipping');
+            if (empty($default_pid1)) 
+            {
+                $default_pid = 0;
+            }
+            else
+            {
+                $default_pid = $default_pid1;
+            }
+        }
+    } else {
+        $default_pid = commerce_addressbook_get_default_profile_id($user->uid, 'shipping');
+    }
+    return $default_pid;
+}
+/*
+ * Save data from Client to Session and database
+ */
+function usersavedata()
+{
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    global $user;
+
+
+    $nid = $_POST["nid"];
+    $pid = $_POST['pid'];
+    $cid = $_POST['cid'];
+
+    $_SESSION['nid'] = $_POST["nid"];
+    $_SESSION['pid'] = $_POST['pid'];
+    $_SESSION['cid'] = $_POST['cid'];
+
+    $full_card_svg =        isset($_POST['full_card_svg'])       ? $_POST['full_card_svg']       : "";
+    $full_card_svg_inlay =  isset($_POST['full_card_svg_inlay']) ? $_POST['full_card_svg_inlay'] : "";
+    $outlay_card_json =     isset($_POST['outlay_card_json'])    ? $_POST['outlay_card_json']    : "";
+    $inlay_card_json_1 =    isset($_POST['inlay_card_json_1'])   ? $_POST['inlay_card_json_1']   : "";
+    $inlay_card_json_2 =    isset($_POST['inlay_card_json_2'])   ? $_POST['inlay_card_json_2']   : "";
+    $delivery_type =        isset($_POST['delivery_type'])       ? $_POST['delivery_type']       : 0;
+    $address_pid =          isset($_POST['address_pid'])         ? $_POST['address_pid']         : _getDefaultShppingPID ($cid);
+    $image_data_outlay =    isset($_POST['image_data'])          ? $_POST['image_data']          : false;
+
+    $data = array();
+
+    if ($full_card_svg) {
+        $data['full_card_svg']          = $_SESSION['full_card_svg'] = $full_card_svg;
+    }
+    if ($full_card_svg_inlay) {
+        $data['full_card_svg_inlay']    = $_SESSION['full_card_svg_inlay'] = $full_card_svg_inlay;
+    }
+    if ($outlay_card_json) {
+        $data['outlay_card_jason']      = $_SESSION['outlay_card_json'] = $outlay_card_json;
+    }
+    if ($inlay_card_json_1 && $inlay_card_json_2) {
+        $data['inlay_card_json_1']      = $_SESSION['inlay_card_json_1'] = $inlay_card_json_1;
+        $data['inlay_card_json_2']      = $_SESSION['inlay_card_json_2'] = $inlay_card_json_2;
+    }
+    if ($delivery_type) {
+        // $data['delivery_type_data']     = $_SESSION['delivery_type'] =  $delivery_type;
+        $data['return_delivery_type_status']     = $_SESSION['delivery_type'] =  $delivery_type;
+    }
+    if ($address_pid) {
+        $data['address_pid']            = $_SESSION['address_pid'] = $address_pid;
+    }
+
+    try {
+        
+        if ($image_data_outlay) {
+            $image = file_get_contents($image_data_outlay);
+            $file = file_save_data($image, 'public://cart_image_save_outlay/' . $cid . '_image_save.png', FILE_EXISTS_REPLACE);
+            $imagefile = (array)$file;
+            $_SESSION['line_item_cart']['fid'] = $imagefile['fid'];
+        }
+
+        if (_getUserCard($nid, $pid, $cid)) {
+
+            $status = _updateUserCard($nid, $pid, $cid, $data);
+            $message = "UPDATED";
+        } else {
+            /**
+             * create new card
+             */
+            $status = db_insert('user_saved_card')
+                ->fields(array(
+                    'node_id' => $nid,
+                    'pid' => $pid,
+                    'uid' => $user->uid,
+                    'cid' => $cid,
+                    'outlay_card_jason' => $outlay_card_json,
+                    'inlay_card_json_1' => $inlay_card_json_1,
+                    'inlay_card_json_2' => $inlay_card_json_2,
+                    'inlay_card_json_3' => false, //unused
+                    'inlay_card_json_4' => false, //unused
+                    'full_card_svg' => $full_card_svg,
+                    'full_card_svg_inlay' => $full_card_svg_inlay,
+                    'return_delivery_type_status' => $delivery_type,
+                    'address_pid' => $address_pid,
+                    'created' => date("Y-m-d H:i:s", time()),
+                ))
+                ->execute();
+            $message = "INSERTED";
+            ____createQRImage($pid, $cid);
+        }
+
+        echo json_encode(array(
+            'SESSION' => $_SESSION,
+            'STATUS'  => $status,
+            'MESSAGE' => $message,
+            'DATA'    => $data
+        ));
+
+    }catch(Exception $e) {
+
+        echo json_encode(array(
+            'SESSION' => $_SESSION,
+            'STATUS'  => "ERROR",
+            'MESSAGE' => $e->getMessage(),
+            'DATA'    => $data
+        ));
+    }
+}
+
+
+
+
+
+
+
+
+function toolbox_module_admin_paths()
+{
+    $paths = array(
+        'admin/commerce/products/create_canvas' => FALSE,
+        'admin/commerce/products/create_canvas_landscape' => FALSE,
+    );
+
+    return $paths;
+}
+
+
+
+
+function addressbook_insert_card(){
+    try{
+        $filename = $_POST['cid'].'_image_save.png';
+
+        $query_card = db_select('file_managed', 'fm')
+            ->fields('fm')
+            ->condition('fm.filename', $filename)
+            ->execute();
+        $record_card = $query_card->fetchAll();
+
+        if (isset($_POST['card_load']) && $_POST['card_load'] == 'cart' ) {
+            $insert_cart = array(
+                'nid' => $_POST["nid"],
+                'pid' => $_POST['pid'],
+                'cid' => $_POST['cid'],
+                'card_load'=> $_POST['card_load'],
+                'item_id'=> $_POST['item_id'],
+                'fid' => $record_card[0]->fid,
+            );
+        }else{
+            $insert_cart = array(
+                'nid' => $_POST["nid"],
+                'pid' => $_POST['pid'],
+                'cid' => $_POST['cid'],
+                'fid' => $record_card[0]->fid,
+            );
+        }
+        unset($_SESSION['line_item_cart']);
+        $_SESSION['line_item_cart'] = $insert_cart ;
+
+
+        echo json_encode(array(
+            'STATUS'  => "SUCCESS"
+        ));
+
+    }catch(Exception $e) {
+        echo json_encode(array(
+            'POST' => $_POST,
+            'SESSION' => $_SESSION,
+            'STATUS'  => "ERROR",
+            'MESSAGE' => $e->getMessage()
+        ));
+    }
+
+
+
+    exit;
+
+}
+
+
+function inlayPage(){
+    print theme('inlay');
+    exit;
+}
+
+function deliverySelectionPage(){
+    $cid = $_POST['cid'];
+    print theme("delivery_selection_page", array("cid" => $cid));
+    exit;
+}
+
+
+function show_create_canvas_toolbox()
+{
+    $html = theme('html_page');
+    return $html;
+}
+
+/**********Admin Landscape Tool************/
+function show_create_canvas_toolbox_landscape()
+{
+    $html = theme('html_page_landscape');
+    return $html;
+}
+
+
+
+/**
+ * if (!empty($_POST['item_id']) && $section == 'order_detail')
+ */
+function processOrderDetail(){
+
+    $query1 = db_select('line_item_simplysay_card', 'li')
+        ->fields('li')
+        ->condition('li.line_item_id', $_POST['item_id'])
+        ->execute();
+    $record1 = $query1->fetchAll();
+    foreach ($record1 as $value1) {
+        $record1 = $value1;
+    }
+
+    $count1 = count($record1);
+    $cid = $record1->cid;
+
+    if ($count1 > 0) {
+
+
+        $query = db_select('user_saved_card', 'uc')
+            ->fields('uc')
+            ->condition('uc.cid', $record1->cid)
+            ->execute();
+        $record = $query->fetchAll();
+        $count = count($record);
+
+        if ($count > 0) {
+            foreach ($record as $value) {
+                $record = $value;
+            }
+            $pid = $value->pid;
+            $nid = $value->node_id;
+        }
+
+    }
+}
+
+function addressbook_back_address(){
+    $cid = $_POST['cid'];
+    print customer_addressbook($cid);
+}
+
+function addressbook_add_address(){
+    print theme('add_address');
+}
+
+function addressbook_refresh_form(){
+    global $user;
+    $profile = commerce_customer_profile_new('shipping', $user->uid);
+
+    $profile->_is_new = TRUE;
+    $profile->commerce_customer_address[LANGUAGE_NONE][0]['country'] = $_POST['country'];
+
+    module_load_include('inc', 'commerce_customer', 'includes/commerce_customer_profile.forms');
+
+    $address_form = drupal_get_form('commerce_addressbook_customer_profile_form', $profile);
+
+    $outputHtml = render($address_form);
+    $outputHtml .= '<button id="back-address" class="btn btn-success form-submit custom_submit ">Back To Delivery Address</button><script> refresh_address_form(); save_ajax_address();back_select_address(); </script>';
+    echo $outputHtml;
+}
+
+function address_form_save_address(){
+    try{
+        global $user;
+
+        $billing_profile = commerce_customer_profile_new('shipping', $user->uid);
+        $billing_profile->commerce_customer_address[LANGUAGE_NONE][0]['name_line'] = $_POST['name_line'];
+        $billing_profile->commerce_customer_address[LANGUAGE_NONE][0]['country'] = $_POST['country'];
+        $billing_profile->commerce_customer_address[LANGUAGE_NONE][0]['thoroughfare'] = $_POST['address_1'];
+        $billing_profile->commerce_customer_address[LANGUAGE_NONE][0]['premise'] = $_POST['address_2'];
+        $billing_profile->commerce_customer_address[LANGUAGE_NONE][0]['locality'] = $_POST['city'] ;
+        $billing_profile->commerce_customer_address[LANGUAGE_NONE][0]['administrative_area'] = $_POST['state'];
+        $billing_profile->commerce_customer_address[LANGUAGE_NONE][0]['postal_code'] = $_POST['pin_code'];
+
+        commerce_customer_profile_save($billing_profile);
+//
+//        echo json_encode(array(
+//            'STATUS'  => "SUCCESS"
+//        ));
+        deliverySelectionPage();
+    }catch(Exception $e) {
+        echo json_encode(array(
+            'STATUS'  => "ERROR",
+            'MESSAGE' => $e->getMessage()
+        ));
+    }
+}
+
+//} elseif ($action == "admin_save" && $user->uid == 1) {
+function admin_card_save(){
+    $outlay_card_jason = '';
+    $type = $_POST["type"];
+    $cardname = $_POST['cardname'];
+    $categories = $_POST['categories'];
+    $outlay_card_json = $_POST['json_data'];
+    $productsku = $_POST['productsku'];
+    $productprice = $_POST['productprice'];
+    $featured_card = $_POST['featured_card'];
+    $card_gender = $_POST['card_gender'];
+    $card_recipient = $_POST['card_recipient'];
+    $card_style = $_POST['card_style'];
+    $card_age = $_POST['card_age'];
+    $p_upload = $_POST['p_upload'];
+    $orientation = $_POST['card_orientation'];
+
+    if (isset($_POST['cardimage']) && !empty($_POST['cardimage'] && !empty($_POST['imagename']))) {
+        $cardimage = $_POST['cardimage'];
+        $imagename = $_POST['imagename'];
+
+    } elseif (isset($_POST['cardimage']) && !empty($_POST['cardimage'])) {
+        $cardimage = $_POST['cardimage'];
+        $imagename = 'cardimage.png';
+    } else {
+        $cardimage = 'sites/all/themes/simplysay/images/sample-card.jpg';
+        $imagename = 'cardimage.png';
+    }
+
+    if (isset($_POST['card_sample_image']) && !empty($_POST['card_sample_image'] && !empty($_POST['image_sample_name']))) {
+        $card_sample_image = $_POST['card_sample_image'];
+        $image_sample_name = $_POST['image_sample_name'];
+
+    } elseif (isset($_POST['card_sample_image']) && !empty($_POST['card_sample_image'])) {
+        $card_sample_image = $_POST['card_sample_image'];
+        $image_sample_name = 'cardimage.png';
+    } else {
+        $card_sample_image = '';
+        $image_sample_name = '';
+    }
+
+    $image = file_get_contents($cardimage);
+    // Returns the new file object
+    $file = file_save_data($image, 'public://card_images/' . $imagename, FILE_EXISTS_RENAME);
+    $imagefile = (array)$file;
+
+    if (!empty($card_sample_image)) {
+        $sample_image = file_get_contents($card_sample_image);
+        // Returns the new file object
+        $sample_file = file_save_data($sample_image, 'public://card_images/' . $image_sample_name, FILE_EXISTS_RENAME);
+        $sample_imagefile = (array)$sample_file;
+        //print "<pre>";print_r($file);exit;
+    }
+
+
+    $skyobject = commerce_product_load_by_sku($productsku);
+    if (empty($skyobject) && !empty($productsku)) {
+
+        if (!empty($type) && !empty($cardname) && !empty($categories) && !empty($outlay_card_json) && !empty($imagefile)) {
+
+
+            $product = commerce_product_new('card');
+
+            $product->sku = $productsku;
+            $product->title = $cardname;
+            $product->language = LANGUAGE_NONE;
+            $product->uid = $user->uid;
+            $product->commerce_price[LANGUAGE_NONE][0] = array(
+                'amount' => $productprice * 100, // $10
+                'currency_code' => "USD",
+            );
+            $product->field_card_image[LANGUAGE_NONE][] = $imagefile;
+            $product->field_card_sample_image[LANGUAGE_NONE][] = $sample_imagefile;
+
+            $product->field_featured_card[LANGUAGE_NONE][] = array(
+                'value' => $featured_card,
+            );
+
+            if ($card_gender != 0) {
+
+                foreach ($card_gender as $key => $value) {
+                    $product->field_card_gender[LANGUAGE_NONE][]['tid'] = $value;
+                }
+
+            }
+
+            if ($card_recipient != 0) {
+
+                foreach ($card_recipient as $key => $value) {
+                    $product->field_card_recipient[LANGUAGE_NONE][]['tid'] = $value;
+                }
+
+            }
+
+            if ($card_style != 0) {
+
+                foreach ($card_style as $key => $value) {
+                    $product->field_card_style[LANGUAGE_NONE][]['tid'] = $value;
+                }
+
+            }
+
+
+            $product->field_card_orientation[LANGUAGE_NONE][]['tid'] = $orientation;
+            $product->field_card_type[LANGUAGE_NONE][]['tid'] = $type;
+            $product->field_card_categories[LANGUAGE_NONE][]['tid'] = $categories;
+            $product->field_card_age[LANGUAGE_NONE][]['tid'] = $card_age;
+            $product->field_card_photo_upload[LANGUAGE_NONE][]['tid'] = $p_upload;
+            $product->field_outlay_card_json[LANGUAGE_NONE][]['value'] = $outlay_card_json;
+
+            $productsave = commerce_product_save($product);
+
+            if ($productsave) {
+                $loginstatus = TRUE;
+            }
+
+            // $node = new stdClass();
+            // $node->title = $cardname;
+            // $node->type = "default_cards";
+            // $node->language = LANGUAGE_NONE; // Or e.g. 'en' if locale is enabled
+            // $node->uid = $user->uid;
+
+            // $node->field_card_type[$node->language][]['tid'] = $type;
+            // $node->field_card_categories[$node->language][]['tid'] = $categories;
+            // $node->field_outlay_card_json[$node->language][]['value'] = $outlay_card_jason;
+
+            // $node = node_submit($node); // Prepare node for saving
+            //   $check = node_save($node);
+
+            //   $loginstatus = TRUE;
+        }
+
+    } else {
+
+        print "2";
+        exit;
+
+    }
+}
+
+//
+//
+//// commerce address return with default selected.
+//function customer_addressbook($cid)
+//{
+//
+//}
+
+function toolbox_module_form_alter(&$form, $form_state, $form_id)
+{
+    if ($form_id == 'user_login') {
+
+        $form['name']['#title'] = t('');
+        $form['pass']['#title'] = t('');
+
+        $form['name']['#attributes']['placeholder'] = t('Username');
+        $form['pass']['#attributes']['placeholder'] = t('Password');
+    }
+
+    if ($form_id == 'user_register_form') {
+        $form['account']['name']['#description'] = '';
+        $form['account']['mail']['#description'] = '';
+
+        $form['account']['name']['#attributes']['placeholder'] = t('Username');
+        $form['account']['mail']['#attributes']['placeholder'] = t('E-mail address');
+        $form['account']['pass']['#attributes']['placeholder'] = t('Password');
+    }
+
+    if ($form_id == 'user_login_block') {
+        $form['name']['#attributes']['placeholder'] = t('Email or Username');
+        $form['pass']['#attributes']['placeholder'] = t('Password');
+
+    }
+
+    if ($form_id == 'search_block_form') {
+
+        $form['search_block_form'] = array
+        ('#prefix' => '<div class="search-wrap">',
+            '#type' => 'textfield',
+            '#size' => 15,
+            '#attributes' => array('class' => array('search-box')),
+            '#suffix' => '</div>',
+
+        );
+    }
+
+    if ($form_id == 'commerce_addressbook_customer_profile_form') {
+        $form['actions']['submit']['#value'] = 'Save Address';
+    }
+    if ($form_id == 'commerce_paypal_ec_order_form') {
+
+        $form['actions']['continue_shopping'] = array(
+            '#type' => 'button',
+            '#value' => t('Continue Shopping'),
+            '#weight' => -999,
+        );
+
+        $form['actions']['continue_shopping']['#attributes'] = array(
+            'ONCLICK' => "window.location.href='" . url('all-cards') . "'; return false;",
+            'class' => array('btn-info')
+        );
+    }
+
+    if ($form_id = 'commerce-checkout-form-checkout') {
+        $form['commerce_payment']['payment_method']['#options']['commerce_stripe|commerce_payment_commerce_stripe'] = '<span class="stripe-logo"></span>';
+        $form['buttons']['continue']['#value'] = 'Pay Now';
+
+    }
+
+    if ($form_id = 'commerce-checkout-form-complete') {
+        $form['checkout_completion_message']['#title'] = 'Thank you for shopping with Simply Say!';
+    }
+}
+
+/*
+ * Load all sample card on outlay tool
+ */
+function sample_card_show()
+{
+
+    if (isset($_POST['pid'])) {
+
+        $query = db_select('field_data_field_outlay_card_json', 'cj')
+            ->fields('cj')
+            ->condition('entity_id', $_POST['pid'])
+            ->condition('bundle', 'card')
+            ->execute();
+
+        $record = $query->fetchAll();
+
+        //print "<pre>"; print_r($record);
+
+        foreach ($record as $value) {
+
+            print $value->field_outlay_card_json_value;
+
+        }
+    }
+
+    exit;
+}
+
+//emoji show calllback
+
+function emoji_show()
+{
+    global $base_url;
+
+    if (isset($_POST['src'])) {
+
+        $path = $_POST['src'];
+
+        $path_base64 = base64_encode(file_get_contents($path));
+
+        // Format the image SRC:  data:{mime};base64,{data};
+        $emojisrc = 'data:image/png;base64,' . $path_base64;
+
+        print $emojisrc;
+
+    }
+
+    //print $_POST['src'];
+
+    //print $base_url;
+
+    exit;
+}
+
+
+function load_all_sample_card_url($tid)
+{
+
+    $sample_card_url = array();
+
+    $query = db_select('field_data_field_card_type', 'ct')
+        ->fields('ct')
+        ->condition('field_card_type_tid', 14)
+        ->condition('bundle', 'card')
+        ->execute();
+    $record = $query->fetchAll();
+
+    foreach ($record as $value) {
+
+        $query_start = db_select('field_data_field_card_orientation', 'co')
+            ->fields('co')
+            ->condition('entity_id', $value->entity_id)
+            ->condition('field_card_orientation_tid', $tid)
+            ->execute();
+        $record_start = $query_start->fetchAll();
+
+        foreach ($record_start as $value_start) {
+
+            $query1 = db_select('field_data_field_card_image', 'ci')
+                ->fields('ci')
+                ->condition('entity_id', $value_start->entity_id)
+                ->execute();
+            $record1 = $query1->fetchAll();
+
+            foreach ($record1 as $value1) {
+
+                $query2 = db_select('file_managed', 'fm')
+                    ->fields('fm')
+                    ->condition('fid', $value1->field_card_image_fid)
+                    ->execute();
+                $record2 = $query2->fetchAll();
+
+                foreach ($record2 as $value2) {
+
+                    $filename = explode('card_images', $value2->uri);
+
+                    $image = array(
+                        'filename' => $filename[1],
+                        'pid' => $value->entity_id,
+                    );
+
+                    $sample_card_url[] = $image;
+                }
+            }
+        }
+    }
+    return $sample_card_url;
+}
+
+/**
+ * Instagram redirec link funciton start
+ */
+function show_instagram_image()
+{
+
+    if (!empty($_POST['token']) && !empty($_POST['next_max_id']) && isset($_POST['token']) && isset($_POST['next_max_id'])) {
+        echo get_instagram($_POST['token'], $_POST['next_max_id']);
+    } elseif (isset($_POST['token'])) {
+        echo get_instagram($_POST['token'], '');
+    }
+}
+
+function get_instagram($access_token, $next_id)
+{
+
+    if (!empty($next_id) && !empty($access_token) && isset($access_token)) {
+
+        $id = explode('.', $access_token);
+
+        $user_id = $id[0];
+
+        $url = 'https://api.instagram.com/v1/users/' . $user_id . '/media/recent?access_token=' . $access_token . '&count=6&max_id=' . $next_id;
+        //$insta = json_decode((file_get_contents($url)));
+        //print"<pre>";print_r($insta);
+    } elseif (!empty($access_token) && isset($access_token) && empty($next_id)) {
+
+        $id = explode('.', $access_token);
+
+        $user_id = $id[0];
+        //print "<pre>";print_r($user_id);exit;
+
+        $url = 'https://api.instagram.com/v1/users/' . $user_id . '/media/recent?access_token=' . $access_token . '&count=6';
+    }
+
+    // Also Perhaps you should cache the results as the instagram API is slow
+    $cache = './' . sha1($url) . '.json';
+    if (file_exists($cache) && filemtime($cache) > time() - 60 * 60) {
+        // If a cache file exists, and it is newer than 1 hour, use it
+        $jsonData = json_decode(file_get_contents($cache));
+    } else {
+        $jsonData = json_decode((file_get_contents($url)));
+        file_put_contents($cache, json_encode($jsonData));
+    }
+    $next_max_id = $jsonData->pagination->next_max_id;
+
+    foreach ($jsonData->data as $key => $value) {
+
+        $result .= '<li><img src="' . $value->images->standard_resolution->url . '"></img></li>';
+    }
+    $result .= '<input type="hidden" id="access_token" value="' . $access_token . '" /><input type="hidden" id="next_max_id" value="' . $next_max_id . '" />' . PHP_EOL;
+    //$result .='<script> select_image();</script>';
+
+    print  $result;
+    exit;
+}
+
+function toolbox_module_commerce_cart_product_add($order, $product, $line_item, $quantity)
+{
+
+    if (isset($_SESSION['line_item_cart'])) {
+        $pid = $_SESSION['line_item_cart']['pid'];
+        $cid = $_SESSION['line_item_cart']['cid'];
+        //  Checking fid value is null or not - fix for cart page issue after select product changed date 20.4.2018
+        if(isset($_SESSION['line_item_cart']['fid']))
+        {
+            $fid = $_SESSION['line_item_cart']['fid'];
+        }
+        else
+        {
+            $fid = 0;
+        }
+        
+        $order_id = $order->order_id;
+        $line_items = $order->commerce_line_items['und'];
+
+        foreach ($line_items as $key => $value) {
+
+            $query = db_select('line_item_simplysay_card', 'li')
+                ->fields('li')
+                ->condition('li.line_item_id', $value['line_item_id'])
+                ->condition('li.order_id', $order->order_id)
+                ->execute();
+            $record = $query->fetchAll();
+
+            $count = count($record);
+
+            if ($count > 0) {
+
+            } else {
+                $result = db_insert('line_item_simplysay_card')
+                    ->fields(array(
+                        'line_item_id' => $value['line_item_id'],
+                        'order_id' => $order_id,
+                        'pid' => $pid,
+                        'cid' => $cid,
+                        'fid' => $fid,
+                    ))
+                    ->execute();
+            }
+        }
+
+        unset($_SESSION['line_item_cart']);
+
+    } elseif (isset($_SESSION['reorder_line_item_cart'])) {
+
+        $order_id = $order->order_id;
+
+        $reorder_line_items = $_SESSION['reorder_line_item_cart'];
+
+        $line_items = $order->commerce_line_items['und'];
+
+        foreach ($line_items as $key => $value) {
+
+
+            $query = db_select('line_item_simplysay_card', 'li')
+                ->fields('li')
+                ->condition('li.line_item_id', $value['line_item_id'])
+                ->execute();
+            $record = $query->fetchAll();
+
+
+            $count = count($record);
+
+
+            if ($count > 0) {
+
+                //print "<pre>"; print_r($record[0]->cid);
+                //print "<pre>"; print_r($line_items[$key]['line_item_id']);
+
+
+            } else {
+
+                if (isset($reorder_line_items[$key]['line_item_id'])) {
+                    $query1 = db_select('line_item_simplysay_card', 'li')
+                        ->fields('li')
+                        ->condition('li.line_item_id', $reorder_line_items[$key]['line_item_id'])
+                        ->execute();
+                    $record1 = $query1->fetchAll();
+
+
+                    $count1 = count($record1);
+
+                    if ($count1 > 0) {
+
+                        $cid = $record1[0]->cid;
+                        $fid = $record1[0]->fid;
+                        $pid = $record1[0]->pid;
+
+
+                        $result1 = db_insert('line_item_simplysay_card')
+                            ->fields(array(
+                                'line_item_id' => $value['line_item_id'],
+                                'order_id' => $order_id,
+                                'pid' => $pid,
+                                'cid' => $cid,
+                                'fid' => $fid,
+                            ))
+                            ->execute();
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Helper function to reorder a previous order.
+ */
+function commerce_reorder_helper_simplysay($order = NULL, $account = NULL)
+{
+
+    $responce = true;
+    global $user;
+
+    if (!isset($order)) {
+        return;
+    }
+
+    if (empty($account)) {
+        global $user;
+        $account = $user;
+    }
+
+    // Get the line items of the order.
+    $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
+    foreach ($order_wrapper->commerce_line_items as $line_item_wrapper) {
+        if (in_array($line_item_wrapper->type->value(), commerce_product_line_item_types())) {
+            $product = $line_item_wrapper->commerce_product->value();
+            if ($product->status) {
+                $line_item = $line_item_wrapper->value();
+
+                $quantity = $line_item->quantity;
+
+
+                $query_cid = db_select('line_item_simplysay_card', 'li')
+                    ->fields('li')
+                    ->condition('li.line_item_id', $line_item->line_item_id)
+                    ->execute();
+                $record_cid = $query_cid->fetchAll();
+
+
+                $count_cid = count($record_cid);
+
+                if ($count_cid > 0) {
+
+                    $reorder_cid = $record_cid[0]->cid;
+
+                }
+
+                $curren_cart_item = commerce_cart_order_load($user->uid);
+
+                $cart_all_line_item = $curren_cart_item->commerce_line_items['und'];
+
+                $reorder_quantity = $line_item->quantity;
+
+                $line_item_combine = false;
+
+                $reorder_button_remove = array();
+
+
+                foreach ($cart_all_line_item as $key => $value) {
+
+                    $reorder_button_remove[] = $value['line_item_id'];
+
+
+                    $query_cart_cid = db_select('line_item_simplysay_card', 'li')
+                        ->fields('li')
+                        ->condition('li.line_item_id', $value['line_item_id'])
+                        ->execute();
+                    $record_cart_cid = $query_cart_cid->fetchAll();
+
+
+                    $count_cart_cid = count($record_cart_cid);
+
+                    if ($count_cart_cid > 0) {
+
+                        $reorder_cart_cid = $record_cart_cid[0]->cid;
+
+                        if ($reorder_cid == $reorder_cart_cid) {
+
+                            $reorder_cart_line_item = commerce_line_item_load($value['line_item_id']);
+
+                            $reorder_cart_quantity = $reorder_cart_line_item->quantity;
+
+                            $cart_final_quantity = $reorder_cart_quantity + $reorder_quantity;
+
+                            // Cart Card Combine on reoder
+                            $line_item_update = commerce_line_item_load($value['line_item_id']);
+
+                            $line_item_update->quantity = $cart_final_quantity;
+
+                            commerce_line_item_save($line_item_update);
+
+                            entity_get_controller('commerce_line_item')->resetCache(array($line_item->line_item_id));
+
+                            $line_item_combine = true;
+
+                        }
+                    }
+                }
+
+                $_SESSION['line_item_id_reorder'] = $reorder_button_remove;
+
+                if ($line_item_combine == false) {
+
+                    //Generate a line item product based in the current one.
+                    $new_line_item = commerce_product_line_item_new($product, $quantity, $line_item->order_id, $line_item->data, $line_item->type);
+                    // Merge both line items to get the fields (if any).
+                    $new_line_item = (object)array_merge((array)$line_item, (array)$new_line_item);
+
+                    $added_line_item_Prodcut = commerce_cart_product_add($account->uid, $new_line_item, $combine = false);//print"<pre>"; print_r($added_line_item_Prodcut)
+                    $new_line_item_id = $added_line_item_Prodcut->line_item_id;
+                    $order_id = $added_line_item_Prodcut->order_id;
+
+                    if (isset($line_item->line_item_id) && isset($new_line_item_id)) {
+                        $query1 = db_select('line_item_simplysay_card', 'li')
+                            ->fields('li')
+                            ->condition('li.line_item_id', $line_item->line_item_id)
+                            ->execute();
+                        $record1 = $query1->fetchAll();
+
+                        $count1 = count($record1);
+
+                        if ($count1 > 0) {
+
+                            $cid = $record1[0]->cid;
+                            $fid = $record1[0]->fid;
+                            $pid = $record1[0]->pid;
+
+                            $result1 = db_insert('line_item_simplysay_card')
+                                ->fields(array(
+                                    'line_item_id' => $new_line_item_id,
+                                    'order_id' => $order_id,
+                                    'pid' => $pid,
+                                    'cid' => $cid,
+                                    'fid' => $fid,
+                                    'reorder_status' => true,
+                                ))
+                                ->execute();
+
+                            if ($result1) {
+
+                                // @TODO Add option to combine / add sepparately.
+                                // See @commerce_cart_product_add
+                            }
+                        }
+                    }
+                }
+            } else {
+                //drupal_set_message(t('Some products weren\'t copied to the cart as they aren\'t currently available'), 'status', FALSE);
+                $responce = false;
+            }
+        } else {
+            // drupal_set_message(t('Some products weren\'t copied to the cart as they aren\'t currently available'), 'status', FALSE);
+            $responce = false;
+        }
+    }
+
+    return $responce;
+}
+
+/*
+ * Re-Order user Card Callback
+ */
+function reorder_user_card()
+{
+    global $user;
+    unset($_SESSION['reorder_line_item_cart']);
+
+    $cart_count = 0;
+    $cart = commerce_cart_order_load($user->uid);
+
+    if (!empty($cart)) {
+        $cart_count = count($cart->commerce_line_items['und']);
+    }
+
+    if (isset($_POST['order_id'])) {
+
+        $order = commerce_order_load($_POST['order_id']);
+
+
+        $reorder = commerce_reorder_helper_simplysay($order);
+
+        print $reorder;
+    } else {
+        print 0;
+    }
+    exit;
+}
+
+
+function toolbox_module_commerce_cart_line_item_refresh($line_item, $order_wrapper)
+{
+    if (isset($_SESSION['line_item_cart']['card_load']) && $_SESSION['line_item_cart']['card_load'] == 'cart') {
+
+        $pid = $_SESSION['line_item_cart']['pid'];
+        $cid = $_SESSION['line_item_cart']['cid'];
+        $fid = $_SESSION['line_item_cart']['fid'];
+        $item_id = $_SESSION['line_item_cart']['item_id'];
+
+        $line_items = $item_id;
+
+        $query = db_select('line_item_simplysay_card', 'li')
+            ->fields('li')
+            ->condition('li.line_item_id', $item_id)
+            ->condition('li.cid', $cid)
+            //->condition('li.order_id',$order->order_id)
+            ->execute();
+        $record = $query->fetchAll();
+
+        $count = count($record);
+
+        if ($count > 0) {
+            $card_update = db_update('line_item_simplysay_card')// Table name no longer needs {}
+            ->fields(array(
+                'fid' => $fid,
+            ))
+                ->condition('line_item_id', $item_id)
+                ->condition('cid', $cid)
+                ->execute();
+        }
+        unset($_SESSION['line_item_cart']);
+    }
+}
+
+function toolbox_module_commerce_cart_product_remove($order, $product, $quantity, $line_item)
+{
+    $line_item = commerce_line_item_load($line_item->line_item_id);
+
+    if (!empty($line_item->line_item_id)) {
+
+        $line_item_id = $line_item->line_item_id;
+
+        /**********Cart card image delete form database and file**********/
+        $query = db_select('line_item_simplysay_card', 'li')
+            ->fields('li')
+            ->condition('li.line_item_id', $line_item->line_item_id)
+            ->execute();
+        $record = $query->fetchAll();
+
+        $count = count($record);
+
+        if ($count > 0) {
+            // if ($record[0]->fid > 0) {
+            // 	$file = file_load($record[0]->fid);
+            // 	if (!empty($file)) {
+            // 		$delete_card_image = file_delete($file);
+            // 	}
+            // }
+        }
+        $query = db_delete('line_item_simplysay_card')
+            ->condition('line_item_id', $line_item_id)
+            ->execute();
+    }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function toolbox_module_form_commerce_cart_add_to_cart_form_alter(&$form, &$form_state, $form_id)
+{
+    //drupal_set_message($form_id);
+    //$form['submit']['#attributes']['value'] = t('Buy Now');
+    /*
+    $current_product = $form_state['default_product'];
+    if ($current_product->type == 'product') {
+      // Make alternations for products...
+    }
+    */
+}
+
+function toolbox_module_commerce_product_calculate_sell_price_line_item_alter($product_line_item)
+{
+    $product_line_item->data['context']['add_to_cart_combine'] = FALSE;
+}
+
+/**
+ * addressbook form
+ * @param $form
+ * @param $form_state
+ * @return mixed
+ */
+function toolbox_module_form($form, &$form_state)
+{
+
+    $form['country'] = array(
+        '#type' => 'select', //you can find a list of available types in the form api
+        '#title' => 'Country',
+        '#options' => _addressfield_country_options_list(),
+        //'#size' => 10,
+        //'#maxlength' => 10,
+        '#required' => TRUE, //make this field required
+    );
+    $form['name_line'] = array(
+        '#type' => 'textfield', //you can find a list of available types in the form api
+        '#title' => 'Full name',
+        '#size' => 10,
+        '#maxlength' => 10,
+        '#required' => TRUE, //make this field required
+    );
+    $form['addres1'] = array(
+        '#type' => 'textfield', //you can find a list of available types in the form api
+        '#title' => 'Address 1',
+        '#size' => 10,
+        '#maxlength' => 10,
+        '#required' => TRUE, //make this field required
+    );
+    $form['addres2'] = array(
+        '#type' => 'textfield', //you can find a list of available types in the form api
+        '#title' => 'Address 2',
+        '#size' => 10,
+        '#maxlength' => 10,
+    );
+    $form['city'] = array(
+        '#type' => 'textfield', //you can find a list of available types in the form api
+        '#title' => 'City',
+        '#size' => 10,
+        '#maxlength' => 10,
+        '#required' => TRUE, //make this field required
+    );
+    $form['state'] = array(
+        '#type' => 'textfield', //you can find a list of available types in the form api
+        '#title' => 'State',
+        '#size' => 10,
+        '#maxlength' => 10,
+        '#required' => TRUE, //make this field required
+    );
+    $form['pin_code'] = array(
+        '#type' => 'textfield', //you can find a list of available types in the form api
+        '#title' => 'Pin Code',
+        '#size' => 10,
+        '#maxlength' => 10,
+        '#required' => TRUE, //make this field required
+    );
+
+    $form['profile_submit_button'] = array(
+        '#type' => 'submit',
+        '#value' => t('Save Profile'),
+    );
+
+    return $form;
+}
+
+/*
+ * Add to card address display code
+ */
+function show_address($profile_id)
+{
+
+    $value = commerce_customer_profile_load($profile_id);
+
+
+    $addressbook = '<div id="addressbook-select-form">';
+
+
+    if (!empty($value->commerce_customer_address['und'][0]['country'])) {
+        $query = db_select('apps_countries', 'ac')
+            ->fields('ac')
+            ->condition('ac.country_code', $value->commerce_customer_address['und'][0]['country'])
+            ->execute();
+        $record = $query->fetchAll();
+
+        $record_count = count($record);
+
+        if ($record_count > 0) {
+            $country_full_name = $record[0]->country_name;
+        } else {
+            $country_full_name = $value->commerce_customer_address['und'][0]['country'];
+        }
+
+
+        if (!empty($country_full_name)) {
+            $country = ", " . $country_full_name;
+        } else {
+            $country = $country_full_name;
+        }
+
+
+    } else {
+
+        $country = '';
+
+    }
+
+
+    $administrative_area = $value->commerce_customer_address['und'][0]['administrative_area'];
+    if (!empty($value->commerce_customer_address['und'][0]['administrative_area'])) {
+        $administrative_area = $value->commerce_customer_address['und'][0]['administrative_area'];
+    } else {
+        $administrative_area = '';
+    }
+
+
+    if (!empty($value->commerce_customer_address['und'][0]['locality'])) {
+        $locality = $value->commerce_customer_address['und'][0]['locality'] . ",";
+    } else {
+        $locality = '';
+    }
+
+    $sub_administrative_area = $value->commerce_customer_address['und'][0]['sub_administrative_area'];
+
+    $dependent_locality = $value->commerce_customer_address['und'][0]['dependent_locality'];
+
+
+    if (!empty($value->commerce_customer_address['und'][0]['postal_code'])) {
+        $postal_code = $value->commerce_customer_address['und'][0]['postal_code'];
+    } else {
+        $postal_code = '';
+    }
+
+    $organisation_name = $value->commerce_customer_address['und'][0]['organisation_name'];
+    $first_name = $value->commerce_customer_address['und'][0]['first_name'];
+    $addres1 = $value->commerce_customer_address['und'][0]['thoroughfare'];
+    $addres2 = $value->commerce_customer_address['und'][0]['premise'];
+    $last_name = $value->commerce_customer_address['und'][0]['last_name'];
+    $name_line = $value->commerce_customer_address['und'][0]['name_line'];
+    $data = $value->commerce_customer_address['und'][0]['data'];
+
+
+    $addressbook .= '<div class="radio">';
+    $addressbook .= "<ul id='addressbook' style='list-style:none'>";
+    $addressbook .= "<li>" . $name_line . "</li>";
+    $addressbook .= "<li>" . $addres1 . "</li>";
+    $addressbook .= "<li>" . $addres2 . "</li>";
+    // $addressbook .= "<li>" . $locality . "" . $administrative_area . "</li>";
+    $addressbook .= "<li>" . $postal_code . "" . $country . "</li>";
+    $addressbook .= "</ul></label></div>";
+
+    $addressbook .= '</div>';
+
+    return $addressbook;
+
+
+}
+
+/*
+ * user Profile image upload callback
+ */
+function user_profile_image_upload()
+{
+
+    global $user;
+    $responce = false;
+// $account = user_load($user->uid);
+// print "<pre>"; print_r($_POST['pdf_data']);
+
+    // // create Imagick object
+    // $imagick = new Imagick();
+    // // Reads image from PDF
+    // $imagick->readImage($_POST['pdf_data']);
+    // // Writes an image or image sequence Example- converted-0.jpg, converted-1.jpg
+    // $imagick->writeImages('converted.jpg', false);
+    // echo $imagick;
+    // exit;
+
+    if (isset($_POST['img_data'])) {
+        $cardimage = $_POST['img_data'];
+        $time = time();
+        $imagename = 'picture-' . $user->uid;
+        $image_upload_path = variable_get('user_picture_path', 'pictures');
+        //print $imagename;exit;
+
+        $image = file_get_contents($cardimage);
+        // // Returns the new file object
+        $file = file_save_data($image, 'public://' . $image_upload_path . '/' . $imagename, FILE_EXISTS_REPLACE);
+        $file->filemime = 'image/png';
+
+        file_usage_add($file, 'toolbox_module', 'toolbox_module', $user->uid);
+
+        $imagefile = $file;
+
+        //print "<pre>"; print_r($imagefile);
+        // exit;
+
+
+        $query = db_select('simplysay_user_profile_picture', 'up')
+            ->fields('up')
+            ->condition('up.uid', $user->uid)
+            ->execute();
+        $record = $query->fetchAll();
+
+
+        $count = count($record);
+
+        if ($count > 0) {
+
+            $card_update = db_update('simplysay_user_profile_picture')
+                ->fields(array(
+                    'fid' => $imagefile->fid,
+                ))
+                ->condition('uid', $user->uid)
+                ->execute();
+
+            $responce = true;
+
+
+        } else {
+
+
+            $result = db_insert('simplysay_user_profile_picture')
+                ->fields(array(
+                    'uid' => $user->uid,
+                    'fid' => $imagefile->fid,
+                ))
+                ->execute();
+            $responce = true;
+
+        }
+
+
+        //print "<pre>"; print_r($imagefile);
+        // exit;
+
+
+        // $account = user_load($user->uid);
+
+        // if (!empty($imagefile)) {
+
+        // 	$account->picture = $imagefile;
+        // 	 //print "<pre>"; print_r($account);
+        // 	 //print "<pre>"; print_r($edit);
+        // 	 //exit;
+        //   		$user_updated = user_save($account);
+        //   		//print "<pre>"; print_r($user_updated);
+        //   		$responce = true;
+        // }
+
+
+    }
+
+    print $responce;
+    exit;
+
+}
+
+///Ponomarevtlt: hERE IS TOO MUCH CODE. 3000 LINES. I AM TRYING TO REMOVE ALL THIS

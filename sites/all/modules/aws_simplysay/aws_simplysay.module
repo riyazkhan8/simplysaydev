@@ -1,0 +1,1098 @@
+<?php 
+
+
+//print $_SERVER['DOCUMENT_ROOT'];exit;
+require '/var/www/html/sites/all/vendor/autoload.php';
+
+use Aws\S3\S3Client;
+
+use Aws\Sqs\SqsClient;
+
+/**
+ * Implements hook_menu().
+ */
+function aws_simplysay_menu() {
+  $items = array();
+
+  $items['aws_simplysay'] = array(
+    'page callback' => 'aws_page',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['user/%/saved_card'] = array(
+  	'title' => 'Your Last Saved Cards',
+    'page callback' => 'user_saved_card_load',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['saved_card/delete'] = array(
+    'page callback' => 'user_saved_card_delete',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['user/%/orders/items/%'] = array(
+  	'title' => 'Full Details of Your Confirm Order Item',
+    'page callback' => 'order_full_detail_load',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['redirect/session/%'] = array(
+    'page callback' => 'user_redirect_session',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['aws/sqs'] = array(
+    'page callback' => 'send_sqs_pdf_instance',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  // $items['get_fullcanvas_json'] = array(
+  //   //'page callback' => 'send_fullcanvas_json_callback',
+  //   'page callback' => 'send_sqs_pdf_instance_backup',
+  //   'access callback' => TRUE,
+  //   'type' => MENU_CALLBACK,
+  // );
+
+  //   $items['get_fullcanvas_json_set'] = array(
+  //   'page callback' => 'send_fullcanvas_json_callback',
+  //   'access callback' => TRUE,
+  //   'type' => MENU_CALLBACK,
+  // );
+    $items['simplysay_update_order'] = array(
+    'page callback' => 'simplysay_order_status_update',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+    $items['payment_detail_ajax'] = array(
+    'page callback' => 'paymentdetailajax',
+    'access callback' => TRUE,
+  );
+
+  return $items;
+}
+
+
+/**********PDF order mail and update function*************/
+
+function simplysay_order_status_update(){
+
+
+	$responce = '';
+
+	if (!empty($_POST['order_id'])) {
+
+ 			// print "<pre>"; print_r($_POST['order_id']); 
+
+  			$order = commerce_order_load($_POST['order_id']);
+ 
+ 			// print "<pre>"; print_r($order);
+
+		  	$line_item_count = count($order->commerce_line_items['und']);
+
+			$query = db_select('user_card_pdf_responce_data', 'rd')
+		                            ->fields('rd')
+		                            ->condition('rd.order_id',$_POST['order_id'])
+		                            ->execute();
+		            $record = $query->fetchAll();
+
+		  	$completed_line_item_count = count($record);
+
+
+		  
+
+   			if ($line_item_count == $completed_line_item_count) {
+   				
+   				$updated_order = commerce_order_status_update($order, "completed", FALSE);
+
+   			}
+
+   			$order_mail = pdf_mail_send($_POST['order_id'],$_POST['line_item_id']);
+
+   				if ($order_mail) {
+   					$mail = 'Sent';
+   				}else{
+   					$mail = 'Not Sent';
+   				}
+
+   				$responce = "order status updated
+   				line_item_id = ".$_POST['line_item_id']." 
+   				Email 	 = ".$mail."";
+
+	}else{
+
+			$responce  = 'No Id';
+ 
+	}
+
+		print $responce;
+
+	exit;		      		
+}
+
+
+
+
+function pdf_mail_send($order_id,$line_item_id){
+
+       	$query = db_select('user_card_pdf_sqs_status', 'ps')
+		                    ->fields('ps')
+		                    ->condition('ps.order_id',$order_id)
+		                    ->execute();
+		    $record = $query->fetchAll();
+
+		$sqs_order_count = count($record);
+
+		if ($sqs_order_count > 0) {
+		  			
+		  	//print "<pre>"; print_r($record[0]->uid); 
+
+		  	$order_user = user_load($record[0]->uid);
+			//$to = $order_user->mail; // to e-mail address
+	                $to = "dev@simplysay.sg";
+                $from = variable_get('site_mail', ''); // from e-mail address
+                //$from = "support@simplysay.sg";  
+	        $subject = "DEV: Simply Say: Card Order (PDF attached)"; // subject of e-mail
+
+	       	$query_pdf = db_select('user_card_pdf_responce_data', 'rd')
+		                            ->fields('rd')
+		                            ->condition('rd.order_id',$order_id)
+		                            ->condition('line_item_id',$line_item_id)
+		                            ->execute();
+		    $record_pdf = $query_pdf->fetchAll();
+
+		  	$pdf_count = count($record_pdf);
+
+		  	$line_item = commerce_line_item_load(16);
+			$product =  commerce_product_load($line_item->commerce_product['und'][0]['product_id']);
+
+		  	if ($pdf_count > 0) {
+
+		  		$pdf_link =$record_pdf[0]->pds_s3_link;
+
+		  		$card_id = $record_pdf[0]->cid;
+
+		  		$query_d_type = db_select('user_saved_card', 'sc')
+                                    ->fields('sc')
+                                    ->condition('sc.cid',$card_id)
+                                    ->execute();
+            $delivery_record = $query_d_type->fetchAll();
+
+          	if ($delivery_record[0]->return_delivery_type_status == 1) {
+          		        $delivery_type = '!! Additional Envelope (blue and white)';
+          	}else{
+          				$delivery_type = 'Blue Envelope Only';
+            }
+
+          	$delivery_address = show_mail_address($delivery_record[0]->address_pid);
+
+		  		
+		  	}
+	        
+
+	        $body = array(
+	        	"Delivered:Simplysay.sg Order Id = ".$order_id."\n
+	        Product SKU = ".$product->sku."\n
+	        Product Name = ".$product->title."\n
+	        Quantity = ".$line_item->quantity."\n
+	        Delivery Type = ".$delivery_type."\n
+	        line_item_id = ".$line_item_id."\n
+	        Delivery Address = ".$delivery_address."\n
+	        PDF Download link : ".$pdf_link."\n
+	        	");
+
+	        	//print "<pre>"; print_r($body); exit;
+	          //params is the array passed to hook_mail function 
+	        $params = array(
+	              'subject' => $subject,
+	              'body' => $body,
+	              );
+
+	     	
+
+	        $sent_mail = drupal_mail('aws_simplysay', 'order_info', $to, language_default(), $params, $from);
+
+	          if ($sent_mail) {
+	            
+	          $mail_sent = TRUE;
+
+	           $query = db_update('user_card_pdf_responce_data') // Table name no longer needs {}
+	                                    ->fields(array(
+	                                      'mail_status' => $mail_sent,
+	                                    ))
+	                                    ->condition('line_item_id',$line_item_id)
+	                                    ->execute();
+
+
+	          }else{
+
+	          $mail_sent = FALSE; 
+
+	          }
+
+    	}else{
+
+	    $mail_sent = FALSE; 
+
+	    }
+
+ return $mail_sent;
+
+}
+
+
+
+
+
+
+function aws_simplysay_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'order_info':
+      $message['subject'] = $params['subject'];
+      $message['body'] = $params['body'];
+    break;
+    }
+}
+
+
+function show_mail_address($profile_id){
+
+$value = commerce_customer_profile_load($profile_id);
+
+
+	 		
+	 		 		if (!empty($value->commerce_customer_address['und'][0]['country'])) {
+ 			$query = db_select('apps_countries','ac')
+				          ->fields('ac')
+				          ->condition('ac.country_code',$value->commerce_customer_address['und'][0]['country'])
+				          ->execute();
+				  $record = $query->fetchAll();
+
+				  $record_count = count($record);
+
+				if ($record_count >0) {
+					$country_full_name = $record[0]->country_name;
+				}else{
+					$country_full_name = $value->commerce_customer_address['und'][0]['country'];
+				}
+
+	 			
+	 			if (!empty($country_full_name)) {
+	 				$country = ", ".$country_full_name;
+	 			}else{
+	 				$country = $country_full_name;
+	 			}
+	 			
+	 		
+	 		}else{
+
+	 			$country = '';
+	 		
+	 		}
+	 	
+	 		
+	 		$administrative_area = $value->commerce_customer_address['und'][0]['administrative_area'];
+	 		if (!empty($value->commerce_customer_address['und'][0]['administrative_area'])) {
+	 			$administrative_area = $value->commerce_customer_address['und'][0]['administrative_area'];
+	 		}else{
+	 			$administrative_area = '';
+	 		}
+
+	 		
+	 		if (!empty($value->commerce_customer_address['und'][0]['locality'])) {
+	 			$locality = $value->commerce_customer_address['und'][0]['locality'].",";
+	 		}else{
+	 			$locality = '';
+	 		}
+
+	 		$sub_administrative_area = $value->commerce_customer_address['und'][0]['sub_administrative_area'];
+
+	 		$dependent_locality = $value->commerce_customer_address['und'][0]['dependent_locality'];
+
+	 
+	 		if (!empty($value->commerce_customer_address['und'][0]['postal_code'])) {
+	 			$postal_code = $value->commerce_customer_address['und'][0]['postal_code'];
+	 		}else{
+	 			$postal_code = '';
+	 		}
+
+	 		$organisation_name = $value->commerce_customer_address['und'][0]['organisation_name'];
+	 		$first_name = $value->commerce_customer_address['und'][0]['first_name'];
+	 		$addres1 = $value->commerce_customer_address['und'][0]['thoroughfare'];
+	 		$addres2 = $value->commerce_customer_address['und'][0]['premise'];
+	 		$last_name = $value->commerce_customer_address['und'][0]['last_name'];
+	 		$name_line = $value->commerce_customer_address['und'][0]['name_line'];
+	 		$data = $value->commerce_customer_address['und'][0]['data'];
+	 		
+			
+	 	$addressbook  = $name_line."\n";
+	 	$addressbook .= "	        			   ".$addres1."\n";
+	 	$addressbook .= "	        			   ".$addres2."\n";
+	 	$addressbook .= "	        			   ".$locality."".$administrative_area."\n";
+	 	$addressbook .= "	        			   ".$postal_code."".$country."\n";
+	 		
+ 
+	return $addressbook;
+
+
+}
+
+/*********************************************************/
+
+
+function aws_page(){
+
+// if (empty($_POST['action'])) {
+// 	print "Access Denied";exit;
+// }
+
+$access_id = 'AKIAJQMDZHGLRWFFWZNQ';
+$access_key ='mSRCFGTimD22RzqGYWZKXmdien1CFAk3ExdiK1dH';
+$bucket = 's3-dev.simplysay.sg';
+
+$s3Client = S3Client::factory(array(
+      'version'     => 'latest',
+      'region'      => 'ap-southeast-1',
+      'signature' => 'v4',
+      'credentials' => array(
+        'key'    => $access_id,
+        'secret' => $access_key,
+    )
+  ));
+
+
+//print "<pre>";print_r($s3Client);exit;
+	
+
+
+
+
+
+global $base_url;
+global $user;
+
+
+$awsurls = array();
+
+if (!empty($_POST['action'])) {
+
+		if ($_POST['action'] == 'putobject' && $_POST['data'] != '' && isset($_POST['cid']) && isset($_POST['pid']) && isset($_POST['nid']) && isset($_POST['section']) && isset($_POST['selectfrom'])) {
+		
+		//print "<pre>";print_r($data);exit;
+			$count = 0;
+			
+			foreach ($_POST['data'] as $value) {
+				
+			//Save Temparory image
+				if ($_POST['selectfrom'] == 'localfile') {
+
+					$content = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $value));
+				}else{
+					
+					$image = $value;
+					$content = file_get_contents($image);
+				}
+				
+
+				
+				
+				//print "<pre>";print_r($data);exit;
+
+				
+				$tmp_dir = file_directory_temp();
+				$tmpurl = $tmp_dir.'/img_'.$count;
+				$fp = fopen($tmpurl, "w");
+				fwrite($fp, $content);
+				fclose($fp);
+				//print file_get_contents($content);
+			//print $tmpurl;exit;
+			//upload image on Amazon s3
+			  	$name = time();	
+			  	$key = 'img'.$name;
+			  	$filepath = $tmpurl;
+			  	$cid = $_POST['cid'];
+			  	$pid = $_POST['pid'];
+			  	$nid = $_POST['nid'];
+			  	$uid = $user->uid;
+			  	$card_section = $_POST['section'];
+
+
+
+			   try {
+			        $result = $s3Client->putObject(array(
+			            'Bucket'       => $bucket,
+			            'Key'          => $key,
+			            'SourceFile'   => $filepath,
+			            'ContentType'  => 'image/jpeg',
+			            'ACL'          => 'public-read',
+			            'StorageClass' => 'REDUCED_REDUNDANCY',
+			            'Metadata'     => array(    
+			                'cid' => $cid,
+			                'pid' => $pid,
+			                'uid' => $uid,
+			                'nid' => $nid,
+			                'card_section' => $card_section,
+			            )
+			            ));
+
+			      	if ($result) {
+			          
+			          //print "<pre>";print_r($result['ObjectURL']);exit;
+
+			      	// Inser data into database
+			      		$insert_db = db_insert('user_selected_socialmedia_images')
+								     ->fields(array(
+								     		'image_key' => $key,
+									    	's3_url' => $result['ObjectURL'],
+									    	'node_id' => $nid,
+									    	'uid' => $uid,
+									    	'pid' => $pid,
+									    	'cid' => $cid,
+									    	'card_section' => $card_section,
+									    ))
+								    ->execute();	
+
+			      		if ($insert_db) {
+
+			      			$awsurls[] = array(
+			      				'imageurl' => $result['ObjectURL'],
+			      				'key' => $key,
+			      			);
+
+			      		}
+			      		else
+			      		{
+
+			      			$awsurls[] = array(
+			      				'imageurl' => 0,
+			      			);
+			      		}
+			      		
+			       	} 
+
+			        $upload_wait = $s3Client->waitUntilObjectExists(array(
+			                    'Bucket' => $bucket,
+			                    'Key'    => $key
+			                ));
+
+
+
+			    }catch (\Aws\S3\Exception\S3Exception $e) {
+			     		// The AWS error code (e.g., )
+			     		echo $e->getAwsErrorCode() . "\n";
+			     		// The bucket couldn't be created
+			     		echo $e->getMessage() . "\n";
+
+			     		$awsurls[] = array(
+
+			      				'imageurl' => 0,
+
+			      			);
+
+			    }
+
+		$count = $count +1;
+
+		// print "<pre>"; print_r($object);
+		// exit;
+		sleep(1);
+
+			}
+			echo json_encode($awsurls);
+		//print_r($awsurls);
+
+		exit;
+
+
+	}
+	elseif ($_POST['action'] == 'deleteobject' && $_POST['data'] != '')
+	{
+		
+		$keyname = $_POST['data'];
+		//$keyname = $_POST['data'];
+		//print "<pre>";print_r($_POST['data']);exit;
+    	
+    	// Delete data on AWS.
+		    try {
+		          
+		         $getObject = $s3Client->getObject(array(
+		              'Bucket' => $bucket,
+		              'Key'    => $keyname
+		          ));
+		   
+		         if ($getObject) {
+
+		            $result = $s3Client->deleteObject(array(
+		                    'Bucket' => $bucket,
+		                    'Key'    => $keyname
+		                    ));
+		            if ($result) {
+		              //print "<pre>";print_r($result);
+
+		            $delete_result = db_delete('user_selected_socialmedia_images')
+    								->condition('image_key', $keyname)
+    								->execute();	
+    						if ($delete_result) {
+    							print TRUE;
+    						}else{
+    							print 0;
+    						}
+		            		
+		            }
+
+
+
+		          }
+
+
+		      }catch (\Aws\S3\Exception\S3Exception $e) {
+		       // The AWS error code (e.g., )
+		      // echo $e->getAwsErrorCode() . "\n";
+		       // The bucket couldn't be created
+		       //echo $e->getMessage() . "\n";
+
+		       print 0;
+
+		       }
+
+			exit;
+	}elseif ($_POST['action'] == 'pdf_upload' && $_POST['data'] != '') {
+		
+			//print "<pre>"; print_r($_POST['data']);
+
+			//exit;
+
+			$filepath = $_POST['data'];
+
+				 try {
+			        $result = $s3Client->putObject(array(
+			            'Bucket'       => $bucket,
+			            'Key'          => 'test_key_1',
+			            'SourceFile'   => $filepath,
+			            'ContentType'  => 'application/pdf',
+			            'ACL'          => 'public-read',
+			            'StorageClass' => 'REDUCED_REDUNDANCY',
+			            'Metadata'     => array(    
+			                'cid' => 123,
+			                // 'pid' => $pid,
+			                // 'uid' => $uid,
+			                // 'nid' => $nid,
+			                // 'card_section' => $card_section,
+			            )
+			            ));
+
+			      	if ($result) {
+			          
+			          print "<pre>";print_r($result);
+
+			      	
+			       	} 
+
+			        $upload_wait = $s3Client->waitUntilObjectExists(array(
+			                    'Bucket' => $bucket,
+			                    'Key'    => $key
+			                ));
+
+
+
+			    }catch (\Aws\S3\Exception\S3Exception $e) {
+			     		// The AWS error code (e.g., )
+			     		echo $e->getAwsErrorCode() . "\n";
+			     		// The bucket couldn't be created
+			     		echo $e->getMessage() . "\n";
+
+			    }
+
+		//$count = $count +1;
+
+		// print "<pre>"; print_r($object);
+		// exit;
+			//echo json_encode($awsurls);
+		//print_r($awsurls);
+
+		exit;
+
+
+
+	}
+	else
+	{	
+		print "error in image object";
+		exit;
+	}
+	
+}
+
+
+
+
+return 'hello world';
+
+}
+
+function user_saved_card_load(){
+	$module_path = drupal_get_path('module', 'aws_simplysay');
+	drupal_add_css($module_path . '/css/aws-simplysay.css');
+	$html = theme('saved_cards');
+	return $html;
+}
+
+
+
+/***Delete User saved card Profile page***/
+
+function user_saved_card_delete(){
+
+//print_r($_POST);exit;
+
+if (isset($_POST['cid']) && !empty($_POST['cid'])) {
+
+			$delete_result = db_delete('user_saved_card')
+    							->condition('cid', $_POST['cid'])
+    							->execute();	
+    						
+    						if ($delete_result) {
+    							print TRUE;
+    							
+    						}else{
+    							print 0;
+    						}
+		}
+
+	exit;
+}
+
+/*******aws SQS messege to pdf instance function****/
+
+function send_sqs_pdf_instance(){
+
+ 	
+ 	$fulcanvas = theme('fullcanvas');
+  	
+  	return $fulcanvas;
+
+
+}
+
+
+//function to send sqs message to pdf worker instance
+
+function send_sqs_msg($msg){
+
+
+		$access_id = 'AKIAJQMDZHGLRWFFWZNQ';
+		$access_key ='mSRCFGTimD22RzqGYWZKXmdien1CFAk3ExdiK1dH';
+		$bucket = 's3-dev.simplysay.sg';
+
+
+		$client = SqsClient::factory(array(
+		    'version'     => 'latest',
+		      'region'      => 'ap-southeast-1',
+		      'signature' => 'v4',
+		      'credentials' => array(
+		        'key'    => $access_id,
+		        'secret' => $access_key,
+		    )
+		));
+
+
+		$queueUrl = 'https://sqs.ap-southeast-1.amazonaws.com/724075607273/simplySayDevPDF-env-sqs';
+
+		$queue_responce = $client->sendMessage(array(
+			    'QueueUrl'    => $queueUrl,
+			    'MessageBody' => json_encode($msg),
+			));
+
+		return $queue_responce;
+
+}
+
+
+// function send_sqs_pdf_instance_backup(){
+
+
+
+// }
+/**
+ * Implements hook_theme().
+ */
+function aws_simplysay_theme($existing, $type, $theme, $path) {
+ 		
+ 		$tool = array();
+
+		$tool['saved_cards'] = array(
+			'template' => 'saved_cards',
+			'path' => drupal_get_path('module', 'aws_simplysay') . '/templates',
+			);
+
+		$tool['order_details'] = array(
+			'template' => 'order_details',
+			'path' => drupal_get_path('module', 'aws_simplysay') . '/templates',
+			);
+
+		$tool['fullcanvas'] = array(
+			'template' => 'fullcanvas_display',
+			'path' => drupal_get_path('module', 'aws_simplysay') . '/templates',
+			);
+		$tool['order_card_preview'] = array(
+			'template' => 'order_card_preview',
+			'path' => drupal_get_path('module', 'aws_simplysay') . '/templates',
+			);
+		$tool['order_card_preview_landscape'] = array(
+			'template' => 'order_card_preview_landscape',
+			'path' => drupal_get_path('module', 'aws_simplysay') . '/templates',
+			);
+
+	  return $tool;
+}
+
+
+/********Order full detail page callback***************/
+function order_full_detail_load(){
+		
+	 	$order_detail_tpl = theme('order_details');
+  		return $order_detail_tpl;
+
+}
+
+
+/***Fuction To Find card orientation ***/
+
+function find_card_orientation($item_id) {
+//print "Hello";
+	//print $item_id;exit;
+	$record ='';
+	$card_orientation='portrait';
+
+	$query1 = db_select('line_item_simplysay_card', 'li')
+						    ->fields('li')
+						    ->condition('li.line_item_id',$item_id)
+							->execute();
+					$record1 = $query1->fetchAll();
+					foreach ($record1 as $value1) {
+						$record1 = $value1;
+					}
+					
+					//print "<pre>"; print_r($record1->cid);
+
+					//exit;
+					$count1 = count($record1);	
+					$cid = $record1->cid;
+
+						if ($count1 > 0) {
+
+
+
+									$query = db_select('user_saved_card', 'uc')
+										    ->fields('uc')
+										    ->condition('uc.cid',$record1->cid)
+											->execute();
+							$record = $query->fetchAll();
+							$count = count($record);
+
+							//print "<pre>"; print_r($record);
+
+							//exit;
+
+							if ($count > 0) {
+								
+								foreach ($record as $value) {
+									$record = $value;
+								}
+								
+								$pid = $value->pid;
+								$product = commerce_product_load($pid);
+								$card_mode = $product->field_card_orientation['und'][0]['tid'];
+								//print $card_mode;exit;
+
+								if ($card_mode == 16) {
+									$card_orientation = 'landscape';
+								}else{
+									$card_orientation = 'portrait';
+								}
+								//$nid = $value->node_id;
+							}
+
+
+
+						}
+
+
+
+
+						return $card_orientation;
+
+}
+
+/******* Total Number of item in cart********/
+function header_total_cart_quantity(){
+
+global $user;
+$quantity = 0;
+$order = commerce_cart_order_load($user->uid);
+if ($order) {
+    $wrapper = entity_metadata_wrapper('commerce_order', $order);
+    $line_items = $wrapper->commerce_line_items;
+    $quantity = commerce_line_items_quantity($line_items, commerce_product_line_item_types());
+    $total = commerce_line_items_total($line_items);
+    $currency = commerce_currency_load($total['currency_code']);
+}
+return format_plural($quantity, '1', '@count');
+
+
+
+}
+
+
+/*******User Redirect Session Callback*******/
+
+function user_redirect_session(){
+//print_r($_POST['login_page_url']);exit;
+
+//if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+    //unset($_SESSION['points_redirect_session']);
+    //unset($_SESSION['user_redirect_session']);
+//}
+
+	if (arg(2) == 2) {
+
+		$_SESSION['points_redirect_session'] = arg(2) ;
+	}
+
+	if (arg(2) == 1 && isset($_POST['login_page_url'])) {
+
+		$_SESSION['user_redirect_session'] = $_POST['login_page_url'] ;
+		if (isset($_SESSION['user_redirect_session_reg'])) 
+		{
+			unset($_SESSION['user_redirect_session_reg']);
+		}
+		$_SESSION['user_redirect_session_reg'] = $_POST['login_page_url'];
+
+	}
+
+print_r($_SESSION);
+
+	exit; 
+
+}
+
+
+
+function aws_simplysay_user_login(&$edit, $account) {
+
+	//print "<pre>"; print_r($_SESSION);
+	//print "<pre>"; print_r($_SESSION['user_redirect_session']);
+
+	//exit;
+
+  
+	if (isset($_SESSION['points_redirect_session'])) {
+		
+		$edit['redirect'] = '/myuserpoints';
+		unset($_SESSION['points_redirect_session']);
+
+	}
+
+	if (isset($_SESSION['user_redirect_session'])) {
+		$edit['redirect'] = $_SESSION['user_redirect_session'];
+		unset($_SESSION['user_redirect_session']);
+	}
+
+  
+
+
+}
+
+
+function aws_simplysay_commerce_checkout_complete($order) {
+  
+ global $user; 
+ //print "<pre>"; print_r($order->status);
+
+ //print "<pre>"; print_r($order);
+
+ if ($order->status == 'checkout_complete') {
+
+ 	foreach ($order->commerce_line_items['und'] as $key => $value) {
+ 		
+ 		//print "<pre>"; print_r($value['line_item_id']);
+
+ 		//print $order->order_id;
+
+
+ 		$query = db_select('line_item_simplysay_card', 'li')
+				    ->fields('li')
+				    ->condition('li.line_item_id',$value['line_item_id'])
+				    ->condition('li.order_id',$order->order_id)
+					->execute();
+			$record = $query->fetchAll();
+			
+
+			$count = count($record);		
+			
+
+ 
+ 			if ($count > 0) {
+			
+ 				//print "<pre>"; print_r($record);
+
+
+ 				$pid = $record[0]->pid;
+ 		 		$product = commerce_product_load($pid);
+ 		 		$cid = $record[0]->cid;
+
+
+ 				$query1 = db_select('user_saved_card', 'uc')
+					    ->fields('uc')
+					    ->condition('uc.pid',$pid)
+					    ->condition('uc.cid',$cid)
+						->execute();
+			$record1 = $query1->fetchAll();
+			$count1 = count($record1);		
+
+				if ($count1 > 0) {
+
+					//print "<pre>----"; print_r($record1);
+					//print "<pre>----"; print_r($product);
+
+
+
+				$full_card_svg = $record1[0]->full_card_svg;
+
+				
+
+				$order_id = $order->order_id;
+ 				$line_item_id = $value['line_item_id'];
+ 				$email = $order->mail;
+ 				$node_id = $record1[0]->node_id;
+				$node = node_load($node_id);
+
+
+				//print "<pre>----"; print_r($node);
+
+
+				$title = $node->title;
+				$card_price_amount = $product->commerce_price['und'][0]['amount'];
+				$card_price_currency = $product->commerce_price['und'][0]['currency_code'];
+				
+				$term_type = taxonomy_term_load($product->field_card_type['und'][0]['tid']);
+				$card_type = $term_type->name;
+
+				$term_categories = taxonomy_term_load($product->field_card_categories['und'][0]['tid']);
+				$card_categories = $term_categories->name;
+
+				$term_orientation = taxonomy_term_load($product->field_card_orientation['und'][0]['tid']);
+				$card_orientation = $term_orientation->name;			
+
+	//******Card Checkout successful responce*****			
+
+				$message = array(
+
+						'cid' => $cid,
+						'order_details'=>array(
+	
+							'order_id' => $order_id,
+							'line_item_id' => $line_item_id,
+							'node_id' => $node_id,
+						),
+
+
+					);
+
+				//print "<pre>"; print_r($message);
+
+				//if ($user->uid == 17) {
+				 	$responce = send_sqs_msg($message);
+
+				 //print "<pre>"; print_r($responce);
+
+				// //print "<pre>"; print_r($responce->getdata());
+				// //print "<pre>"; print_r($responce->structure->data['MessageId']);
+				
+				
+				//}
+				
+				$result = db_insert('user_card_pdf_sqs_status')
+										     ->fields(array(
+											      'order_id' => $order_id,
+											      'uid' => $user->uid,
+											      'node_id' => $node_id,
+											      'sqs_msg_status' => true,
+											      'line_item_id' => $line_item_id,
+											      'cid' => $cid,
+											      'sqs_message_id' => 0,
+											    ))
+										    ->execute();
+	
+
+				}
+
+ 			}
+
+ 	}
+
+ }
+  
+
+ //exit;
+
+}
+
+// SHopping cart title change drupal
+
+function aws_simplysay_page_alter(&$page) {
+  // Make sure you're on the right page
+  if ($_GET['q'] == 'cart') {
+    drupal_set_title('My Cart');
+  }
+
+
+}
+
+function paymentdetailajax()
+{
+	global $user;
+	if($user->uid != 0)
+	{
+		$payment_type = $_POST['payment_method'];
+		if($payment_type == 'commerce_userpoints|commerce_payment_commerce_userpoints')
+		{
+			$current_points = userpoints_get_current_points($user->uid, $tid = NULL);
+			$order = commerce_cart_order_load($user->uid);
+			if(!empty($order))
+			{
+				$wrapper = entity_metadata_wrapper('commerce_order', $order);
+				$line_items = $wrapper->commerce_line_items;
+				$quantity = commerce_line_items_quantity($line_items, commerce_product_line_item_types());
+				$required_points = $quantity * 800;
+				$resulting_balance = $current_points - $required_points;
+		  		if ($resulting_balance >= '0') {
+					echo '<br>
+		                    <p style="padding-left: 20px; text-align: left;"><strong><span style="color:#67B857">&#10003;</span></strong> Good News! You have enough points.</p>';
+				}
+				else
+				{
+					echo '<br>
+		                    <p style="padding-left: 20px; text-align: left;"><strong><span style="color:red">&#10007;</span></strong> Unfortunately you do not have enough points.
+		                      You currently have <b>' .$current_points. '</b> - but you need a minimum of ' .$required_points.' points to qualify for a free card.<br><br> 
+		                        Check your <a href="/myuserpoints">My Account</a> to see how many points you haved earned.</p>';
+				}
+			}
+		}
+		if($payment_type == 'commerce_stripe|commerce_payment_commerce_stripe')
+		{
+			echo '<input id="stripe_token" type="hidden" name="commerce_payment[payment_details][stripe_token]" value="">
+		<div class="payment-errors"></div></div>';
+		}
+	}
+	exit;
+}
+
+
+

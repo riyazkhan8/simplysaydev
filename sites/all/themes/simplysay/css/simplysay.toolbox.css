@@ -1,0 +1,700 @@
+/*---------------------------------------------------
+    LESS Elements 0.9
+  ---------------------------------------------------
+    A set of useful LESS mixins
+    More info at: http://lesselements.com
+  ---------------------------------------------------*/
+@keyframes dots {
+  0%,
+  20% {
+    color: rgba(0, 0, 0, 0);
+    text-shadow: 0.25em 0 0 rgba(0, 0, 0, 0), 0.5em 0 0 rgba(0, 0, 0, 0);
+  }
+  40% {
+    color: black;
+    text-shadow: 0.25em 0 0 rgba(0, 0, 0, 0), 0.5em 0 0 rgba(0, 0, 0, 0);
+  }
+  60% {
+    text-shadow: 0.25em 0 0 black, 0.5em 0 0 rgba(0, 0, 0, 0);
+  }
+  80%,
+  100% {
+    text-shadow: .25em 0 0 black,
+    .5em 0 0 black;
+  }
+}
+.responsible-canvas-mixin {
+  font-size: 0;
+}
+.responsible-canvas-mixin .canvas-container {
+  display: inline-block;
+  box-sizing: border-box;
+  font-size: 0;
+}
+.fontSelectUl {
+  width: 200px !important;
+  margin-top: -19px;
+}
+.fontSelectUl:before {
+  bottom: 100%;
+  border-width: 0 10px 10px 10px;
+  border-bottom-color: white;
+}
+.select2-container--toolbar-filters-selector .select2-dropdown.select2-dropdown--below {
+  width: 40px !important;
+  margin: 10px -7px;
+  max-height: 200px;
+  overflow: auto;
+}
+.select2-container--toolbar-filters-selector .select2-results > .select2-results__options {
+  width: 40px;
+}
+.select2-container--toolbar-filters-selector .select2-results > .select2-results__options .select2-results__option {
+  padding: 0;
+}
+.blue-round-btn {
+  background: #00aff3;
+  border: 0;
+  color: #fff;
+  padding: 0;
+  line-height: 25px;
+  width: 125px;
+  border-radius: 15px;
+  text-align: center;
+  margin: 0;
+  cursor: pointer;
+}
+#toolbox {
+  min-width: 640px;
+}
+#toolbox .shadow-box-mixin {
+  box-shadow: 1px 1px 6px grey;
+}
+#toolbox .editorContainer {
+  display: flex;
+  justify-content: center;
+  max-width: 1024px;
+  margin: auto;
+}
+#toolbox .editorContainer .toolbar-menu .object-menu-option input[type="radio"],
+#toolbox .editorContainer .toolbar-menu .object-menu-option input[type="checkbox"] {
+  display: none;
+}
+#toolbox .editorContainer .toolbar-menu .btn {
+  background: none;
+  margin: 0px;
+  height: 25px;
+  width: 25px;
+}
+#toolbox .editorContainer .toolbar-menu .minicolors.minicolors-theme-default {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  display: block;
+  left: 0;
+  top: 0;
+}
+#toolbox .editorContainer .toolbar-menu .minicolors.minicolors-theme-default.minicolors-position-bottom .minicolors-panel {
+  margin-top: 16px;
+  top: 100%;
+  margin-left: -9px;
+  background-color: #444;
+}
+#toolbox .editorContainer .toolbar-menu .minicolors.minicolors-theme-default > .minicolors-swatch {
+  opacity: 0;
+}
+#toolbox .editorContainer .toolbar-menu .minicolors.minicolors-theme-default {
+  z-index: 1;
+  position: absolute;
+}
+#toolbox .editorContainer .toolbar-menu .minicolors .minicolors-position-bottom .minicolors-panel:before {
+  border-bottom-color: #444;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu {
+  background: #444;
+  color: white;
+  border-radius: 5px;
+  padding: 0 2px 2px;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .clip-icon:after {
+  height: 15px;
+  width: 15px;
+  -webkit-filter: invert(100%);
+  background-size: 15px auto;
+  margin: 2px;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .btn {
+  line-height: 21px;
+  width: 21px;
+  height: 21px;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-item:not([disabled]) > .btn-selected-option .btn:hover,
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-item:not([disabled]) > .btn:hover {
+  background-color: #b4e97a;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-item:not([disabled]) > .btn-selected-option .btn:hover:after,
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-item:not([disabled]) > .btn:hover:after {
+  -webkit-filter: none;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu input {
+  color: black;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-font-family .fontSelect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-font-family .fontSelect .arrow-down,
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-font-family .fontSelect span {
+  display: none;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-font-family .fontSelect .fontSelect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .fontSelect.fontSelectOpen:after {
+  top: 100%;
+  content: "";
+  position: absolute;
+  border: solid transparent;
+  border-width: 0 10px 10px 10px;
+  border-bottom-color: #444;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu span.select2-dropdown.select2-dropdown--below:after {
+  bottom: 100%;
+  content: "";
+  position: absolute;
+  border: solid transparent;
+  border-width: 0 10px 10px 10px;
+  border-bottom-color: #444;
+  left: 8px;
+  width: 10px;
+  height: 10px;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-select.filters-selector .select2.select2-container {
+  opacity: 0;
+  width: 25px !important;
+  height: 25px;
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  overflow: hidden;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-select.filters-selector label {
+  display: inline-block !important;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-item.object-menu-options.items-column > .object-menu-options-container {
+  bottom: auto;
+  top: none;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-options.items-column:hover > .object-menu-options-container {
+  background: #444;
+  border-radius: 0 0 5px 5px;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-menu .object-menu.submenu {
+  position: absolute;
+  background: #444;
+  border-radius: 0 0 5px 5px;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-menu:not(.toggled):not(.hovered) .button-menu-trigger {
+  display: block !important;
+}
+#toolbox .editorContainer .toolbar-menu.floated-menu .object-menu-select .select2-selection {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+}
+#toolbox .editorContainer #inlay-canvas.landscape {
+  flex-direction: column;
+}
+#toolbox .editorContainer #inlay-canvas.landscape .canvas-container:first-child {
+  box-sizing: content-box;
+  border-bottom: 1px solid lightgray;
+}
+#toolbox .editorContainer #inlay-canvas.portrait {
+  flex-direction: row;
+}
+#toolbox .editorContainer #inlay-canvas.portrait .canvas-container:first-child {
+  box-sizing: content-box;
+  border-right: 1px solid lightgray;
+}
+#toolbox .editorContainer .documentContainer {
+  position: relative;
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+}
+#toolbox .editorContainer .documentContainer .toolbarContainer {
+  height: 40px;
+  padding: 5px;
+}
+#toolbox .editorContainer .documentContainer .toolbarContainer #inlay-application-menu,
+#toolbox .editorContainer .documentContainer .toolbarContainer #application-menu {
+  float: left;
+}
+#toolbox .editorContainer .documentContainer .toolbarContainer #inlay-slide-menu,
+#toolbox .editorContainer .documentContainer .toolbarContainer #slide-menu {
+  float: right;
+}
+#toolbox .editorContainer .documentContainer .pageContainer {
+  font-size: 0;
+  box-shadow: 1px 1px 6px grey;
+  min-width: 200px;
+  min-height: 152px;
+  position: relative;
+  display: flex;
+}
+#toolbox .editorContainer .documentContainer .pageContainer .canvas-container {
+  display: inline-block;
+  box-sizing: border-box;
+  font-size: 0;
+}
+#toolbox .editorContainer .documentContainer .pageContainer .canvas-loader {
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+}
+#toolbox .editorContainer .documentContainer .pageContainer .canvas-loader .loader-spinner {
+  font-size: 20px;
+  vertical-align: bottom;
+  margin-right: 10px;
+}
+#toolbox .editorContainer .documentContainer .pageContainer .canvas-loader .loader-message {
+  color: #cccccc;
+  font-size: 20px;
+  line-height: 38px;
+  display: inline-block;
+}
+#toolbox .editorContainer .documentContainer .pageContainer .canvas-loader .loader-message:after {
+  content: ' .';
+  animation: dots 1s steps(5, end) infinite;
+}
+#toolbox .editorContainer .objectPanel {
+  position: relative;
+  margin-right: 50px;
+  margin-top: 40px;
+}
+#toolbox .editorContainer .objectPanel .nav-tabs {
+  z-index: 2;
+  display: flex;
+  transform: rotate(90deg);
+  position: absolute;
+  width: 650px;
+  left: 100%;
+  transform-origin: 0 0;
+  margin-left: 50px;
+  margin-top: 5px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+}
+#toolbox .editorContainer .objectPanel .nav-tabs > li {
+  margin-right: 3px;
+  list-style: none;
+  width: 125px;
+}
+#toolbox .editorContainer .objectPanel .nav-tabs > li a {
+  color: white;
+  padding: 0;
+  width: 100%;
+  line-height: 53px;
+  height: 50px;
+  display: inline-block;
+  border-radius: 15px 15px 0 0;
+  border: none;
+  margin-right: 3px;
+  background: #00aff3;
+}
+#toolbox .editorContainer .objectPanel .nav-tabs > li:last-child a {
+  margin-right: 0;
+}
+#toolbox .editorContainer .objectPanel .nav-tabs > li.active a {
+  color: #2e4c0d;
+}
+#toolbox .editorContainer .objectPanel .nav-tabs > li.active a,
+#toolbox .editorContainer .objectPanel .nav-tabs > li a:focus,
+#toolbox .editorContainer .objectPanel .nav-tabs > li.active a:hover {
+  background: #b4e97a;
+  color: #2e4c0d;
+  border: none;
+}
+#toolbox .editorContainer .objectPanel .nav-tabs > li a:hover {
+  background: rgba(3, 89, 122, 0.9) none repeat scroll 0 0;
+  color: #fff;
+}
+#toolbox .editorContainer .objectPanel .tab-pane {
+  box-shadow: 1px 1px 6px grey;
+  flex-direction: column;
+  background: #f1f1f1;
+}
+#toolbox .editorContainer .objectPanel .tab-pane.active {
+  height: 661px;
+  width: 300px;
+  display: flex !important;
+}
+#toolbox .editorContainer .objectPanel .tab-pane p {
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+}
+#toolbox .editorContainer .objectPanel .tab-pane .image-gallery-wrapper {
+  border: 1px solid lightgray;
+  margin: 3px;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  height: 100px;
+  overflow: auto;
+}
+#toolbox .editorContainer .objectPanel .tab-pane .image-gallery-wrapper .image-gallery {
+  overflow: auto;
+  height: 100%;
+}
+#toolbox .editorContainer .objectPanel .tab-pane .image-gallery-wrapper .image-gallery #emoji-gallery .list-item {
+  width: 30px;
+}
+#toolbox .editorContainer .objectPanel .tab-pane .image-gallery-wrapper .image-gallery li {
+  display: inline-block;
+  width: 135px;
+  height: 127px;
+  border: 1px solid #e9e9e9;
+  border-radius: 5px;
+  float: left;
+  cursor: pointer;
+  text-align: center;
+  background: white;
+  padding: 3px;
+  position: relative;
+}
+#toolbox .editorContainer .objectPanel .tab-pane .image-gallery-wrapper .image-gallery li img {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  margin: 0;
+  display: inline;
+  vertical-align: top;
+}
+#toolbox .editorContainer .objectPanel .tab-pane .image-gallery-wrapper .image-gallery li.prevClose .closeIMG {
+  cursor: pointer;
+  float: right;
+  font-family: 'fontawesome';
+  font-size: 15px;
+  text-align: center;
+  width: 20px;
+  position: absolute;
+  right: 0;
+  top: 2px;
+  color: #D3173A;
+  z-index: 4;
+}
+#toolbox .editorContainer .objectPanel .tab-pane .image-gallery-wrapper .image-gallery#emoji-gallery li {
+  background: #fff;
+  border: 1px solid #e9e9e9;
+  border-radius: 5px;
+  font-size: 40px;
+  text-align: center;
+  height: 33px;
+  width: 33px;
+  line-height: 35px;
+  margin: 1px 0 0 1px;
+}
+#toolbox .previewContainer .page {
+  width: 500px;
+  height: 661px;
+  background-colour: #fff;
+  float: left;
+  margin-bottom: 0.5em;
+}
+#toolbox .previewContainer .page:first-child {
+  float: right;
+}
+#toolbox .previewContainer .page:nth-child(even) {
+  clear: both;
+}
+#toolbox .previewContainer .page svg {
+  width: 100%;
+  height: 100%;
+}
+#toolbox .previewContainer .book {
+  display: inline-block;
+  padding: 20px;
+  transition: opacity 0.4s 0.2s;
+  position: relative;
+}
+#toolbox .previewContainer .book .preview-text {
+  color: #00aff3;
+  -webkit-text-stroke-width: 0.5px; 
+  -webkit-text-stroke-color: #3a67;
+  position: absolute;
+  text-align: center;
+  margin-top: -30px;
+  font-size: 40px;
+  line-height: 30px;
+  font-family: 'PantonW01-Bold';
+  width: 250px;
+  margin-left: -125px;
+}
+#toolbox .previewContainer .book.portrait {
+  max-width: 1000px;
+  width: 100%;
+  padding: 20px;
+}
+#toolbox .previewContainer .book.portrait .preview-text {
+  top: 50%;
+  left: 125px;
+  line-height: 110%;
+  margin-top: -40px;
+}
+#toolbox .previewContainer .book.portrait .preview-text:after {
+  content: "";
+  margin: 10px;
+}
+#toolbox .previewContainer .book.portrait.closed-front .pages {
+  transform: rotateX(12deg) translateX(-25%);
+}
+#toolbox .previewContainer .book.portrait.closed-rear .pages {
+  transform: rotateX(12deg) translateX(25%);
+}
+#toolbox .previewContainer .book.portrait .pages {
+  margin-bottom: 0;
+  margin-top: 0;
+  position: relative;
+  transform: rotateX(12deg) translateX(0);
+  transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 4px;
+  -webkit-transition: all transform 1s ease-out;
+  -moz-transition: all transform 1s ease-out;
+  -o-transition: all transform 1s ease-out;
+  transition: all transform 1s ease-out;
+  -webkit-transition: transform 1s;
+  -o-transition: transform 1s;
+  transition: transform 1s;
+}
+#toolbox .previewContainer .book.portrait .pages .page {
+  box-shadow: 1px 1px 2px #e3dfd8;
+  float: none;
+  clear: none;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  width: 50%;
+  font-size: 0;
+  height: auto;
+  transform-origin: 0 0;
+  transition: transform 1.4s;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: 1px solid grey;
+}
+#toolbox .previewContainer .book.portrait .pages .page:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.7s;
+  z-index: 2;
+}
+#toolbox .previewContainer .book.portrait .pages .page:last-child {
+  position: relative;
+}
+#toolbox .previewContainer .book.portrait .pages .page:nth-child(odd) {
+  pointer-events: all;
+  transform: rotateY(0deg);
+  right: 0;
+  border-radius: 0 4px 4px 0;
+}
+#toolbox .previewContainer .book.portrait .pages .page:nth-child(odd):hover {
+  transform: rotateY(-10deg);
+}
+#toolbox .previewContainer .book.portrait .pages .page:nth-child(odd):hover:before {
+  background: rgba(0, 0, 0, 0.03);
+}
+#toolbox .previewContainer .book.portrait .pages .page:nth-child(odd):before {
+  background: rgba(0, 0, 0, 0);
+}
+#toolbox .previewContainer .book.portrait .pages .page:nth-child(even) {
+  pointer-events: none;
+  transform: rotateY(180deg);
+  transform-origin: 100% 0;
+  left: 0;
+  border-radius: 4px 0 0 4px;
+}
+#toolbox .previewContainer .book.portrait .pages .page:nth-child(even):before {
+  background: rgba(0, 0, 0, 0.2);
+}
+#toolbox .previewContainer .book.portrait .pages .page.grabbing {
+  transition: none;
+}
+#toolbox .previewContainer .book.portrait .pages .page.flipped:nth-child(odd) {
+  pointer-events: none;
+  transform: rotateY(-180deg);
+}
+#toolbox .previewContainer .book.portrait .pages .page.flipped:nth-child(odd):before {
+  background: rgba(0, 0, 0, 0.2);
+}
+#toolbox .previewContainer .book.portrait .pages .page.flipped:nth-child(even) {
+  pointer-events: all;
+  transform: rotateY(0deg);
+}
+#toolbox .previewContainer .book.portrait .pages .page.flipped:nth-child(even):hover {
+  transform: rotateY(10deg);
+}
+#toolbox .previewContainer .book.portrait .pages .page.flipped:nth-child(even):hover:before {
+  background: rgba(0, 0, 0, 0.03);
+}
+#toolbox .previewContainer .book.portrait .pages .page.flipped:nth-child(even):before {
+  background: rgba(0, 0, 0, 0);
+}
+#toolbox .previewContainer .book.landscape {
+  padding: 20px;
+}
+#toolbox .previewContainer .book.landscape .preview-text {
+  top: 35px;
+  left: 35%;
+  width: 500px;
+}
+#toolbox .previewContainer .book.landscape.closed-front .pages {
+  margin-bottom: -250px;
+  margin-top: -200px;
+  transform: rotateY(12deg) translateY(-25%);
+}
+#toolbox .previewContainer .book.landscape.closed-rear .pages {
+  margin-bottom: -250px;
+  margin-top: -200px;
+  transform: rotateY(12deg) translateY(25%);
+}
+#toolbox .previewContainer .book.landscape .pages {
+  margin-bottom: 0px;
+  margin-top: 0px;
+  width: 661px;
+  height: 1000px;
+  position: relative;
+  transform: rotateY(12deg) translateY(0);
+  -webkit-transition: all all 1s ease-out;
+  -moz-transition: all all 1s ease-out;
+  -o-transition: all all 1s ease-out;
+  transition: all all 1s ease-out;
+  -webkit-transition: all 1s;
+  -o-transition: all 1s;
+  transition: all 1s;
+  transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 4px;
+}
+#toolbox .previewContainer .book.landscape .pages .page {
+  box-shadow: 1px 1px 2px #e3dfd8;
+  float: none;
+  clear: none;
+  margin: 0;
+  position: absolute;
+  width: 661px;
+  height: 500px;
+  transform-origin: 0 0 ;
+  transition: transform 1.4s;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: 1px solid grey;
+}
+#toolbox .previewContainer .book.landscape .pages .page:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.7s;
+  z-index: 2;
+}
+#toolbox .previewContainer .book.landscape .pages .page:nth-child(odd) {
+  pointer-events: all;
+  transform: rotateX(0deg);
+  bottom: 0;
+  border-radius: 0 4px 4px 0;
+}
+#toolbox .previewContainer .book.landscape .pages .page:nth-child(odd):hover {
+  transform: rotateX(10deg);
+}
+#toolbox .previewContainer .book.landscape .pages .page:nth-child(odd):hover:before {
+  background: rgba(0, 0, 0, 0.03);
+}
+#toolbox .previewContainer .book.landscape .pages .page:nth-child(odd):before {
+  background: rgba(0, 0, 0, 0);
+}
+#toolbox .previewContainer .book.landscape .pages .page:nth-child(even) {
+  pointer-events: none;
+  transform: rotateX(-180deg);
+  transform-origin: 0 100%;
+  top: 0;
+  border-radius: 4px 0 0 4px;
+}
+#toolbox .previewContainer .book.landscape .pages .page:nth-child(even):before {
+  background: rgba(0, 0, 0, 0.2);
+}
+#toolbox .previewContainer .book.landscape .pages .page.grabbing {
+  transition: none;
+}
+#toolbox .previewContainer .book.landscape .pages .page.flipped:nth-child(odd) {
+  pointer-events: none;
+  transform: rotateX(180deg);
+}
+#toolbox .previewContainer .book.landscape .pages .page.flipped:nth-child(odd):before {
+  background: rgba(0, 0, 0, 0.2);
+}
+#toolbox .previewContainer .book.landscape .pages .page.flipped:nth-child(even) {
+  pointer-events: all;
+  transform: rotateX(0deg);
+}
+#toolbox .previewContainer .book.landscape .pages .page.flipped:nth-child(even):hover {
+  transform: rotateX(-10deg);
+}
+#toolbox .previewContainer .book.landscape .pages .page.flipped:nth-child(even):hover:before {
+  background: rgba(0, 0, 0, 0.03);
+}
+#toolbox .previewContainer .book.landscape .pages .page.flipped:nth-child(even):before {
+  background: rgba(0, 0, 0, 0);
+}
+#toolbox .previewContainer .book.landscape .pages .page:last-child svg {
+  transform: rotate(180deg);
+}

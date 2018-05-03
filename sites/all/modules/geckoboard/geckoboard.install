@@ -1,0 +1,23 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the Geckoboard module.
+ */
+
+
+/**
+ * Sets the API key to a random value (implementation of hook_install())
+ */
+function geckoboard_install() {
+  $apikey = user_password(10);
+  variable_set('geckoboard_api_key', $apikey);
+}
+
+
+/**
+ * Deletes the API key variable (implementation of hook_uninstall())
+ */
+function geckoboard_uninstall() {
+  variable_del('geckoboard_api_key');
+}
+

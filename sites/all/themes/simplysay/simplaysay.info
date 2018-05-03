@@ -1,0 +1,83 @@
+name = Simplysay
+description = uses bootstrap gramework to create simple theme.
+core = 7.x
+base theme = bootstrap
+
+
+;;;;;;;;;;;;;;;;;;;;;
+;; Regions
+;;;;;;;;;;;;;;;;;;;;;
+
+regions[navigation]     = 'Navigation'
+regions[header]         = 'Top Bar'
+regions[highlighted]    = 'Highlighted'
+regions[help]           = 'Help'
+regions[content]        = 'Content'
+regions[sidebar_first]  = 'Primary'
+regions[sidebar_second] = 'Secondary'
+regions[footer]         = 'Footer'
+regions[footer_bottom]  = 'Footer bottom'
+regions[page_top]       = 'Page top'
+regions[page_bottom]    = 'Page bottom'
+
+
+;;;;;;;;;;;;;;;;;;;;;
+;; Stylesheets
+;;;;;;;;;;;;;;;;;;;;;
+
+stylesheets[all][] = css/style.css
+stylesheets[all][] = css/custom.css
+stylesheets[all][] = css/filter.css
+stylesheets[all][] = css/font-awesome.min.css
+stylesheets[all][] = css/perfect-scrollbar.css
+stylesheets[all][] = css/plugin.css
+stylesheets[all][] = css/responsive.css
+stylesheets[all][] = css/slick.css
+stylesheets[all][] = css/slick-theme.css
+stylesheets[all][] = css/image-picker.css
+;; Fabric
+stylesheets[all][] = css/fiera.toolbar.css
+stylesheets[all][] = css/jquery.fontselector.css
+stylesheets[all][] = css/jquery.minicolors.css
+stylesheets[all][] = css/select2.min.css
+
+
+scripts[] = js/bootstrap-colorpicker.min.js
+scripts[] = js/slick.js
+scripts[] = js/bootstrap-colorpicker-plus.js
+scripts[] = js/custom-file-input.js
+scripts[] = js/jquery.mixitup.min.js
+;scripts[] = js/main.js
+scripts[] = js/webfont.js
+scripts[] = js/masonry.pkgd.min.js
+scripts[] = js/modernizr-custom.js
+scripts[] = js/perfect-scrollbar.min.js
+scripts[] = js/simplysay.js
+;scripts[] = js/social.js
+scripts[] = js/image-picker.min.js
+scripts[] = js/image-picker.js
+scripts[] = js/fabric.min.js
+;scripts[] = js/custom/fabric.staticBorderColor.js
+;scripts[] = js/custom/fabric.textbox.maxLines.js
+scripts[] = js/plugin.js
+scripts[] = js/custom/custom.js
+scripts[] = js/custom/simplysay.preview.js
+scripts[] = js/ui.touch-punch.min.js
+scripts[] = js/custom/justgage.js
+scripts[] = js/custom/raphael-2.1.4.min.js
+scripts[] = js/custom/jquery_custom.js
+scripts[] = js/custom/qrcode.js
+scripts[] = js/custom/fiera.dev.js
+scripts[] = js/custom/simplysay.outlay.js
+scripts[] = js/custom/simplysay.inlay.js
+scripts[] = js/custom/simplysay.editors.js
+scripts[] = js/custom/$.draggable.js
+scripts[] = js/custom/$.minicolors.js
+scripts[] = js/custom/$.select2.js
+scripts[] = js/custom/debug.js
+scripts[] = js/plugin.js
+scripts[] = js/custom/custom.js
+scripts[] = js/ui.touch-punch.min.js
+scripts[] = js/jquery-listnav.js
+scripts[] = js/commerce-payment-ajax.js
+

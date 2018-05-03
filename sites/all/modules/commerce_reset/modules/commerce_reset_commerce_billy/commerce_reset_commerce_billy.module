@@ -1,0 +1,47 @@
+<?php
+/**
+ * @file
+ * Contains functions to reset commerce billy.
+ */
+
+/**
+ * Implements hook_commerce_reset_reset_items().
+ */
+function commerce_reset_commerce_billy_commerce_reset_reset_items() {
+
+  $items = array();
+
+  $items[] = array(
+    'description' => t('Reset Billy Last Invoice Number'),
+    'callback' => 'commerce_reset_commerce_billy_last_invoice_number',
+    'data_callback' => 'commerce_reset_commerce_billy_data',
+    'count_callback' => 'commerce_reset_commerce_billy_data_count',
+    'primary_key' => '',
+  );
+
+  return $items;
+}
+
+/**
+ * Reset Billy's last invoice number.
+ */
+function commerce_reset_commerce_billy_last_invoice_number() {
+
+  watchdog(__FUNCTION__, "Reset Billy's last invoice number to 1");
+
+  variable_set('commerce_billy_invoice_nr_last', 1);
+}
+
+/**
+ * There is no Billy data to return.
+ */
+function commerce_reset_commerce_billy_data() {
+  return TRUE;
+}
+
+/**
+ * There is no Billy data count to return.
+ */
+function commerce_reset_commerce_billy_data_count() {
+  return TRUE;
+}

@@ -1,0 +1,199 @@
+<?php
+/**
+ * @file
+ * File that implements most functionality of the Geckoboard module.
+ */
+
+
+/**
+ * Adds permissions (implementation of hook_permission())
+ *
+ * @return
+ *   array of permissions
+ */
+function geckoboard_permission() {
+  return array(
+    'administer Geckoboard' => array(
+      'title' => t('Administer Geckoboard'),
+      'description' => t('Edit configuration for Geckoboard'),
+    ),
+  );
+}
+
+
+/**
+ * Adds menu items (implementation of hook_menu())
+ * 
+ * @return
+ *   array of menu items
+ */
+function geckoboard_menu() {
+  $items['admin/config/system/geckoboard'] = array(
+    'title' => 'Geckoboard configuration',
+    'description' => "Edit the configuration for Geckoboard",
+    'page callback' => "drupal_get_form",
+    'page arguments' => array("geckoboard_settings"),
+    'access arguments' => array('administer Geckoboard'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['geckoboard/%'] = array(
+    'page callback' => "geckoboard_show_widget",
+    'access arguments' => array('access content'),
+    'page arguments' => array(1),
+  );
+
+  return $items;
+}
+
+
+/**
+ * Returns form for changing configuration options
+ * 
+ * @param $form
+ *   form
+ * @param $form_state
+ *   form state
+ *
+ * @return 
+ *   configuration form 
+ */
+function geckoboard_settings($form, &$form_state) {
+  $form = array();
+  $form['geckoboard_api_key'] = array(
+    '#type' => 'textfield',
+    '#title' => t('API Key'),
+    '#description' => t('Enter a secret key. This key will be used on connect from your geckoboard dashboard to your drupal site.'),
+    '#default_value' => variable_get("geckoboard_api_key", ""),
+  );
+  return system_settings_form($form);
+}
+
+
+/**
+ * Outputs widget data for Geckoboard
+ * 
+ * @param $input
+ *   URL parameter that determines what to show: 'users', 'posts' or 'comments'	
+ */
+function geckoboard_show_widget($input) {
+  module_load_include('inc', 'geckoboard', 'geckoboardresponse');
+  $geckoboardResponse = new GeckoboardResponse();
+
+  if (isset($_POST) && isset($input) && isset($_SERVER['PHP_AUTH_USER'])) {
+    $format = isset($_POST['format']) ? (int) $_POST['format'] : 0;
+    $format = ($format == 1) ? 'xml' : 'json';
+    $geckoboardResponse->setFormat($format);
+
+    if (variable_get("geckoboard_api_key", "") == $_SERVER['PHP_AUTH_USER']) {
+      switch ($input) {
+        default:
+        case 'users':
+          $data = geckoboard_user_data($type);
+          break;
+        case 'posts':
+          $data = geckoboard_posts_data($type);
+          break;
+        case 'comments':
+          $data = geckoboard_comments_data($type);
+          break;
+      }
+      $response = $geckoboardResponse->getResponse($data);
+      echo $response;
+    }
+    else {
+      drupal_add_http_header('Status', '403 Access denied');
+      $data = array('error' => 'Access denied.');
+      echo $geckoboardResponse->getResponse($data);
+    }
+  }
+  else {
+    drupal_not_found();
+  }
+}
+
+
+/**
+ * Fetches user data for Geckoboard
+ *
+ * @return
+ *   array containing widget data
+ */
+function geckoboard_user_data() {
+  $data = array('item' => array());
+  $amount_today = db_query("SELECT COUNT(*) FROM {users} WHERE created > :created", array(':created' => REQUEST_TIME - 86400))->fetchColumn();
+  $amount_week = db_query("SELECT COUNT(*) FROM {users} WHERE created > :created", array(':created' => REQUEST_TIME - 604800))->fetchColumn();
+  $amount_month = db_query("SELECT COUNT(*) FROM {users} WHERE created > :created", array(':created' => REQUEST_TIME - 2629743))->fetchColumn();
+
+  $data['item'][] = array(
+    'text' => t('Day'),
+    'value' => $amount_today,
+  );
+  $data['item'][] = array(
+    'text' => t('Week'),
+    'value' => $amount_week,
+  );
+  $data['item'][] = array(
+    'text' => t('Month'),
+    'value' => $amount_month,
+  );
+
+  return $data;
+}
+
+
+/**
+ * Fetches user post for Geckoboard
+ * 
+ * @return
+ *   array containing widget data
+ */
+function geckoboard_posts_data() {
+  $data = array('item' => array());
+  $amount_today = db_query("SELECT COUNT(*) FROM {node} WHERE created > :created", array(':created' => REQUEST_TIME - 86400))->fetchColumn();
+  $amount_week = db_query("SELECT COUNT(*) FROM {node} WHERE created > :created", array(':created' => REQUEST_TIME - 604800))->fetchColumn();
+  $amount_month = db_query("SELECT COUNT(*) FROM {node} WHERE created > :created", array(':created' => REQUEST_TIME - 2629743))->fetchColumn();
+
+  $data['item'][] = array(
+    'text' => t('Day'),
+    'value' => $amount_today,
+  );
+  $data['item'][] = array(
+    'text' => t('Week'),
+    'value' => $amount_week,
+  );
+  $data['item'][] = array(
+    'text' => t('Month'),
+    'value' => $amount_month,
+  );
+  return $data;
+}
+
+
+/**
+ * Fetches user post for Geckoboard 
+ *
+ * @return
+ *   array containing widget data
+ */
+function geckoboard_comments_data() {
+  $data = array('item' => array());
+  $amount_today = db_query("SELECT COUNT(*) FROM {comment} WHERE created > :created", array(':created' => REQUEST_TIME - 86400))->fetchColumn();
+  $amount_week = db_query("SELECT COUNT(*) FROM {comment} WHERE created > :created", array(':created' => REQUEST_TIME - 604800))->fetchColumn();
+  $amount_month = db_query("SELECT COUNT(*) FROM {comment} WHERE created > :created", array(':created' => REQUEST_TIME - 2629743))->fetchColumn();
+
+  $data['item'][] = array(
+    'text' => t('Day'),
+    'value' => $amount_today,
+  );
+  $data['item'][] = array(
+    'text' => t('Week'),
+    'value' => $amount_week,
+  );
+  $data['item'][] = array(
+    'text' => t('Month'),
+    'value' => $amount_month,
+  );
+
+  return $data;
+}

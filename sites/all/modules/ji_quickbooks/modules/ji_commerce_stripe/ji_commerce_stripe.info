@@ -1,0 +1,15 @@
+name = JI Commerce Stripe
+description = Adds a validation function to Commerce Stripe so we can void invoices/payments during the refund process.
+core = 7.x
+
+dependencies[] = ji_quickbooks
+dependencies[] = commerce_stripe
+
+package = JI QuickBooks
+
+; Information added by Drupal.org packaging script on 2018-02-21
+version = "7.x-1.0-rc16"
+core = "7.x"
+project = "ji_quickbooks"
+datestamp = "1519182488"
+

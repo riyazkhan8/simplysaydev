@@ -1,0 +1,13 @@
+name = Commerce Shipping on Review Page
+description = Allows shipping to be dynamically calculated and added to orders on the Review page of checkout.
+core = 7.x
+package = Commerce (shipping)
+dependencies[] = commerce_shipping
+dependencies[] = rules
+
+; Information added by Drupal.org packaging script on 2017-02-13
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "commerce_shipping_on_review"
+datestamp = "1486959490"
+

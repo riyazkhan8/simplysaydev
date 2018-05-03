@@ -1,0 +1,14 @@
+name = JI Commerce
+description = Contains Commerce hooks which call support functions that send Commerce information to QuickBooks
+core = 7.x
+package = JI QuickBooks
+
+dependencies[] = ji_quickbooks
+dependencies[] = commerce
+
+; Information added by Drupal.org packaging script on 2018-02-21
+version = "7.x-1.0-rc16"
+core = "7.x"
+project = "ji_quickbooks"
+datestamp = "1519182488"
+

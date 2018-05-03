@@ -1,0 +1,29 @@
+
+/**
+ * @file
+ * Basic styling for the Commerce Customer module.
+ */
+
+.commerce-customer-profile-copy .ajax-progress {
+  float: none;
+  display: inline;
+}
+
+.commerce-customer-profile-copy .ajax-progress .message {
+  display: none;
+}
+div#commerce-addressbook-shipping-default {
+    width: 80% !important;
+}
+body.page-user-addressbook #block-system-main>div {
+    background: #f1f1f1 none repeat scroll 0 0;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    width: 100%;
+    border: 1px solid #b7b7b7;
+}
+.page-user-addressbook ul.action-links {
+    float: right;
+    margin-top: 0px !important;
+}

@@ -1,0 +1,323 @@
+<?php
+/**
+ * @file
+ * Contains functions to reset commerce.
+ */
+
+require_once 'commerce_reset.helpers.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function commerce_reset_menu() {
+
+  $items['admin/commerce/reset/batch'] = array(
+    'title' => 'Commerce reset',
+    'description' => 'Run batch operations.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('commerce_reset_batch_form'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Batch form callback.
+ */
+function commerce_reset_batch_form() {
+
+  $options = array();
+
+  foreach (commerce_reset_reset_items() as $item) {
+    $options[$item['callback']] = $item['description'];
+  }
+
+  $form['batch'] = array(
+    '#type' => 'checkboxes',
+    '#title' => 'Choose which tasks to run',
+    '#options' => $options,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Go',
+  );
+
+  return $form;
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function commerce_reset_form_commerce_reset_batch_form_alter(&$form, &$form_state, $form_id) {
+
+  $options = commerce_reset_items_keyed();
+
+  $primary_key = $options['commerce_reset_delete_orders']['primary_key'];
+
+  $key = 'commerce_reset_delete_customer_profiles';
+
+  if (commerce_reset_order_count($primary_key)) {
+    $form['batch']['#options'][$key] = t('Customer profiles can not be deleted. Please delete all orders first');
+    $form['batch'][$key]['#disabled'] = TRUE;
+  }
+
+  $key = 'commerce_reset_delete_products';
+
+  if (commerce_reset_order_count($primary_key)) {
+    $form['batch']['#options'][$key] = t('Products can not be deleted. Please delete all orders first');
+    $form['batch'][$key]['#disabled'] = TRUE;
+  }
+}
+
+/**
+ * Submit form submit handle.
+ */
+function commerce_reset_batch_form_submit($form, &$form_state) {
+
+  $import = array();
+
+  foreach ($form_state['values']['batch'] as $batch) {
+
+    if ($batch) {
+      $import[] = $batch;
+    }
+  }
+
+  batch_set(commerce_reset_generate_batch_items($import));
+}
+
+/**
+ * Batch generate items.
+ */
+function commerce_reset_generate_batch_items($import) {
+
+  $operations = array();
+
+  $options = commerce_reset_items_keyed();
+
+  foreach ($import as $value) {
+
+    if (array_key_exists($value, $options) AND is_array($options[$value])) {
+
+      $primary_key = $options[$value]['primary_key'];
+
+      $callback = $options[$value]['callback'];
+
+      $data = call_user_func_array($options[$value]['data_callback'], array($primary_key));
+
+      $count = call_user_func_array($options[$value]['count_callback'], array($primary_key));
+
+      $operations = commerce_reset_generate_batch_operations(
+        $callback, $data, $count, $operations, $primary_key
+      );
+    }
+  }
+
+  $batch = array(
+    'title' => 'Commerce Reset',
+    'operations' => $operations,
+    'finished' => 'commerce_reset_finished',
+  );
+
+  batch_set($batch);
+}
+
+/**
+ * Generate batch operations.
+ *
+ * @param string $callback
+ *   The function to execute.
+ * @param object $data
+ *   The data to that will be added to the batch.
+ * @param int $count
+ *   Total number of records.
+ * @param array $operations
+ *   Batch operation.
+ *
+ * @return array
+ *   Batch array.
+ */
+function commerce_reset_generate_batch_operations(
+  $callback,
+  $data,
+  $count,
+  array $operations,
+  $primary_key
+) {
+  $i = 1;
+
+  if (is_array($data)) {
+
+    foreach ($data as $datum) {
+
+      $params = array(
+        'id' => $datum->$primary_key,
+        'current' => $i++,
+        'total' => $count,
+      );
+
+      $operations[] = array($callback, array($params));
+    }
+  }
+  else {
+    $operations[] = array($callback, array());
+  }
+
+  return $operations;
+}
+
+/**
+ * Delete orders callback.
+ */
+function commerce_reset_delete_orders($details, &$context) {
+
+  watchdog(__FUNCTION__, $details['id']);
+
+  commerce_order_delete($details['id']);
+
+  $context['message'] = 'Deleting orders: ' . $details['current'] . ' of ' . $details['total'];
+
+  if ($details['current'] == $details['total']) {
+
+    db_query('ALTER TABLE {commerce_order} AUTO_INCREMENT = 1');
+
+    db_query('ALTER TABLE {commerce_order_revision} AUTO_INCREMENT = 1');
+  }
+}
+
+/**
+ * Delete payment transactions callback.
+ */
+function commerce_reset_delete_payment_transactions($details, &$context) {
+
+  watchdog(__FUNCTION__, $details['id']);
+
+  commerce_payment_transaction_delete($details['id']);
+
+  $context['message'] = 'Deleting transactions: ' . $details['current'] . ' of ' . $details['total'];
+
+  if ($details['current'] == $details['total']) {
+
+    db_query('ALTER TABLE {commerce_payment_transaction} AUTO_INCREMENT = 1');
+
+    db_query('ALTER TABLE {commerce_payment_transaction_revision} AUTO_INCREMENT = 1');
+  }
+}
+
+/**
+ * Delete customer profiles callback.
+ */
+function commerce_reset_delete_customer_profiles($details, &$context) {
+
+  watchdog(__FUNCTION__, $details['id']);
+
+  commerce_customer_profile_delete($details['id']);
+
+  $context['message'] = 'Deleting customer profiles: ' . $details['current'] . ' of ' . $details['total'];
+
+  if ($details['current'] == $details['total']) {
+
+    db_query('ALTER TABLE {commerce_customer_profile} AUTO_INCREMENT = 1');
+
+    db_query('ALTER TABLE {commerce_customer_profile_revision} AUTO_INCREMENT = 1');
+  }
+}
+
+/**
+ * Delete product variations callback.
+ */
+function commerce_reset_delete_products($details, &$context) {
+
+  watchdog(__FUNCTION__, $details['id']);
+
+  commerce_product_delete($details['id']);
+
+  $context['message'] = 'Deleting product variations: ' . $details['current'] . ' of ' . $details['total'];
+
+  if ($details['current'] == $details['total']) {
+
+    db_query('ALTER TABLE {commerce_product} AUTO_INCREMENT = 1');
+
+    db_query('ALTER TABLE {commerce_product_revision} AUTO_INCREMENT = 1');
+  }
+}
+
+/**
+ * Batch finished callback.
+ */
+function commerce_reset_finished($success, $results, $operations) {
+
+  if ($success) {
+    drupal_set_message(t('Commerce reset batch process complete.'));
+  }
+  else {
+    // An error occurred.
+    // $operations contains the operations that remained unprocessed.
+    $error_operation = reset($operations);
+
+    $args = array(
+      '@operation' => $error_operation[0],
+      '@args' => print_r($error_operation[0], TRUE),
+    );
+
+    drupal_set_message(
+      t('An error occurred while processing @operation with arguments : @args',
+        $args
+      )
+    );
+  }
+}
+
+/**
+ * Register a hook reset hook.
+ */
+function commerce_reset_reset_items() {
+  return module_invoke_all('commerce_reset_reset_items');
+}
+
+/**
+ * Define commerce reset callbacks.
+ *
+ * This hook enables modules to register their own callbacks.
+ */
+function commerce_reset_commerce_reset_reset_items() {
+
+  $items = array();
+
+  $items[] = array(
+    'description' => t('Delete all orders'),
+    'callback' => 'commerce_reset_delete_orders',
+    'data_callback' => 'commerce_reset_get_orders_ids',
+    'count_callback' => 'commerce_reset_order_count',
+    'primary_key' => 'order_id',
+  );
+
+  $items[] = array(
+    'description' => t('Delete all payment transactions'),
+    'callback' => 'commerce_reset_delete_payment_transactions',
+    'data_callback' => 'commerce_reset_get_transaction_ids',
+    'count_callback' => 'commerce_reset_transaction_count',
+    'primary_key' => 'transaction_id',
+  );
+
+  $items[] = array(
+    'description' => t('Delete all customer profiles'),
+    'callback' => 'commerce_reset_delete_customer_profiles',
+    'data_callback' => 'commerce_reset_get_customer_profiles_ids',
+    'count_callback' => 'commerce_reset_customer_profiles_count',
+    'primary_key' => 'profile_id',
+  );
+
+  $items[] = array(
+    'description' => t('Delete all products variations'),
+    'callback' => 'commerce_reset_delete_products',
+    'data_callback' => 'commerce_reset_get_products_ids',
+    'count_callback' => 'commerce_reset_products_count',
+    'primary_key' => 'product_id',
+  );
+
+  return $items;
+}

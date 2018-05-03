@@ -1,0 +1,243 @@
+<?php
+/**
+ * @file
+ *   Main module code for the "Commerce Shipping on Review" page.
+ *
+ * @author Guy Paddock (guy@redbottledesign.com)
+ */
+require_once('commerce_shipping_on_review.constants.inc');
+
+//==============================================================================
+// Hook implementations
+//==============================================================================
+/**
+ * Implements hook_commerce_checkout_pane_info_alter().
+ */
+function commerce_shipping_on_review_commerce_checkout_pane_info_alter(
+                                                       array &$checkout_panes) {
+  $checkout_pane_file = COSHONRE_MODULE_NAME . '.checkout_pane.inc';
+
+  if (isset($checkout_panes['commerce_shipping'])) {
+    $shipping_pane_info =& $checkout_panes['commerce_shipping'];
+
+    // Only alter if we're allowing the user to pick shipping on the review step
+    if (isset($shipping_pane_info['page']) &&
+        ($shipping_pane_info['page'] == 'review')) {
+      $shipping_pane_info['base'] =
+        'commerce_shipping_on_review_commerce_shipping_pane';
+        
+      $shipping_pane_info['module'] = COSHONRE_MODULE_NAME;
+      $shipping_pane_info['file']   = $checkout_pane_file;
+    }
+  }
+
+  if (isset($checkout_panes['cart_contents'])) {
+    $cart_content_pane_info =& $checkout_panes['cart_contents'];
+
+    // Only alter if we're showing cart contents on the review step
+    if (isset($cart_content_pane_info['review'])) {
+      $cart_content_pane_info['base'] =
+        'commerce_shipping_on_review_cart_contents_pane';
+        
+      $cart_content_pane_info['module'] = COSHONRE_MODULE_NAME;
+      $cart_content_pane_info['file']   = $checkout_pane_file;
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for the review step of checkout.
+ *
+ * Modifies the callback that's invoked when a user selects a shipping service.
+ */
+function commerce_shipping_on_review_form_commerce_checkout_form_review_alter(
+                                             array &$form, array &$form_state) {
+  $form_ajax_options_path = array(
+    'commerce_shipping',
+    'shipping_service',
+    '#ajax',
+  );
+
+  $form_ajax_options =&
+    drupal_array_get_nested_value($form, $form_ajax_options_path);
+
+  if (!empty($form_ajax_options)) {
+    $form_ajax_options['callback'] =
+      'commerce_shipping_on_review_refresh_order_ajax';
+  }
+}
+
+//==============================================================================
+// Public API
+//==============================================================================
+/**
+ * Invokes rules that are bound to the "Selecting the default shipping service"
+ * event.
+ *
+ * @param stdClass $order
+ *   The order for which a shipping service is being selected.
+ */
+function commerce_shipping_on_review_invoke_default_selection_rules($order) {
+  rules_invoke_all('commerce_shipping_on_review_defaulting_shipping', $order);
+}
+
+/**
+ * Invokes rules that are bound to the "After selecting a shipping service"
+ * event.
+ *
+ * @param stdClass $order
+ *   The order for which a shipping service is being selected.
+ * @param string $shipping_service
+ *   The machine name of the shipping service being selected.
+ */
+function commerce_shipping_on_review_invoke_user_selection_rules(
+                                                    $order, $shipping_service) {
+  rules_invoke_all(
+    'commerce_shipping_on_review_selecting_shipping',
+    $order,
+    $shipping_service);
+}
+
+//==============================================================================
+// Rules Action Callbacks
+//==============================================================================
+/**
+ * Action: Load the list of shipping services into a variable.
+ */
+function commerce_shipping_on_review_load_shipping_services() {
+  $machine_names = array_keys(commerce_shipping_service_options_list());
+
+  return array('shipping_services' => $machine_names);
+}
+
+//==============================================================================
+// AJAX Callback
+//==============================================================================
+/**
+ * FAPI AJAX callback for when a user selects a shipping method.
+ *
+ * <p>This takes the place of
+ * commerce_shipping_recalculate_services_refresh().</p>
+ *
+ * @param array $form
+ *   The full checkout review form.
+ * @param array $form_state
+ *   The form state for the checkout review form state.
+ *
+ * @return array
+ *   An AJAX render array containing all of the commands to update the page.
+ */
+function commerce_shipping_on_review_refresh_order_ajax(
+                                               array $form, array $form_state) {
+  $ajax_commands = array();
+
+  $ajax_commands[] =
+    ajax_command_insert(
+      '#commerce-shipping-service-ajax-wrapper',
+      render($form['commerce_shipping']));
+
+  $ajax_cart_command =
+    _commerce_shipping_on_review_get_cart_contents_ajax_commands(
+      $form, $form_state);
+
+  if (!empty($ajax_cart_command)) {
+    $ajax_commands[] = $ajax_cart_command;
+  }
+
+  $ajax_commands[] = ajax_command_prepend(NULL, theme('status_messages'));
+
+  $ajax_result = array(
+    '#type'     => 'ajax',
+    '#commands' => $ajax_commands,
+  );
+
+  return $ajax_result;
+}
+
+//==============================================================================
+// Internal API
+//==============================================================================
+/**
+ * Ensures that a shipping option is selected on the specified order.
+ *
+ * <p>If one is not, the "Selecting the default shipping service" Rules event
+ * is used to apply one to the order.</p>
+ *
+ * @param stdClass $order
+ *   The order for which a shipping option must be selected.
+ */
+function _commerce_shipping_ensure_shipping_option_is_selected($order) {
+  // Re-use the Commerce Shipping conditional
+  module_load_include('inc', 'commerce_shipping', 'commerce_shipping.rules');
+
+  if (!commerce_shipping_rules_line_item_exists($order, '-any-')) {
+    commerce_shipping_on_review_invoke_default_selection_rules($order);
+  }
+}
+
+/**
+ * Invokes the shipping selection rule using the appropriate information from
+ * the specified checkout review form state.
+ *
+ * @param array $form_state
+ *   The form state for the checkout review form.
+ */
+function _commerce_shipping_invoke_selection_rule_for_review_form(
+                                                            array $form_state) {
+  if (isset($form_state['order'])) {
+    $order = $form_state['order'];
+
+    $shipping_service_path =
+      array(
+        'values',
+        'commerce_shipping',
+        'shipping_service',
+      );
+
+    $shipping_service =
+      drupal_array_get_nested_value($form_state, $shipping_service_path);
+
+    if (!empty($shipping_service)) {
+      commerce_shipping_on_review_invoke_user_selection_rules(
+        $order, $shipping_service);
+    }
+  }
+}
+
+/**
+ * Gets an AJAX command to render the cart contents pane based on the state
+ * of the specified checkout review form.
+ *
+ * @param array $form
+ *   The checkout review form.
+ * @param array $form_state
+ *   The checkout review form state.
+ *
+ * @return array|NULL
+ *   Either an AJAX command array; or, NULL, if the cart contents pane does not
+ *   appear on the review page of checkout.
+ */
+function _commerce_shipping_on_review_get_cart_contents_ajax_commands(
+                                               array $form, array $form_state) {
+  $ajax_command = NULL;
+
+  $cart_contents_pane_path = array(
+    'checkout_review',
+    'review',
+    '#data',
+    'cart_contents',
+    'data',
+  );
+
+  $cart_contents_pane_contents =
+    drupal_array_get_nested_value($form, $cart_contents_pane_path);
+
+  if (!empty($cart_contents_pane_contents)) {
+    $ajax_command =
+      ajax_command_insert(
+        '#commerce-cart-contents-ajax-wrapper',
+        render($cart_contents_pane_contents));
+  }
+
+  return $ajax_command;
+}

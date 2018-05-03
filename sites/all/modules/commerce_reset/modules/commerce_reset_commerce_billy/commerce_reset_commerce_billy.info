@@ -1,0 +1,13 @@
+name = Commerce Reset Billy
+description = "Reset Commerce Billy."
+core = 7.x
+package = Commerce Reset
+
+dependencies[] = commerce_reset
+dependencies[] = commerce_billy
+; Information added by Drupal.org packaging script on 2016-02-04
+version = "7.x-1.4"
+core = "7.x"
+project = "commerce_reset"
+datestamp = "1454572745"
+

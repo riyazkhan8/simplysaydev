@@ -1,0 +1,116 @@
+<?php
+/**
+ * @file
+ * The module core functions
+ *
+ * Implementation of all the functions calling different hooks on userpoints
+ * and commerce module
+ */
+
+/**
+ * Implements hook_commerce_discount_offer_type_info().
+ */
+function commerce_discount_userpoints_commerce_discount_offer_type_info() {
+  $types = array();
+
+  $types['userpoints'] = array(
+    'label' => t('Userpoints discount'),
+    'action' => 'commerce_discount_userpoints_discount',
+    'entity types' => array('commerce_order'),
+  );
+
+  return $types;
+}
+
+/**
+ * Implements hook_userpoints_info().
+ */
+function commerce_discount_userpoints_userpoints_info() {
+  return array(
+    'commerce_discount_userpoints_credit' => array(
+      'description' => t('Using credit for order discount'),
+    ),
+  );
+}
+
+/**
+ * Checks if this order owner has valid userpoints.
+ *
+ * @param EntityDrupalWrapper $order_wrapper
+ *
+ * @return bool
+ */
+function commerce_discount_userpoints_order_owner_has_userpoints(EntityDrupalWrapper $order_wrapper) {
+  $order_uid = $order_wrapper->uid->value();
+
+  return $order_uid ? userpoints_get_current_points($order_uid) : 0;
+}
+
+/**
+ * Rules action: Apply Userpoints discount.
+ */
+function commerce_discount_userpoints_discount(EntityDrupalWrapper $order_wrapper, $discount_name) {
+  if ($order_wrapper->type() != 'commerce_order') {
+    return;
+  }
+
+  // Exit if there are no line items or the wrapper doesn't contain
+  // the commerce_discounts property.
+  if (!isset($order_wrapper->commerce_discounts) || !$order_wrapper->commerce_line_items->value()) {
+    return;
+  }
+
+  $discount_wrapper = entity_metadata_wrapper('commerce_discount', $discount_name);
+  $maximum_discount_value = $discount_wrapper->commerce_discount_offer->commerce_percentage->value() / 100;
+
+  $order_uid = $order_wrapper->uid->value();
+  $num_userpoints = $order_uid ? userpoints_get_current_points($order_uid) * 100 : 0;
+
+  $order_amount = $order_wrapper->commerce_order_total->amount->value();
+  $discount_price = array(
+    'amount' => min(intval($order_amount * $maximum_discount_value), $num_userpoints),
+    'currency_code' => $order_wrapper->commerce_order_total->currency_code->value(),
+  );
+
+  $delta = $order_wrapper->commerce_discounts->count();
+  $order = $order_wrapper->value();
+  $order->commerce_discounts[LANGUAGE_NONE][$delta]['target_id'] = $discount_wrapper->discount_id->value();
+
+  // Modify the existing discount line item or add a new one if that fails.
+  if (!commerce_discount_set_existing_line_item_price($order_wrapper, $discount_name, $discount_price)) {
+    commerce_discount_add_line_item($order_wrapper, $discount_name, $discount_price);
+  }
+
+  // Update the total order price, for the next rules condition (if any).
+  commerce_discount_calculate_order_total($order_wrapper);
+}
+
+
+/**
+ * Returns the number of userpoints used to discount given order by named discount.
+ *
+ * Only first discount line item is regarded.
+ * Non-discount line items are ignored.
+ *
+ * @param EntityDrupalWrapper $order_wrapper
+ *   The wrapped order entity.
+ * @param string $discount_name
+ *   The name of the discount being checked.
+ *
+ * @return object|bool
+ *   The modified line item or FALSE if not found.
+ */
+function commerce_discount_userpoints_get_existing_line_item_userpoints(EntityDrupalWrapper $order_wrapper, $discount_name) {
+  foreach ($order_wrapper->commerce_line_items as $line_item_wrapper) {
+    if ($line_item_wrapper->getBundle() != 'commerce_discount') {
+      continue;
+    }
+
+    $line_item = $line_item_wrapper->value();
+    if (isset($line_item->data['discount_name']) && $line_item->data['discount_name'] == $discount_name) {
+      return $line_item_wrapper->commerce_unit_price->amount->value() / 100;
+    }
+  }
+
+  return 0;
+}

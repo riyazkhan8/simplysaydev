@@ -1,0 +1,80 @@
+div.top-bar {
+    display: none;
+}
+
+ul.navbar-nav,
+ul.navbar-right {
+    display: none;
+}
+
+footer.footer,
+div.footer-bottom {
+    display: none;
+}
+
+button.navbar-toggle {
+    display: none;
+}
+
+h1.page-header {
+    display: none;
+}
+
+div.logo_slogan {
+    display: none;
+}
+
+div.main_navigation {
+    border-bottom: none;
+    box-shadow: none;
+}
+
+.btn.btn-flat {
+    border-radius: 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border-width: 1px;
+}
+
+.btn-info {
+    background-color: #00c0ef;
+    border-color: #00acd6;
+}
+
+.btn {
+    border-radius: 3px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border: 1px solid transparent;
+}
+
+/*#ajax-error-message {
+    color: #ff0033;
+}*/
+
+.isa_info, .isa_success, .isa_warning, .isa_error {
+    margin: 10px 0px;
+    padding:12px;
+}
+.isa_info {
+    color: #00529B;
+    background-color: #BDE5F8;
+}
+.isa_success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+}
+.isa_warning {
+    color: #9F6000;
+    background-color: #FEEFB3;
+}
+.isa_error {
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+.isa_info i, .isa_success i, .isa_warning i, .isa_error i {
+    margin:10px 22px;
+    font-size:2em;
+    vertical-align:middle;
+}

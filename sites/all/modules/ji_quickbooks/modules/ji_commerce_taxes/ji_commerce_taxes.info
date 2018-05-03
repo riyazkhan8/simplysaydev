@@ -1,0 +1,19 @@
+name = JI Commerce Taxes
+description = Contains Commerce Taxes hooks which call support functions that send Commerce Tax information to QuickBooks or vice versa.
+core = 7.x
+
+dependencies[] = commerce
+dependencies[] = commerce_tax
+dependencies[] = commerce_tax_ui
+dependencies[] = ji_autocomplete
+dependencies[] = ji_commerce
+dependencies[] = jquery_update
+
+package = JI QuickBooks
+
+; Information added by Drupal.org packaging script on 2018-02-21
+version = "7.x-1.0-rc16"
+core = "7.x"
+project = "ji_quickbooks"
+datestamp = "1519182488"
+

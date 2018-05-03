@@ -1,0 +1,13 @@
+--- composer_manager.module
++++ composer_manager.module
+@@ -298,7 +301,9 @@
+   }
+ 
+   $dir_uri = variable_get('composer_manager_file_dir', $scheme . '://composer');
+-  composer_manager_prepare_directory($dir_uri);
++  if ($ensure_write_permission) {
++    composer_manager_prepare_directory($dir_uri);
++  }
+   if (!$realpath = drupal_realpath($dir_uri)) {
+     throw new \RuntimeException(t('Error resolving directory: @dir', array('@dir' => $dir_uri)));
+   }

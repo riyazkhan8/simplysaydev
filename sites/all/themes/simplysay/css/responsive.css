@@ -1,0 +1,803 @@
+@charset "utf-8";
+/* CSS Document */
+@media (min-width:1200px){
+	
+/*.container{padding: 0px;}*/
+
+}
+
+
+@media (min-width:992px) and (max-width:1199px){
+	.adjust_tool_standard_portrait {
+		margin: 0 0;
+	}
+	.canvas-container {
+		max-width: 100%;
+	}
+	canvas {
+		max-width: 100%;
+		
+	}
+	.inlay_vertical_landscape .container {
+		max-width: 100%;
+	}
+	
+	.color-swatch {
+		height: auto;
+		max-width: 100%;
+		margin-bottom: 10px;
+	}
+	
+	#header .header-cart {
+		right: 0;
+	}
+	.greetingcard-link a, .greetingcard-link {
+		font-size: 20px;
+		line-height: 27px;
+		padding: 15px 0;
+	}
+	.greetingcard-link span {
+		font-size: 20px;
+	}
+	.greetingcard {
+		height: 410px;
+	}
+	.view-featured-card-categories .fcard-big .img-responsive {
+		min-height:inherit;
+		max-height: 415px;
+	}
+	.page-all-cards .views-field-field-card-sample-image .field-content, .page-all-cards .views-field-product-id .field-content, .page-anniversaries .views-field-field-card-sample-image .field-content, .page-anniversaries .views-field-product-id .field-content, .page-birthdays .views-field-field-card-sample-image .field-content, .page-birthdays .views-field-product-id .field-content, .page-chinese-new-year .views-field-field-card-sample-image .field-content, .page-chinese-new-year .views-field-product-id .field-content, .page-christmas .views-field-field-card-sample-image .field-content, .page-christmas .views-field-product-id .field-content, .page-congratulations .views-field-field-card-sample-image .field-content, .page-congratulations .views-field-product-id .field-content, .page-engagement .views-field-field-card-sample-image .field-content, .page-engagement .views-field-product-id .field-content, .page-exams .views-field-field-card-sample-image .field-content, .page-exams .views-field-product-id .field-content, .page-friendship .views-field-field-card-sample-image .field-content, .page-friendship .views-field-product-id .field-content, .page-get-well .views-field-field-card-sample-image .field-content, .page-get-well .views-field-product-id .field-content, .page-good-bye .views-field-field-card-sample-image .field-content, .page-good-bye .views-field-product-id .field-content, .page-good-luck .views-field-field-card-sample-image .field-content, .page-good-luck .views-field-product-id .field-content, .page-greeting-cards .views-field-field-card-sample-image .field-content, .page-greeting-cards .views-field-product-id .field-content, .page-halloween .views-field-field-card-sample-image .field-content, .page-halloween .views-field-product-id .field-content, .page-new-baby .views-field-field-card-sample-image .field-content, .page-new-baby .views-field-product-id .field-content, .page-new-year .views-field-field-card-sample-image .field-content, .page-new-year .views-field-product-id .field-content, .page-photo-cards .views-field-field-card-sample-image .field-content, .page-photo-cards .views-field-product-id .field-content, .page-singapore .views-field-field-card-sample-image .field-content, .page-singapore .views-field-product-id .field-content, .page-sympathy .views-field-field-card-sample-image .field-content, .page-sympathy .views-field-product-id .field-content, .page-teachers-day .views-field-field-card-sample-image .field-content, .page-teachers-day .views-field-product-id .field-content, .page-thanksgiving .views-field-field-card-sample-image .field-content, .page-thanksgiving .views-field-product-id .field-content, .page-thank-you .views-field-field-card-sample-image .field-content, .page-thank-you .views-field-product-id .field-content, .page-valentines-day .views-field-field-card-sample-image .field-content, .page-valentines-day .views-field-product-id .field-content, .page-weddings .views-field-field-card-sample-image .field-content, .page-weddings .views-field-product-id .field-content {
+		height: 300px;
+		line-height: 150px;
+	}
+	
+	}
+	@media (min-width:992px) and (max-width:1024px){
+		.ftr_post_slider .slick_item img {
+			max-width: 1000px !important;
+			width: 100%;
+			    display: inline-block;
+    object-fit: contain;
+		}
+		
+	}
+	
+	
+@media (min-width:768px) and (max-width:991px){
+	.greetingcard-link a, .greetingcard-link {
+		font-size: 15px;
+		line-height: 26px;
+		padding: 6px 0;
+	}
+	.adjust_tool_standard {
+		margin: 0 auto;
+		float: none;
+	}
+.inlay_verticle.clearfix .content-area.content-area-sm canvas.upper-canvas,.inlay_verticle.clearfix .content-area canvas.upper-canvas{
+		position: absolute !important;
+	}
+	.inlay_verticle.clearfix .content-area {
+		margin-bottom: 2px;
+	}
+	.view-featured-card-categories .fcard-big .img-responsive {
+		min-height: 340px;
+	}
+	.view-featured-card-categories .fcard-small .img-responsive {
+		min-height: 160px;
+		max-height: 160px;
+	}
+	.greetingcard {
+		height: 325px;
+		padding-top: 0;
+		position: relative;
+		overflow: hidden;
+	}
+	.page-all-cards .views-field-product-id .field-content, .page-birthdays .views-field-product-id .field-content, .view-greeting-cards .views-field-product-id .field-content {
+		height: 330px;
+	}
+	.adjust_tool_standard_portrait {
+		margin: 0 0;
+	}
+	.canvas-container {
+		text-align: center;
+	}
+	.outlay_can_board .canvas-container {
+		height: auto !important;
+	}
+	.tool-board .tab-content,.preview-photo-section {
+		min-height: auto;
+	}
+	canvas {
+		max-width: 100%;
+		height: auto !important;
+	}
+	.inlay_verticle .column, .inlay_verticle, .preview_page .column, .outlay .canvas_duumy_image img {
+		/* width: 100%; */
+		max-width: 100%;
+		height: auto;
+	}
+	.canvas-board.cart_right_page img {
+		height: auto !important;
+		max-width: 100%;
+	}
+	.canvas_duumy_image img {
+		height: auto !important;
+		max-width: 100%;
+		min-height: 148px;
+	}
+	.delivery_box {
+		padding: 10px;
+		width: 49%;
+		margin-bottom: 20px;
+		margin-right: 2%;
+		min-height: 277px;}
+	.delivery_page_main .delivery_main {
+		margin: 15px 0;
+	}
+	.col-sm-4.gap-left {
+		width: 50%;
+	}
+	canvas.lower-canvas {
+		height: auto !important;
+		position: inherit !important;
+	}
+	.color-swatch {
+		height: auto;
+		max-width: 100%;
+		margin-bottom: 10px;
+	}
+	.color-swatch {
+		height: auto;
+		max-width: 100%;
+		margin-bottom: 10px;
+	}
+	.inlay_vertical_landscape .container {
+		max-width: 100%;
+	}
+	.inlay_verticle .canvas-container {
+		height: auto !important;
+	}
+	.top_button_list .tool-bar,.top_button_list .tool-bar .select-bg-color-section.clearfix {
+		top: 0px;
+	}
+	.delivery_box:nth-child(2n) {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	#header .header-cart {
+		right: 0;
+	}
+	.delivery_box i {
+		height: 60px;
+		width: 60px;
+		line-height: 60px;
+		font-size: 20px;
+	}
+	.delivery_box h4 {
+		font-size: 16px;
+		margin-top: 15px;
+	}
+	.delivery_box p {
+		font-size: 15px;
+		line-height: 21px;
+		padding-top: 15px;
+	}
+	.greetingcard-link span {
+		font-size: 20px;
+	}
+	.page-all-cards .views-field-field-card-sample-image .field-content, .page-all-cards .views-field-product-id .field-content, .page-anniversaries .views-field-field-card-sample-image .field-content, .page-anniversaries .views-field-product-id .field-content, .page-birthdays .views-field-field-card-sample-image .field-content, .page-birthdays .views-field-product-id .field-content, .page-chinese-new-year .views-field-field-card-sample-image .field-content, .page-chinese-new-year .views-field-product-id .field-content, .page-christmas .views-field-field-card-sample-image .field-content, .page-christmas .views-field-product-id .field-content, .page-congratulations .views-field-field-card-sample-image .field-content, .page-congratulations .views-field-product-id .field-content, .page-engagement .views-field-field-card-sample-image .field-content, .page-engagement .views-field-product-id .field-content, .page-exams .views-field-field-card-sample-image .field-content, .page-exams .views-field-product-id .field-content, .page-friendship .views-field-field-card-sample-image .field-content, .page-friendship .views-field-product-id .field-content, .page-get-well .views-field-field-card-sample-image .field-content, .page-get-well .views-field-product-id .field-content, .page-good-bye .views-field-field-card-sample-image .field-content, .page-good-bye .views-field-product-id .field-content, .page-good-luck .views-field-field-card-sample-image .field-content, .page-good-luck .views-field-product-id .field-content, .page-greeting-cards .views-field-field-card-sample-image .field-content, .page-greeting-cards .views-field-product-id .field-content, .page-halloween .views-field-field-card-sample-image .field-content, .page-halloween .views-field-product-id .field-content, .page-new-baby .views-field-field-card-sample-image .field-content, .page-new-baby .views-field-product-id .field-content, .page-new-year .views-field-field-card-sample-image .field-content, .page-new-year .views-field-product-id .field-content, .page-photo-cards .views-field-field-card-sample-image .field-content, .page-photo-cards .views-field-product-id .field-content, .page-singapore .views-field-field-card-sample-image .field-content, .page-singapore .views-field-product-id .field-content, .page-sympathy .views-field-field-card-sample-image .field-content, .page-sympathy .views-field-product-id .field-content, .page-teachers-day .views-field-field-card-sample-image .field-content, .page-teachers-day .views-field-product-id .field-content, .page-thanksgiving .views-field-field-card-sample-image .field-content, .page-thanksgiving .views-field-product-id .field-content, .page-thank-you .views-field-field-card-sample-image .field-content, .page-thank-you .views-field-product-id .field-content, .page-valentines-day .views-field-field-card-sample-image .field-content, .page-valentines-day .views-field-product-id .field-content, .page-weddings .views-field-field-card-sample-image .field-content, .page-weddings .views-field-product-id .field-content {
+		height: 225px;
+		line-height: 150px;
+		padding: 0 10px;
+	}
+	.tool_1 .col-sm-6.gap-right.adjust_tool_standard_portrait {
+		max-width: 100%;
+		margin: 0 auto;
+		float: none;
+	}
+	.top_button_list .tool-bar .custom-color-section input[type="color"] ,.top_button_list li a{
+		top: 0px;
+	}
+	.tool-bar button, .tool-bar .rect-btn {
+		margin-top: -18px;
+	}
+	.top_button_list li a {
+		top: 14px;
+	}
+	.tool_4 .inlay_verticle .tool-bar .ff-select {
+		top: -9px;
+	}
+	.top_button_list .tool-bar .custom-color-section input[type="color"] {
+		top: 8px;
+	}
+	.col-sm-8.gap-right + .col-sm-4.gap-left {
+		width: 33%;
+	}
+	.main_container.landscape .tool_1 .container {
+		padding: 0;
+	}
+	.inlay_vertical_landscape .inlay_verticle {
+		width: 100%;
+	}
+	.content-area canvas.upper-canvas {
+		position: inherit !important;
+	}
+	.preview_page .column .canvas-board {
+		min-height: 250px !important;
+		max-height: 250px;
+	}
+	.cart_right_page .canvas-content {
+		max-height: 267px;
+		overflow: hidden;
+	}
+	.cart_left_page .canvas_duumy_image {
+		max-height: 238px;
+	}
+	.photo-upload-section {
+		padding: 23px 5px;
+	}
+	.select-social-media {
+		padding-left: 5px;
+	}
+	.photo-upload-section h3 {
+		font-size: 14px;
+	}
+	.yellow-btn .btn {
+		width: 75px;
+	}
+	.landscape .preview_page .column {
+		width: 32.7%;
+	}
+	.landscape .preview_page .column .canvas-content img {
+		max-width: 100%;
+		height: auto;
+	}
+}
+	@media (min-width:801px) and (max-width:900px){
+		.ftr_post_slider .slick_item img {
+			max-width: 900px !important;
+			width: 100%;
+			    display: inline-block;
+    object-fit: contain;
+		}
+	}
+	@media (min-width:768px) and (max-width:800px){
+		.ftr_post_slider .slick_item img {
+			max-width: 800px !important;
+			width: 100%;
+			    display: inline-block;
+    object-fit: contain;
+		}
+	}
+	
+@media (max-width:767px){
+	.top-bar li {
+		float: none;;
+		display: inline-block;
+	}
+	.top-bar ul {
+		float: none;
+		margin-top: 2px;
+		margin-bottom: 3px;
+		margin-left: 0;
+	}
+	.top-bar li a {
+		margin-left: 10px;
+	}
+	.logo .navbar-brand {
+		padding: 0;
+	}
+	.main_navigation .logo .navbar-brand > img {
+		max-width: 140px;
+	}
+	.main_navigation .navbar-default, .main_navigation {
+		height: auto;
+	}
+	.memorable-section button {
+
+		height: auto;
+		width: auto;
+		font-size: 14px;
+		padding: 10px 20px;
+	}
+	.logo {
+		position: inherit;
+	}
+	.delivery_main .container {
+		padding: 0;
+	}
+	.main_navigation .navbar-right li a {
+		margin: 0;
+		padding: 5px;
+		border-bottom: 1px solid #777;
+	}
+	.nav.navbar-nav .menu.nav.navbar-nav {
+		margin: 0 0 5px 0;
+		/* padding: 0 5px; */
+	}
+	.header_sec .navbar-default .navbar-nav > .active > a, .header_sec .navbar-default .navbar-nav > .active > a:focus,.main_navigation .navbar-right li a:hover {
+		border-color: #00aff3;
+	}
+	.main_navigation .navbar-default .navbar-toggle {
+		border-color: #00aff3;
+		background: transparent !important;
+	}
+.main_navigation .navbar-default .navbar-toggle .icon-bar {
+		background-color: #00aff3;
+	}
+	.delivery_page_main #addressbook-select-form .radio {
+		width: 100%;
+	}
+.main_navigation .navbar-collapse.in {
+		overflow-y: visible;
+	}
+	.have_point_btn.blue,.have_point_btn.gold{
+		display: inline-block;
+		position: relative;
+		bottom: auto;
+		width: auto;
+		float: left;
+		padding: 3px 2px;
+		height: 51px;
+		line-height: 44px;
+	}
+	.mycart {
+		display: inline-block;
+	}
+	.nav .main-search {
+		float: right;
+
+	}
+	.expand li.main-search .search-box {
+		width: 100%;
+		min-width: 190px;
+	}
+	.mycart {
+		display: block !important;
+		width: 100%;
+		float: right;
+		text-align: right;
+	}
+	.main_navigation .navbar-right {
+		margin-top: 5px;
+	}
+	.title h2 {
+		font-size: 24px;
+	}
+	.greetingcard {
+		background: #f5f5f5;
+		/* border-radius: 20px; */
+		height: auto;
+		padding-top: 25px;
+		margin-bottom: 30px;
+		border: 1px solid #e9e9e9;
+		padding-bottom: 90px;
+	}
+	.footer-logo {
+		margin-top: 20px;
+		margin-bottom: 0px;
+	}
+	.debitcards img {
+		width: 45px;
+	}
+	.debitcards {
+		float: none;
+		text-align: center;
+		margin-top: 10px;
+	}
+	.footer-nav {
+		padding: 15px 0 25px;
+	}
+	.greetingcard-link a, .greetingcard-link {
+		font-size: 16px;
+		line-height: 22px;
+		padding: 10px 0;
+	}
+	.view-featured-card-categories .fcard-big .img-responsive {
+		min-height: inherit;
+		max-height: inherit;
+		display: inline-block;
+	}
+	.ftrpost_slider .slick-list.draggable {
+		padding: 0 !important;
+	}
+	.featuredcard {
+		text-align: center;
+	}
+	.memorable-section {
+		padding: 12px 0 35px;
+	}
+	.social-icons::after,.social-icons::before{
+		content: "";
+		display: table;
+		clear: both;
+	}
+	#postfooter_slider .slick-arrow{
+		display: none !important;
+	}
+	.page-all-cards .views-field-product-id .field-content img, .page-birthdays .views-field-product-id .field-content img, .view-greeting-cards .views-field-product-id .field-content img {
+		max-height: inherit;
+	}
+	.page-all-cards .views-field-product-id .field-content, .page-birthdays .views-field-product-id .field-content, .view-greeting-cards .views-field-product-id .field-content {
+		height: auto;
+	}
+	.view-content {
+		text-align: center;
+	}
+	.page-all-cards .views-row, .page-birthdays .views-row, .view-greeting-cards .views-row {
+		float: none;
+		width:250px;
+		display: inline-block;
+	}
+	.page-all-cards .views-exposed-form .views-exposed-widget,#edit-field-card-categories-tid,#edit-field-card-categories-tid-wrapper .views-widget {
+		width: 100%;
+	}
+	.mycart .have_point_btn.gold a {
+		font-size: 10px !important;
+		padding-left: 2px;
+	}
+	.nav.nav-list li .btn {
+		white-space: normal;
+	}
+	.page-header {
+		font-size: 28px;
+	}
+	.outlay_can_board {
+		/* padding: 15px; */
+		box-shadow:none;
+	}
+	.adjust_tool_standard_portrait {
+		margin: 0 0;
+	}
+	.canvas-container {
+		max-width: 100%;
+	}
+	.outlay_can_board .canvas-container {
+		height: auto !important;
+	}
+	canvas {
+		max-width: 100%;
+		height: auto !important;
+	}
+	.inlay_verticle .column,.inlay_verticle,.preview_page .column,.outlay .canvas_duumy_image img {
+		width: 100%;
+	}
+	
+	.inlay_verticle .top_button_list > ul {
+		margin-bottom: 20px;
+	}
+	.select-social-media {
+		padding-left: 5px;
+	}
+	.photo-upload-section {
+
+		padding: 15px 2px;
+	}
+	.delivery_box {
+		min-height: inherit;
+		padding: 10px;
+		width: 100%;
+		margin-bottom: 20px;
+	}
+	.delivery_box h4 {
+		font-size: 18px;
+	}
+	.delivery_box p {
+		font-size: 16px;
+		padding-top: 15px;
+	}
+	.preview_page .blue-round-btns {
+		margin: 5px 0px 30px 0;
+	}
+	.delivery_box i {
+		height: 60px;
+		width: 60px;
+		line-height: 60px;
+		font-size: 20px;
+	}
+	.delivery_page_main .delivery_main {
+		margin: 10px 0;
+	}
+	.tool-title h2 {
+		font-size: 28px;
+		margin: 0px 0 5px;
+	}
+	.blue-round-btns {
+		margin-bottom: 15px;;
+	}
+	.btn-primary.form-submit, .form-actions .btn.btn-success.form-submit,.btn.btn-success.form-submit.custom_submit {
+
+		margin-bottom: 10px;
+		padding: 10px 20px;
+	}
+	.greetingcard-section .col-sm-4:nth-child(3)  {
+		display: none;
+	}
+	.greetingcard-section .col-sm-4:nth-child(3) .greetingcard{
+		padding-bottom: 0;
+	}
+	.mycart button {
+		width: 115px;
+		position: relative;
+		padding-left: 0;
+		text-align: center;
+	}
+	.mycart button .total-item {
+		right: 5px;
+	}
+	.have_point_btn.blue a,.have_point_btn.gold a {
+		border: 0 !important;
+	}
+	.point_info_hove i.fa {
+		top: 16px;
+	}
+	.ppover_custom {
+		top: 39px;
+		z-index: 9999;
+		line-height: normal;
+	}
+	.nav .main-search {
+		margin-left: 0;
+		width: 100%;
+		display: block;
+		margin-top: 5px;
+		margin-bottom: 0;
+		bottom: 0px !important;
+	}
+	.main-search .search-box {
+		opacity: 1 !important;
+		width: 100% !important;
+	}
+	.main-search .search-wrap {
+		position: relative;
+
+	}
+	.main-search span.input-group-btn {
+		right: -30px;
+	}
+	.main-search  .input-group {
+		width: 80%;
+	}
+ 	li.main-search .search-box::-webkit-input-placeholder{color: #fff;}
+	 li.main-search .search-box:-moz-placeholder{color:#fff;}
+	 li.main-search .search-box::-moz-placeholder{color:#fff;}
+	li.main-search .search-box:-ms-input-placeholder{ color:#fff;}
+	#edit-actions {
+		margin: 0;
+	}
+	.greetingcard-link span {
+		font-size: 20px;
+	}
+	.ftr_post_slider .slick_item img {
+		max-width: 768px !important;
+		min-height: 150px;
+		    display: inline-block;
+    object-fit: contain;
+	}
+	.node-type-display-card #saved-alert {
+		margin: 10px 0px 0;
+	}
+	.lower-canvas {
+		position: inherit !important;
+		height: auto !important;
+	}
+	section.col-sm-12 {
+		padding: 0;
+	}
+	.gap-left {
+		padding-left: 15px;
+	}
+	.gap-right {
+		padding-right: 15px;
+	}
+	.tool-board .tab-content {
+		padding: 25px 15px 25px;
+		min-height: auto;
+	}
+	.preview-photo-section {
+		min-height: auto;
+	}
+	.modal-dialog{
+		max-width: 95%;
+	}
+	.modal-content .close {
+		height: 42px;
+		width: 146px;
+	}
+	.blankcard-select li a {
+		height: 275px;
+		width: 248px;
+	}
+	.modal-content h3 {
+		font-size: 20px;
+		margin-bottom: 20px;
+	}
+	.slider_left {
+		float: none;
+		width: 100%;
+		margin: 20px auto 20px;
+		text-align: center;
+	}
+	.color-swatch {
+		height: auto;
+		max-width: 100%;
+	}
+	.view-filters {
+		padding-left: 15px;
+	}
+	.blankcard-select li{
+		margin-bottom: 10px;
+	}
+	.preview_page .column .canvas-board {
+		min-height: inherit;
+		max-width: 100%;
+		overflow: hidden !important;
+	}
+	.canvas-board.cart_left_page::before,.canvas-board.cart_left_page::agter,.canvas-board.cart_right_page::before,.canvas-board.cart_right_page::after{
+		display: none;
+	}
+	.pre_full_bg.col-sm-12 {
+		width: 100%;
+		position: relative;
+		overflow: hidden;
+	}
+	.node.node-display-card.clearfix {
+		padding: 0 15px;
+	}
+	#views-form-commerce-cart-form-custom-default > div,.views-form-commerce-cart-form-custom-default > div {
+		width: 100%;
+		overflow: auto;
+	}
+	.footer {
+		margin-top: 35px;
+		padding-top: 10px;
+	}
+	.inlay_vertical_landscape .inlay_verticle {
+		width: 100%;
+	}
+	.inlay_vertical_landscape .container {
+		max-width: 100%;
+		padding: 0;
+	}
+	.inlay_verticle .canvas-container ,.inlay_verticle .canvas-container canvas{
+		height: auto !important;
+	}
+	.landscape .preview_page {
+		max-width: 100%;
+	}
+	.getCanvas {
+		max-width: 100% !important;
+	}
+	.getCanvas,.preview_page img {
+		max-width: 100% !important;
+		height: auto;
+	}
+	.preview_page img {
+		max-width: 100% !important;
+		height: auto;
+	}
+	.delivery_page_main #addressbook-select-form .radio {
+		margin-bottom: 10px;
+
+	}
+	.card_bar ul li {
+		margin-right: 0;
+		padding: 15px;
+		margin-bottom: 10px;
+		width: 100%;
+	}
+	#user-profile-form #edit-account .form-item {
+		max-width: 100%;
+	}
+	.page-node.page-node- section.col-sm-12 {
+		padding: 0 15px;
+	}
+	div.addressfield-container-inline > div.form-item {
+		width: 100%;
+		/* margin-top: 10px; */
+	}
+	.view_dtlbtn {
+		float: none;
+		margin-top: 0;
+	}
+	#header .header-cart {
+		right: 0;
+		z-index: 9999;
+	}
+	.form-actions.form-wrapper.form-group .form-submit {
+		margin-bottom: 0;
+	}
+	.blankcard-select .form-control {
+		height: 40px;
+		font-size: 14px;
+
+	}
+	.page-all-cards .views-row, .page-greeting-cards .views-row, .page-photo-cards .views-row, .page-anniversaries .views-row, .page-birthdays .views-row, .page-chinese-new-year .views-row, .page-christmas .views-row, .page-congratulations .views-row, .page-engagement .views-row, .page-exams .views-row, .page-friendship .views-row, .page-get-well .views-row, .page-good-bye .views-row, .page-good-luck .views-row, .page-halloween .views-row, .page-new-baby .views-row, .page-new-year .views-row, .page-singapore .views-row, .page-sympathy .views-row, .page-teachers-day .views-row, .page-thank-you .views-row, .page-thanksgiving .views-row, .page-valentines-day .views-row, .page-weddings .views-row {
+		float: none;
+		display: inline-block;
+		margin-right: 5px;
+		width: 130px;
+		margin-left: 5px !important;
+		margin-bottom: 10px;
+	}
+	.views-field-path .field-content a, .views-field-url .field-content a, .view-greeting-cards .field-content a {
+		padding: 5px 15px;
+		min-width: 90px;
+	}
+	.page-photo-cards .views-field-field-card-sample-image .field-content {
+		padding-left: 5px;
+		padding-right: 5px;
+	}
+	.view-all-cards .pager-load-more a, .view-greeting-cards .pager-load-more a, .view-photo-cards .pager-load-more a, .view-anniversaries .pager-load-more a, .view-birthdays .pager-load-more a, .view-chinese-new-year .pager-load-more a, .view-christmas .pager-load-more a, .view-congratulations .pager-load-more a, .view-engagement .pager-load-more a, .view-exams .pager-load-more a, .view-friendship .pager-load-more a, .view-get-well .pager-load-more a, .view-good-bye .pager-load-more a, .view-good-luck .pager-load-more a, .view-halloween .pager-load-more a, .view-new-baby .pager-load-more a, .view-new-year .pager-load-more a, .view-singapore .pager-load-more a, .view-sympathy .pager-load-more a, .view-teachers-day .pager-load-more a, .view-thank-you .pager-load-more a, .view-thanksgiving .pager-load-more a, .view-valentines-day .pager-load-more a, .view-weddings .pager-load-more a {
+		height: 45px;
+		line-height: 43px;
+		margin:0;
+		padding: 0 10px;
+		width: auto;
+		max-width: 100%;
+	}
+	.pager {
+		margin: 5px 0;
+	}
+	.footer-logo img {
+		max-width: 90%;
+	}
+	.page-all-cards .views-field-field-card-sample-image .field-content, .page-all-cards .views-field-product-id .field-content, .page-anniversaries .views-field-field-card-sample-image .field-content, .page-anniversaries .views-field-product-id .field-content, .page-birthdays .views-field-field-card-sample-image .field-content, .page-birthdays .views-field-product-id .field-content, .page-chinese-new-year .views-field-field-card-sample-image .field-content, .page-chinese-new-year .views-field-product-id .field-content, .page-christmas .views-field-field-card-sample-image .field-content, .page-christmas .views-field-product-id .field-content, .page-congratulations .views-field-field-card-sample-image .field-content, .page-congratulations .views-field-product-id .field-content, .page-engagement .views-field-field-card-sample-image .field-content, .page-engagement .views-field-product-id .field-content, .page-exams .views-field-field-card-sample-image .field-content, .page-exams .views-field-product-id .field-content, .page-friendship .views-field-field-card-sample-image .field-content, .page-friendship .views-field-product-id .field-content, .page-get-well .views-field-field-card-sample-image .field-content, .page-get-well .views-field-product-id .field-content, .page-good-bye .views-field-field-card-sample-image .field-content, .page-good-bye .views-field-product-id .field-content, .page-good-luck .views-field-field-card-sample-image .field-content, .page-good-luck .views-field-product-id .field-content, .page-greeting-cards .views-field-field-card-sample-image .field-content, .page-greeting-cards .views-field-product-id .field-content, .page-halloween .views-field-field-card-sample-image .field-content, .page-halloween .views-field-product-id .field-content, .page-new-baby .views-field-field-card-sample-image .field-content, .page-new-baby .views-field-product-id .field-content, .page-new-year .views-field-field-card-sample-image .field-content, .page-new-year .views-field-product-id .field-content, .page-photo-cards .views-field-field-card-sample-image .field-content, .page-photo-cards .views-field-product-id .field-content, .page-singapore .views-field-field-card-sample-image .field-content, .page-singapore .views-field-product-id .field-content, .page-sympathy .views-field-field-card-sample-image .field-content, .page-sympathy .views-field-product-id .field-content, .page-teachers-day .views-field-field-card-sample-image .field-content, .page-teachers-day .views-field-product-id .field-content, .page-thanksgiving .views-field-field-card-sample-image .field-content, .page-thanksgiving .views-field-product-id .field-content, .page-thank-you .views-field-field-card-sample-image .field-content, .page-thank-you .views-field-product-id .field-content, .page-valentines-day .views-field-field-card-sample-image .field-content, .page-valentines-day .views-field-product-id .field-content, .page-weddings .views-field-field-card-sample-image .field-content, .page-weddings .views-field-product-id .field-content {
+		padding: 0 0;
+		margin-bottom: 5px;
+	}
+	.page-all-cards .views-field-field-card-sample-image .field-content, .page-all-cards .views-field-product-id .field-content, .page-anniversaries .views-field-field-card-sample-image .field-content, .page-anniversaries .views-field-product-id .field-content, .page-birthdays .views-field-field-card-sample-image .field-content, .page-birthdays .views-field-product-id .field-content, .page-chinese-new-year .views-field-field-card-sample-image .field-content, .page-chinese-new-year .views-field-product-id .field-content, .page-christmas .views-field-field-card-sample-image .field-content, .page-christmas .views-field-product-id .field-content, .page-congratulations .views-field-field-card-sample-image .field-content, .page-congratulations .views-field-product-id .field-content, .page-engagement .views-field-field-card-sample-image .field-content, .page-engagement .views-field-product-id .field-content, .page-exams .views-field-field-card-sample-image .field-content, .page-exams .views-field-product-id .field-content, .page-friendship .views-field-field-card-sample-image .field-content, .page-friendship .views-field-product-id .field-content, .page-get-well .views-field-field-card-sample-image .field-content, .page-get-well .views-field-product-id .field-content, .page-good-bye .views-field-field-card-sample-image .field-content, .page-good-bye .views-field-product-id .field-content, .page-good-luck .views-field-field-card-sample-image .field-content, .page-good-luck .views-field-product-id .field-content, .page-greeting-cards .views-field-field-card-sample-image .field-content, .page-greeting-cards .views-field-product-id .field-content, .page-halloween .views-field-field-card-sample-image .field-content, .page-halloween .views-field-product-id .field-content, .page-new-baby .views-field-field-card-sample-image .field-content, .page-new-baby .views-field-product-id .field-content, .page-new-year .views-field-field-card-sample-image .field-content, .page-new-year .views-field-product-id .field-content, .page-photo-cards .views-field-field-card-sample-image .field-content, .page-photo-cards .views-field-product-id .field-content, .page-singapore .views-field-field-card-sample-image .field-content, .page-singapore .views-field-product-id .field-content, .page-sympathy .views-field-field-card-sample-image .field-content, .page-sympathy .views-field-product-id .field-content, .page-teachers-day .views-field-field-card-sample-image .field-content, .page-teachers-day .views-field-product-id .field-content, .page-thanksgiving .views-field-field-card-sample-image .field-content, .page-thanksgiving .views-field-product-id .field-content, .page-thank-you .views-field-field-card-sample-image .field-content, .page-thank-you .views-field-product-id .field-content, .page-valentines-day .views-field-field-card-sample-image .field-content, .page-valentines-day .views-field-product-id .field-content, .page-weddings .views-field-field-card-sample-image .field-content, .page-weddings .views-field-product-id .field-content {
+		height: 190px;
+		line-height: normal;		
+	}
+	.adjust_tool_standard {
+		margin: 0;
+		padding: 0;
+	}
+	.landscape .outlay_can_board .top_button_list>ul {
+		margin: 0 5px 0 0;
+	}
+	.landscape .outlay_can_board .top_button_list>ul:last-child{
+		float: none;
+	}
+	#vertical_slider .slick-list.draggable {
+		height: auto !important;
+
+	}
+	.delivery_box:nth-child(2n) {
+		margin-left: 0;
+	}
+
+}
+@media (max-width:600px){
+	.ftr_post_slider .slick_item img {
+		max-width: 500px !important;
+		min-height: 150px;
+		    display: inline-block;
+    object-fit: contain;
+	}
+}	
+@media (max-width:500px){
+	.ftr_post_slider .slick_item img {
+		max-width: 400px !important;
+		min-height: 150px;
+		    display: inline-block;
+    object-fit: contain;
+	}
+}
+@media (max-width:480px){
+	.ftr_post_slider .slick_item img {
+		max-width: 350px !important;
+		min-height: 120px;
+		    display: inline-block;
+    object-fit: contain;
+	}
+}
+@media (max-width:320px){
+	.ftr_post_slider .slick_item img {
+		max-width: 200px !important;
+		min-height: 120px;
+		    display: inline-block;
+    object-fit: contain;
+	}
+}

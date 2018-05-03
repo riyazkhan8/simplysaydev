@@ -1,0 +1,213 @@
+<?php
+
+/**
+ * @file
+ * Testing and ensure all requirements are available.
+ *
+ * If QBO SDK is available, OAuth is installed on server
+ * and remove any used variables during un-install.
+ */
+require_once drupal_get_path('module', 'ji_quickbooks') . '/ji_quickbooks_support.inc';
+
+/**
+ * Implements hook_requirements().
+ */
+function ji_quickbooks_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+  if ($phase == 'runtime') {
+    // Checks if config.php file exists.
+    $ji_quickbooks = ji_quickbooks_get_path('qbosdk3260');
+    if (empty($ji_quickbooks)) {
+      $requirements['ji_quickbooks'] = array(
+        'severity' => REQUIREMENT_ERROR,
+        'title' => $t('JI QuickBooks'),
+        'value' => $t('Download SDK from ' . l($t('here'), 'https://joshideas.com/sdk/ji_quickbooks/qbosdk3260.zip') . ' and place in the libraries directory.'),
+      );
+    }
+
+    $settings_set = ji_quickbooks_support_settings_applied();
+    if (!$settings_set) {
+      $alert_msg = $t('The JI QuickBooks module isn\'t configured, please do so ' . l($t('here'), 'admin/config/services/ji_quickbooks'));
+      $requirements['ji_quickbooks_settings'] = array(
+        'severity' => REQUIREMENT_ERROR,
+        'title' => $t('JI QuickBooks'),
+        'value' => $alert_msg,
+      );
+    }
+
+    $oauth = ji_quickbooks_support_check_oauth();
+    if (!$oauth) {
+      $requirements['ji_quickbooks_oauth'] = array(
+        'severity' => REQUIREMENT_ERROR,
+        'title' => $t('OAuth 1.2.3'),
+        'value' => $t('Minimum OAuth 1.2.3 needs to be installed on this web server, download ' . l($t('here'), 'http://pecl.php.net/package/oauth')),
+      );
+    }
+  }
+  return $requirements;
+}
+
+/**
+ * Implements hook_install().
+ *
+ * Checks if OAuth is installed.
+ */
+function ji_quickbooks_install() {
+  $t = get_t();
+
+  $oauth = ji_quickbooks_support_check_oauth();
+  if (!$oauth) {
+    drupal_set_message($t('PHP is telling us that OAuth isn\'t installed on this web server. ' . l($t('See Status Report'), '/admin/reports/status')), 'error', FALSE);
+  }
+  else {
+    drupal_set_message($t("QuickBooks settings are available under !link", array(
+      '!link' => l($t('Configuration > Web services > JI QuickBooks Settings'), 'admin/config/services/ji_quickbooks'),
+    )));
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function ji_quickbooks_uninstall() {
+  // Delete JI QuickBooks settings.
+  variable_del('ji_quickbooks_default_product');
+  variable_del('ji_quickbooks_term');
+  variable_del('ji_quickbooks_payment_method');
+  variable_del('ji_quickbooks_payment_account');
+
+  // Clear access tokens.
+  variable_del('ji_quickbooks_settings_access_token');
+  variable_del('ji_quickbooks_settings_access_token_secret');
+  variable_del('ji_quickbooks_settings_realm_id');
+
+  variable_del('ji_quickbooks_settings_consumer_key');
+  variable_del('ji_quickbooks_settings_consumer_secret');
+
+  // Remove counter since user disconnected QuickBooks.
+  // Added again if reconnect occurs.
+  variable_del('ji_quickbooks_cron_started_on');
+}
+
+/**
+ * Implements hook_schema().
+ */
+function ji_quickbooks_schema() {
+  // A table that indexes what realm a record was
+  // active during synchronization.
+  $schema['ji_quickbooks_realm_index'] = array(
+    'description' => "Track where a record was synced by logging the QBO realm id and how it's related to Drupal's customer ID.",
+    'fields' => array(
+      'id' => array(
+        'description' => 'The primary identifier for a record.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'oid' => array(
+        'description' => 'Drupal order id.',
+        'type' => 'int',
+        'length' => 11,
+        'not null' => FALSE,
+      ),
+      'realm_id' => array(
+        'description' => 'QBO realm id where this record was synced.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'process' => array(
+        'description' => 'Customer, invoice, or payment process.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'message' => array(
+        'description' => 'Message from QBO.',
+        'type' => 'text',
+        'size' => 'normal',
+        'not null' => FALSE,
+      ),
+      'is_error' => array(
+        'description' => 'Is this record an error record?',
+        'type' => 'int',
+        'length' => 1,
+        'not null' => TRUE,
+      ),
+      'response_id' => array(
+        'description' => 'Response id from QBO. Is the unique id used to identify a record in QBO.',
+        'type' => 'int',
+        'length' => 11,
+        'not null' => TRUE,
+      ),
+      'updated' => array(
+        'type' => 'int',
+        'description' => 'Last updated timestamp.',
+        'not null' => FALSE,
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'description' => 'User id that belongs to this order or record.',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('id'),
+    'indexes' => array(
+      'oid' => array('oid'),
+      'realm_id' => array('realm_id'),
+      'process' => array('process'),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Add new column in ji_quickbooks_realm_index table and populate it.
+ */
+function ji_quickbooks_update_7100() {
+  $spec = array(
+    'type' => 'int',
+    'description' => 'User id that belongs to this order or record.',
+    'not null' => FALSE,
+  );
+
+  db_add_field('ji_quickbooks_realm_index', 'uid', $spec);
+}
+
+/**
+ * Populate uid column.
+ */
+//function ji_quickbooks_update_7101() {
+//  $realm_record = db_select('ji_quickbooks_realm_index', 'r')
+//      ->fields('r', array('id', 'oid', 'realm_id', 'process', 'message', 'is_error', 'response_id', 'updated', 'uid'))
+//      ->execute();
+//
+//  foreach ($realm_record as $value) {
+//    if (module_exists('commerce')) {
+//      $order = commerce_order_load($value->oid);
+//    }
+//
+//    if (module_exists('uc_cart')) {
+//      $order = uc_order_load($value->oid);
+//    }
+//
+//    $uid = $order->uid;
+//
+//    $table = new stdClass();
+//    $table->id = $value->id;
+//    $table->oid = $value->oid;
+//    $table->realm_id = $value->realm_id;
+//    $table->process = $value->process;
+//    $table->message = $value->message;
+//    $table->is_error = $value->is_error;
+//    $table->response_id = $value->response_id;
+//    $table->updated = $value->updated;
+//    // Add missing record.
+//    $table->uid = $uid;
+//
+//    drupal_write_record('ji_quickbooks_realm_index', $table, 'id');
+//  }
+//}

@@ -1,0 +1,29 @@
+.form-item-ji-quickbooks-invoice-product,
+.form-item-ji-quickbooks-invoice-terms,
+.form-item-ji-quickbooks-payment-payment-method,
+.form-item-ji-quickbooks-payment-account-payment {
+    float: left;
+    min-width: 179px;
+}
+
+.ji-quickbooks-img {
+    margin: 6px;
+    float: left;
+}
+
+.form-item-ji-quickbooks-invoice-terms,
+.form-item-ji-quickbooks-payment-account-payment {
+    clear: both;
+}
+
+.ji-quickbooks-img img {
+    border: black;
+    border-style: dashed;
+    border-width: 1px;
+    width: auto;
+    height: auto;
+}
+
+.ji-quickbooks-img .description {
+    max-width: 335px;
+}

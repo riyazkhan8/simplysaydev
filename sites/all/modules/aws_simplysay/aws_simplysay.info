@@ -1,0 +1,4 @@
+name = AWS Simplysay
+description = Integrate AWS and amazons3 with drupal. 
+core = 7.x
+

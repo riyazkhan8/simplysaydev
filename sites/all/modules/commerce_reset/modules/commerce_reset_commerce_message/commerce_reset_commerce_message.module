@@ -1,0 +1,50 @@
+<?php
+/**
+ * @file
+ * Contains functions to reset commerce message.
+ */
+
+/**
+ * Implements hook_commerce_reset_reset_items().
+ */
+function commerce_reset_commerce_message_commerce_reset_reset_items() {
+
+  $items = array();
+
+  $items[] = array(
+    'description' => t('Reset Commerce Message History'),
+    'callback' => 'commerce_reset_commerce_message_reset',
+    'data_callback' => 'commerce_reset_commerce_message_data',
+    'count_callback' => 'commerce_reset_commerce_message_data_count',
+    'primary_key' => 'entity_id',
+  );
+
+  return $items;
+}
+
+/**
+ * Reset Commerce Message History.
+ */
+function commerce_reset_commerce_message_reset($details, &$context) {
+
+  watchdog(__FUNCTION__, $details['id']);
+
+  message_delete_multiple(array($details['id']));
+
+  $context['message'] = 'Deleting commerce message: ' . $details['current'] . ' of ' . $details['total'];
+}
+
+/**
+ * Get Commerce Message Data.
+ */
+function commerce_reset_commerce_message_data($primary_key) {
+  return commerce_reset_get_entity_data('field_data_message_commerce_order', $primary_key)
+    ->fetchAllAssoc('entity_id');
+}
+
+/**
+ * Get Commerce Message Count.
+ */
+function commerce_reset_commerce_message_data_count($primary_key) {
+  return commerce_reset_get_data_count('field_data_message_commerce_order', $primary_key);
+}

@@ -1,0 +1,15 @@
+name = JI QuickBooks
+description = Entire QuickBooks Online API. Classes and methods to send customer, invoice, and payment information.
+core = 7.x
+
+; Web Services
+files[] = JIQuickBooksService.php
+
+package = JI QuickBooks
+
+; Information added by Drupal.org packaging script on 2018-02-21
+version = "7.x-1.0-rc16"
+core = "7.x"
+project = "ji_quickbooks"
+datestamp = "1519182488"
+

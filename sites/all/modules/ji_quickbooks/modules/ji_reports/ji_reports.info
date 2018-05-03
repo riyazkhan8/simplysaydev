@@ -1,0 +1,14 @@
+name = JI Reports
+description = Creates a reports page that shows any errors during syncing.
+core = 7.x
+
+dependencies[] = ji_quickbooks
+
+package = JI QuickBooks
+
+; Information added by Drupal.org packaging script on 2018-02-21
+version = "7.x-1.0-rc16"
+core = "7.x"
+project = "ji_quickbooks"
+datestamp = "1519182488"
+

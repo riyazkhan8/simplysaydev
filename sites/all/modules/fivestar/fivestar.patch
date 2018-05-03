@@ -1,0 +1,174 @@
+diff --git fivestar.info fivestar.info
+index a0396f0..941bfdb 100644
+--- fivestar.info
++++ fivestar.info
+@@ -5,5 +5,6 @@ core = 7.x
+ dependencies[] = votingapi
+ configure = admin/config/content/fivestar
+ files[] = fivestar.migrate.inc
++files[] = includes/fivestar_views_handler_filter_in_operator.inc
+ files[] = test/fivestar.base.test
+ files[] = test/fivestar.field.test
+diff --git fivestar.module fivestar.module
+index 0125842..adc6c4a 100644
+--- fivestar.module
++++ fivestar.module
+@@ -136,6 +136,17 @@ function fivestar_theme() {
+   );
+ }
+ 
++/**
++ * Implements hook_views_api().
++ */
++function fivestar_views_api() {
++  return array(
++    'api' => 3,
++    'path' => drupal_get_path('module', 'fivestar') . '/includes',
++  );
++}
++
++
+ function _fivestar_variables() {
+   return array('fivestar', 'fivestar_unvote', 'fivestar_style', 'fivestar_stars', 'fivestar_comment', 'fivestar_position', 'fivestar_position_teaser', 'fivestar_labels_enable', 'fivestar_labels', 'fivestar_text', 'fivestar_title', 'fivestar_feedback');
+ }
+diff --git includes/fivestar.field.inc includes/fivestar.field.inc
+index 053d5a1..68d05d1 100644
+--- includes/fivestar.field.inc
++++ includes/fivestar.field.inc
+@@ -125,6 +125,18 @@ function fivestar_field_delete($entity_type, $entity, $field, $instance, $langco
+   _fivestar_field_helper($entity_type, $entity, $field, $instance, $langcode, $items, 'delete');
+ }
+ 
++/**
++ * Implements hook_field_views_data().
++ */
++function fivestar_field_views_data($field) {
++  $data = field_views_field_default_views_data($field);
++  foreach ($data as $table_name => $table_data) {
++    // Add our handler to the rating views field.
++    $data[$table_name][$field['field_name'] . '_rating']['filter']['handler'] = 'fivestar_views_handler_filter_in_operator';
++  }
++  return $data;
++}
++
+ function _fivestar_field_helper($entity_type, $entity, $field, $instance, $langcode, &$items, $op = '') {
+   foreach ($items as $delta => $item) {
+     if ((isset($entity->status) && !$entity->status) || $op == 'delete') {
+diff --git includes/fivestar_views_handler_filter_in_operator.inc includes/fivestar_views_handler_filter_in_operator.inc
+new file mode 100644
+index 0000000..cd1476a
+--- /dev/null
++++ includes/fivestar_views_handler_filter_in_operator.inc
+@@ -0,0 +1,111 @@
++<?php
++
++class fivestar_views_handler_filter_in_operator extends views_handler_filter_in_operator {
++
++  /**
++   * Initialize handler.
++   */
++  function init(&$view, &$options) {
++    parent::init($view, $options);
++    // We handle empty/not empty ourselves.
++    $this->definition['allow empty'] = FALSE;
++  }
++
++  /**
++   * Get the possible options (the number of stars).
++   */
++  function get_value_options() {
++    if (isset($this->value_options)) {
++      return;
++    }
++
++    // Get field info to figure out the number of stars configured for it.
++    $field_name = $this->definition['field_name'];
++    $field_info = field_info_field($field_name);
++    $bundles = reset($field_info['bundles']);
++    $entity_type = key($field_info['bundles']);
++    $bundle_name = $bundles[0];
++    $field_instance = field_info_instance($entity_type, $field_name, $bundle_name);
++
++    $max_stars = !empty($field_instance['settings']['stars']) ? $field_instance['settings']['stars'] : 5;
++    $options = array(0 => t('No stars'));
++    for ($i = 1; $i <= $max_stars; $i++) {
++      $percentage = ceil($i * 100 / $max_stars);
++      $options[$percentage] = format_plural($i, '1 star', '@count stars');
++    }
++    $this->value_options = $options;
++  }
++
++  /**
++   * Operator callback.
++   */
++  function op_simple() {
++    if (empty($this->value)) {
++      return;
++    }
++    $this->ensure_my_table();
++
++    // Zero needs special handling.
++    $has_nul = in_array(0, $this->value);
++
++    $or_statement = db_or();
++    $and_statement = db_and();
++    // Add regular condition if we have any values other than zero.
++    if (count($this->value) > ($has_nul ? 1 : 0)) {
++      $or_statement->condition("$this->table_alias.$this->real_field", array_values($this->value), $this->operator);
++    }
++
++    $selected_val_count = count(array_values($this->value));
++    $first_element = reset($this->value);
++    // 'IN' Condition.
++    if ($this->operator == 'in') {
++      if ($selected_val_count == 1) {
++        if ($first_element == 0) {
++          $nul_operator = ($has_nul == 0) ? 'IS NOT NULL' : 'IS NULL';
++          $or_statement->condition("$this->table_alias.$this->real_field", NULL, $nul_operator);
++          $this->query->add_where($this->options['group'], $or_statement);
++        }
++        elseif ($first_element != 0) {
++          $operator = 'IN';
++          $and_statement->condition("$this->table_alias.$this->real_field", array_values($this->value), $operator);
++          $this->query->add_where($this->options['group'], $and_statement);
++        }
++      }
++      elseif ($selected_val_count > 1) {
++        if ($first_element == 0) {
++          $nul_operator = ($has_nul == 0) ? 'IS NOT NULL' : 'IS NULL';
++          $or_statement->condition("$this->table_alias.$this->real_field", NULL, $nul_operator);
++          $this->query->add_where($this->options['group'], $or_statement);
++        }
++        elseif ($first_element != 0) {
++          $operator = 'IN';
++          $and_statement->condition("$this->table_alias.$this->real_field", array_values($this->value), $operator);
++          $this->query->add_where($this->options['group'], $and_statement);
++        }
++      }
++    }
++    // 'NOT IN' Condition.
++    elseif ($this->operator == 'not in') {
++      if ($has_nul == 1 && $first_element == 0) {
++        if ($selected_val_count == 1) {
++          $nul_operator = 'IS NOT NULL';
++          $and_statement->condition("$this->table_alias.$this->real_field", array_values($this->value), $nul_operator);
++          $this->query->add_where($this->options['group'], $and_statement);
++        }
++        elseif ($selected_val_count > 1) {
++          $operator = 'NOT IN';
++          $nul_operator = 'IS NOT NULL';
++          $and_statement->condition("$this->table_alias.$this->real_field", array_values($this->value), $operator);
++          $and_statement->condition("$this->table_alias.$this->real_field", NULL, $nul_operator);
++          $this->query->add_where($this->options['group'], $and_statement);
++        }
++      }
++      elseif ($has_nul == 0) {
++        $nul_operator = 'IS NULL';
++        $or_statement->condition("$this->table_alias.$this->real_field", NULL, $nul_operator);
++        $this->query->add_where($this->options['group'], $or_statement);
++      }
++    }
++  }
++
++}
+

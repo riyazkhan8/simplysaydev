@@ -1,0 +1,276 @@
+<?php
+
+/**
+ * @file
+ * ji_quickbooks.module
+ */
+
+require_once drupal_get_path('module', 'ji_quickbooks') . '/ji_quickbooks_support.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function ji_quickbooks_menu() {
+  $items['admin/config/services/ji_quickbooks'] = array(
+    'title' => 'JI QuickBooks Settings',
+    'description' => 'JI QuickBooks settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ji_quickbooks_admin_main_settings'),
+    'access arguments' => array('access quickbooks'),
+    'file' => 'ji_quickbooks.admin.inc',
+  );
+  
+  $items['saveoauthsettings'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ji_quickbooks_save_oauth_settings'),
+    'access arguments' => array('access quickbooks'),
+    'file' => 'ji_quickbooks_save_oauth_settings.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * Attempt to regenerate the QuickBooks tokens.
+ */
+function ji_quickbooks_cron() {
+  // Only execute the cron if the realm_id was saved.
+  // See ji_quickbooks.admin.inc.
+  if (variable_get('ji_quickbooks_cron_start_on')) {
+    // We've past the five month marker, begin auto-renewal
+    // of tokens. Send email if we cannot renew.
+    if (ji_quickbooks_five_months()) {
+      $quickbooks_service = new JIQuickBooksService(TRUE);
+      // Avoid crashing the cron.
+      if ($quickbooks_service->settingErrorMessage) {
+        watchdog('ji_quickbooks_cron', $quickbooks_service->settingErrorMessage, NULL, WATCHDOG_CRITICAL);
+        return;
+      }
+
+      $response = $quickbooks_service->oauthRenew();
+
+      if ($response->ErrorCode == '0') {
+        // Renewal worked, reset started_on variable so cron
+        // will reattempt five months from now.
+        variable_set('ji_quickbooks_cron_started_on', REQUEST_TIME);
+
+        // Replace existing tokens with new ones.
+        variable_set('ji_quickbooks_settings_access_token', $response->OAuthToken);
+        variable_set('ji_quickbooks_settings_access_token_secret', $response->OAuthTokenSecret);
+        return;
+      }
+
+      if ($response->ErrorCode == '270') {
+        $code_message = 'Error code 270 — The OAuth access token has expired.';
+      }
+      if ($response->ErrorCode == '212') {
+        $code_message = 'Error code 212 — The request is made outside the 30-day window bounds.';
+      }
+      if ($response->ErrorCode == '24') {
+        $code_message = 'Error code 24 — The app is not approved for the API.';
+      }
+      if ($response->ErrorCode == '22') {
+        $code_message = 'Error code 22 — The API requires authorization.';
+      }
+
+      // Critical failure occrued, detele variable so cron doesn't
+      // continue the re-attempt.
+      if ($response->ErrorCode != '0' && $response->ErrorCode != '212') {
+        // Tokens are invalid. Remove variable so cron doesn't
+        // continue re-attempts.
+        variable_del('ji_quickbooks_cron_started_on');
+      }
+
+      ji_quickbooks_send_cron_email(t("Attempted to auto-renew your QuickBooks tokens but an error ($code_message) ocurred. Please inform your site administrator and provide them the error code."));
+    }
+  }
+
+  // Stop further execution if both modules are enabled.
+  if (module_exists('uc_cart') && module_exists('commerce')) {
+    watchdog('ji_quickbooks_cron', 'Cannot run cron auto-sync attempts since both Ubertcart and Commerce are enabled.', NULL, WATCHDOG_CRITICAL);
+    return;
+  }
+
+  // Retrieve the error record. We'll begin there.
+  $error_record = db_select('ji_quickbooks_realm_index', 'r')
+      ->condition('r.is_error', TRUE, '=')
+      //->fields('r', array('response_id'))
+      ->fields('r')
+      ->range(0, 10)
+      ->execute()
+      ->fetchAll();
+
+  if (!empty($error_record)) {
+    $quickbooks_service = new JIQuickBooksService();
+    if (!empty($quickbooks_service->settingErrorMessage)) {
+      return;
+    }
+
+    foreach ($error_record as $record) {
+      if (module_exists('uc_cart')) {
+        $order = uc_order_load($record->oid);
+      }
+
+      if (module_exists('commerce')) {
+        $order = commerce_order_load($record->oid);
+      }
+
+      $account = user_load($order->uid);
+
+      // Sync needs to start from customer and trickle down to
+      // order then payment
+      switch ($record->process) {
+        case 'customer':
+          $qbo_customer_id = module_invoke_all('checkout_complete_send_customer', $quickbooks_service, $order, $account);
+          if ($qbo_customer_id[0]) {
+            $qbo_invoice_id = module_invoke_all('checkout_complete_send_invoice', $quickbooks_service, $order, $qbo_customer_id[0]);
+            if ($qbo_invoice_id[0]) {
+              module_invoke_all('checkout_complete_send_payment', $quickbooks_service, $order, $qbo_customer_id[0], $qbo_invoice_id[0]);
+            }
+          }
+          break;
+        case 'invoice':
+          $qbo_customer_id = ji_quickbooks_get_response_id($record->realm_id, $account->uid);
+          if ($qbo_customer_id) {
+            $qbo_invoice_id = module_invoke_all('checkout_complete_send_invoice', $quickbooks_service, $order, $qbo_customer_id);
+            if ($qbo_invoice_id[0]) {
+              module_invoke_all('checkout_complete_send_payment', $quickbooks_service, $order, $qbo_customer_id, $qbo_invoice_id[0]);
+            }
+          }
+          break;
+        case 'payment':
+          $qbo_customer_id = ji_quickbooks_get_response_id($record->realm_id, $account->uid);
+          if ($qbo_customer_id) {
+            $qbo_invoice_id = ji_quickbooks_get_response_id($record->realm_id, $account->uid, 'invoice', $record->oid);
+            if ($qbo_invoice_id) {
+              module_invoke_all('checkout_complete_send_payment', $quickbooks_service, $order, $qbo_customer_id, $qbo_invoice_id);
+            }
+          }
+          break;
+        case 'void invoice':
+          $qbo_invoice_id = ji_quickbooks_get_response_id($record->realm_id, $account->uid, 'invoice', $record->oid);
+          if ($qbo_invoice_id) {
+            $void_payment_response = $quickbooks_service->voidInvoice($qbo_invoice_id);
+            ji_quickbooks_log_process($order->order_id, $quickbooks_service->realmId, $order->uid, 'void invoice', $void_payment_response);
+          }
+          break;
+        case 'void payment':
+          $qbo_payment_id = ji_quickbooks_get_response_id($record->realm_id, $account->uid, 'payment', $record->oid);
+          if ($qbo_payment_id) {
+            $void_payment_response = $quickbooks_service->voidPayment($qbo_payment_id);
+            ji_quickbooks_log_process($order->order_id, $quickbooks_service->realmId, $order->uid, 'void payment', $void_payment_response);
+          }
+          break;
+      }
+    }
+  }
+}
+
+/**
+ * Test if over five months.
+ *
+ * Returns TRUE if it's past the five month period since
+ * this Drupal instance was connected to QuickBooks.
+ */
+function ji_quickbooks_five_months() {
+  $installed_on = variable_get('ji_quickbooks_cron_started_on');
+  $five_months = $installed_on + (60 * 60 * 24 * 30 * 5);
+  return (REQUEST_TIME > $five_months);
+}
+
+/**
+ * Implements hook_permission().
+ */
+function ji_quickbooks_permission() {
+  return array(
+    'access quickbooks' => array(
+      'title' => t('Can user access quickbooks page?'),
+      'description' => t('<i>WARNING: Give to trusted users as this changes the connection settings to QBO.</i>'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_help().
+ */
+function ji_quickbooks_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#ji_quickbooks':
+
+      $filepath = dirname(__FILE__) . '/README.md';
+      if (file_exists($filepath)) {
+        $readme = file_get_contents($filepath);
+      }
+      else {
+        $filepath = dirname(__FILE__) . '/README.txt';
+        if (file_exists($filepath)) {
+          $readme = file_get_contents($filepath);
+        }
+      }
+      if (!isset($readme)) {
+        return NULL;
+      }
+      if (module_exists('markdown')) {
+        $filters = module_invoke('markdown', 'filter_info');
+        $info = $filters['filter_markdown'];
+
+        if (function_exists($info['process callback'])) {
+          $output = $info['process callback']($readme, NULL);
+        }
+        else {
+          $output = '<pre>' . $readme . '</pre>';
+        }
+      }
+      else {
+        $output = '<pre>' . $readme . '</pre>';
+      }
+
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function ji_quickbooks_theme() {
+  return array(
+    'ji_oauth_authorize' => array(
+      'template' => 'ji_oauth/theme/ji_oauth_authorize',
+    ),
+  );
+}
+
+/**
+ * Implements hook_mail().
+ */
+function ji_quickbooks_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'error':
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['body'];
+      break;
+  }
+}
+
+/**
+ * Send email if hook_cron fails.
+ */
+function ji_quickbooks_send_cron_email($message) {
+  if ($message === '') {
+    return;
+  }
+
+  $params = array(
+    'subject' => t('[JI QuickBooks] - Auto-renewal of QuickBooks Tokens'),
+    'body' => check_markup(
+        $message, 'plain_text'
+    ),
+  );
+
+  $site_email = variable_get('site_mail', '');
+
+  drupal_mail('ji_quickbooks', 'error', $site_email, language_default(), $params);
+}

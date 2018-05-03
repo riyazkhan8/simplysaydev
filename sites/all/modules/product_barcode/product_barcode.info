@@ -1,0 +1,4 @@
+name = Product Barcode
+description = Product Barcode for Drupal
+core = 7.x
+files[] = product_barcode.module

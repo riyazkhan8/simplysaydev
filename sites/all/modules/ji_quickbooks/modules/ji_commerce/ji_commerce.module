@@ -1,0 +1,273 @@
+<?php
+
+/**
+ * @file
+ * Allows syncing between Drupal Commerce and QuickBooks.
+ */
+
+/**
+ * Implements hook_views_api().
+ */
+function ji_commerce_views_api() {
+  return array(
+    'api' => 3,
+  );
+}
+
+/**
+ * Implements hook_commerce_reports_dashboard().
+ */
+function ji_commerce_commerce_reports_dashboard() {
+  return array(
+    'qbo_failed_sync' => array(
+      'title' => t('Failed Order Sync'),
+      'sections' => array(
+        'sales' => array(
+          'module' => 'views',
+          'block' => 'failed_order_sync-block',
+        ),
+      ),
+      'weight' => 400,
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Adds validation function to front-end and back-end order creation.
+ * Syncs customer data to QuickBooks.
+ */
+function ji_commerce_form_alter(&$form, &$form_state, $form_id) {
+  //if ($form_id === 'commerce_admin_order_advanced_search_customers_form' || $form_id === 'commerce_order_ui_order_form') {
+  //  drupal_add_js(drupal_get_path('module', 'ji_commerce') . '/js/commerce_validations.js');
+  //  drupal_add_css(drupal_get_path('module', 'ji_commerce') . '/css/ji_commerce.css');
+  //}
+}
+
+/**
+ * Implements hook_commerce_checkout_pane_info_alter().
+ *
+ * Syncs customer information to QuickBooks.
+ */
+function ji_commerce_commerce_checkout_pane_info_alter(&$checkout_panes) {
+  if (isset($checkout_panes['customer_profile_billing'])) {
+    //drupal_add_js(drupal_get_path('module', 'ji_commerce') . '/js/commerce_validations.js');
+    //drupal_add_css(drupal_get_path('module', 'ji_commerce') . '/css/ji_commerce.css');
+
+    if (ji_quickbooks_check_common_errors()) {
+      return;
+    }
+
+    $checkout_panes['customer_profile_billing']['callbacks']['checkout_form_validate'] = 'ji_commerce_commerce_billing_pane_validate';
+  }
+}
+
+/**
+ * Send customer information when checkout completes.
+ *
+ * Also called by ji_quickbooks.module hook_cron() as a module_invoke_all().
+ */
+function ji_commerce_checkout_complete_send_customer($quickbooks_service, $order, $account) {
+
+  //$qbo_id = ji_quickbooks_get_response_id($order->order_number, $quickbooks_service->realmId, $account->uid);
+  $qbo_id = ji_quickbooks_get_response_id($quickbooks_service->realmId, $account->uid);
+
+  $customer_data = array(
+    // Id is a required field.
+    // Setting 'Id' to '' tells QBO this is a new customer.
+    'Id' => $qbo_id,
+    // DisplayName is a required field.
+    'DisplayName' => $account->name . ' ' . $account->mail,
+    'CompanyName' => '',
+    'Title' => '',
+    'GivenName' => '',
+    'MiddleName' => '',
+    'FamilyName' => '',
+    'Notes' => '',
+    'PrimaryPhone' => '',
+    'Fax' => '',
+    'Mobile' => '',
+    'Email' => $account->mail,
+    'Website' => '',
+    'BillAddressStreet1' => '',
+    'BillAddressStreet2' => '',
+    'BillAddressCity' => '',
+    'BillAddressCountrySubDivisionCode' => '',
+    'BillAddressPostalCode' => '',
+    'BillAddressCountry' => '',
+    'ShipAddressStreet1' => '',
+    'ShipAddressStreet2' => '',
+    'ShipAddressCity' => '',
+    'ShipAddressCountrySubDivisionCode' => '',
+    'ShipAddressPostalCode' => '',
+    'ShipAddressCountry' => '',
+  );
+
+  $response = $quickbooks_service->processCustomer($customer_data);
+
+  return ji_quickbooks_log_process($order->order_id, $quickbooks_service->realmId, $order->uid, 'customer', $response);
+}
+
+/**
+ * Send invoice data to QuickBooks when the checkout process is completed.
+ *
+ * Also called by ji_quickbooks.module hook_cron() as a module_invoke_all().
+ */
+function ji_commerce_checkout_complete_send_invoice($quickbooks_service, $order, $qbo_customer_id) {
+  $customer_type = new IPPReferenceType();
+  $customer_type->value = $qbo_customer_id;
+  $sales_term_type = new IPPReferenceType();
+  // QBO Invoice due terms.
+  $sales_term_type->value = variable_get('ji_quickbooks_term');
+  $email_address = new IPPEmailAddress();
+  $email_address->Address = $order->mail;
+
+  $tax_default = '';
+  $counter = 0;
+  $line = array();
+  foreach ($order->commerce_line_items[LANGUAGE_NONE] as $line_item) {
+    $line_item = commerce_line_item_load($line_item['line_item_id']);
+
+    switch ($line_item->type) {
+      case 'product':
+        $product = commerce_product_load($line_item->commerce_product[LANGUAGE_NONE][0]['product_id']);
+        $description = $product->title;
+        // QBO will add tax once we've added this line item.
+        $tax_default = 'TAX';
+        break;
+
+      case 'shipping':
+        $description = $line_item->data['shipping_service']['display_title'];
+        // QBO will not add tax.
+        $tax_default = 'NON';
+        break;
+
+      default:
+        $description = '';
+    }
+
+    $line1 = new IPPLine();
+    $line1->LineNum = $counter++;
+    $line1->Description = $description;
+    // Quickbooks requires this.
+    $line1->Amount = $line_item->commerce_total[LANGUAGE_NONE][0]['amount'] / 100;
+    $line1->DetailType = 'SalesItemLineDetail';
+
+    $sales_item_line_detail = new IPPSalesItemLineDetail();
+    // Because SalesItemLineDetail is seleted above, we don't need the date.
+    // $salesItemLineDetail->ServiceDate = date("Y-m-d"); save.
+    $item_ref_type = new IPPReferenceType();
+    // Product ID.
+    $item_ref_type->value = variable_get('ji_quickbooks_default_product');
+    $sales_item_line_detail->ItemRef = $item_ref_type;
+    $sales_item_line_detail->UnitPrice = $line_item->commerce_unit_price[LANGUAGE_NONE][0]['amount'] / 100;
+    $sales_item_line_detail->Qty = $line_item->quantity;
+    $tax_code_ref_type = new IPPReferenceType();
+    // 'NON' for non-taxable or 'TAX' for taxable.
+    $tax_code_ref_type->value = $tax_default;
+    $sales_item_line_detail->TaxCodeRef = $tax_code_ref_type;
+    $line1->SalesItemLineDetail = $sales_item_line_detail;
+    $line[] = $line1;
+  }
+
+  // We assume tax id is NULL until code says otherwise. QuickBooks
+  // won't complain if no tax code is used.
+  $qbo_tax_id = NULL;
+  if (module_exists('ji_commerce_taxes')) {
+    $qbo_tax_id = ji_commerce_taxes_get_qbo_taxid($order);
+  }
+
+  $txn_detail = new IPPTxnTaxDetail();
+  $txn_code_ref_type = new IPPReferenceType();
+  // TAX ID.
+  $txn_code_ref_type->value = $qbo_tax_id;
+  $txn_detail->TxnTaxCodeRef = $txn_code_ref_type;
+
+  // Billing and shipping address.
+  // This is added in order to avoid anonymous user into address.
+  $order_wrapper = entity_metadata_wrapper('commerce_order', $order);
+
+  if (isset($order_wrapper->commerce_customer_billing)) {
+    $billing = $order_wrapper->commerce_customer_billing->commerce_customer_address->value();
+
+    $o_bill_address = new IPPPhysicalAddress();
+    $o_bill_address->Line1 = $billing['name_line'];
+    $o_bill_address->Line2 = $billing['thoroughfare'];
+    $o_bill_address->City = $billing['locality'];
+    $o_bill_address->CountrySubDivisionCode = $billing['administrative_area'];
+    $o_bill_address->PostalCode = $billing['postal_code'];
+    $o_bill_address->Country = $billing['country'];
+  }
+
+  if (isset($order_wrapper->commerce_customer_shipping)) {
+    $shipping = $order_wrapper->commerce_customer_shipping->commerce_customer_address->value();
+
+    $o_ship_address = new IPPPhysicalAddress();
+    $o_ship_address->Line1 = $shipping['name_line'];
+    $o_ship_address->Line2 = $shipping['thoroughfare'];
+    $o_ship_address->City = $shipping['locality'];
+    $o_ship_address->CountrySubDivisionCode = $shipping['administrative_area'];
+    $o_ship_address->PostalCode = $shipping['postal_code'];
+    $o_ship_address->Country = $shipping['country'];
+  }
+
+  $invoice_data = array(
+    'AllowIPNPayment' => 1,
+    'AllowOnlinePayment' => 1,
+    'AllowOnlineCreditCardPayment' => 1,
+    'AllowOnlineACHPayment' => 1,
+    'CustomerRef' => $customer_type,
+    'SalesTermRef' => $sales_term_type,
+    'BillEmail' => $email_address,
+    'TxnDate' => date("Y-m-d"),
+    // You will generate an error if you put null value down here.
+    'Line' => $line,
+    'TxnTaxDetail' => $txn_detail,
+    'Id' => '',
+    'SyncToken' => '',
+    // Commerce will email invoice.
+    'EmailInvoice' => FALSE,
+  );
+
+  // We won't add empty addresses.
+  if (!empty($o_bill_address->Line1) &&
+      !empty($o_bill_address->City) &&
+      !empty($o_bill_address->CountrySubDivisionCode) &&
+      !empty($o_bill_address->PostalCode) &&
+      !empty($o_bill_address->Country)) {
+    $invoice_data['BillAddr'] = $o_bill_address;
+  }
+  if (!empty($o_ship_address->Line1) &&
+      !empty($o_ship_address->City) &&
+      !empty($o_ship_address->CountrySubDivisionCode) &&
+      !empty($o_ship_address->PostalCode) &&
+      !empty($o_ship_address->Country)) {
+    $invoice_data['ShipAddr'] = $o_ship_address;
+  }
+
+  $response = $quickbooks_service->processInvoice($invoice_data);
+
+  return ji_quickbooks_log_process($order->order_id, $quickbooks_service->realmId, $order->uid, 'invoice', $response);
+}
+
+/**
+ * Sends payment information to QuickBooks.
+ *
+ * Also called by ji_quickbooks.module hook_cron() as a module_invoke_all().
+ */
+function ji_commerce_checkout_complete_send_payment($quickbooks_service, $order, $qbo_customer_id, $qbo_invoice_id) {
+  $payment_data = array(
+    'customer_ref' => $qbo_customer_id,
+    'payment_ref_num' => $order->order_id,
+    'total_amt' => $order->commerce_order_total[LANGUAGE_NONE][0]['amount'] / 100,
+    'txn_date' => $order->created,
+    'currency_ref' => $order->commerce_order_total[LANGUAGE_NONE][0]['currency_code'],
+    'amount' => $order->commerce_order_total[LANGUAGE_NONE][0]['amount'] / 100,
+    'txn_id' => $qbo_invoice_id,
+  );
+
+  $response = $quickbooks_service->processPayment($payment_data);
+
+  return ji_quickbooks_log_process($order->order_id, $quickbooks_service->realmId, $order->uid, 'payment', $response);
+}
