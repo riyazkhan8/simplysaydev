@@ -1,1 +1,3 @@
-<? phpinfo(); ?>
+<?php 
+echo "riyaz";
+//phpinfo(); ?>
